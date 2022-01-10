@@ -1,50 +1,50 @@
 import {red} from '@mui/material/colors';
+import {ThemeOptions} from "@mui/material";
 
-const theme = {
-    components: {
-        MuiButton: {
-            defaultProps: {
-                disableElevation: true
+const theme = (mode: "light" | "dark"): ThemeOptions => {
+    return {
+        components: {
+            MuiButton: {
+                defaultProps: {
+                    disableElevation: true
+                },
             },
         },
-    },
-    palette: {
-        type: 'dark',
-        primary: {
-            main: '#4285F4',
+        palette: {
+            mode: mode,
+            primary: {
+                main: '#4285F4',
+            },
+            secondary: {
+                main: '#6d6d6d',
+            },
+            error: {
+                main: red.A400,
+            }
         },
-        secondary: {
-            main: '#19857b',
+        shape: {
+            borderRadius: 7,
         },
-        error: {
-            main: red.A400,
+        typography: {
+            button: {
+                textTransform: "none" as const,
+                fontWeight: 500
+            },
+            fontFamily: [
+                'Google Sans',
+                '-apple-system',
+                'BlinkMacSystemFont',
+                '"Segoe UI"',
+                'Roboto',
+                '"Helvetica Neue"',
+                'Arial',
+                'sans-serif',
+                '"Apple Color Emoji"',
+                '"Segoe UI Emoji"',
+                '"Segoe UI Symbol"',
+            ].join(','),
         },
-        white: {
-            main: "#fff"
-        }
-    },
-    shape: {
-        borderRadius: 6,
-    },
-    typography: {
-        button: {
-            textTransform: "none" as const,
-            fontWeight: 600
-        },
-        fontFamily: [
-            'DM Sans',
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-    },
-};
+    };
+}
 
 export default theme;

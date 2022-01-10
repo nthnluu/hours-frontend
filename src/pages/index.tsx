@@ -1,29 +1,17 @@
-import Navbar from "../components/shared/Navbar";
-import AccountMenu from "../components/shared/AccountMenu";
-import {testUser} from "../util/auth/auth_helpers";
-import React, { useEffect } from "react";
-import Button from "../components/shared/Button";
-import {useAuth} from "../util/firebase_auth_helpers";
-
-function AccountButton() {
-    return <AccountMenu key="account" user={testUser()}/>;
-}
+import React from "react";
+import {Grid} from "@mui/material";
+import QueueCard from "@components/home/QueueCard";
+import useQueues from "@hooks/useQueues";
+import AppLayout from "@components/shared/AppLayout";
 
 export default function Home() {
-    const session = useAuth();
+    const [queues, loading] = useQueues(true);
 
-    useEffect(() => {
-        session.signInWithGoogle()
-            .then(res => {
-                res.email;
-            });
-    }, []);
-    return (
-        <div>
-            <Navbar endItems={[<AccountButton key="account"/>]}/>
-            <Button>Shee</Button>
-
-            {JSON.stringify(session)}
-        </div>
-    );
+    return <AppLayout maxWidth={false} loading={loading}>
+        {queues && <Grid spacing={3} container>
+            {queues.map(queue => <Grid key={queue.id} item xs={12} sm={6} lg={4} xl={3}>
+                <QueueCard queue={queue}/>
+            </Grid>)}
+        </Grid>}
+    </AppLayout>;
 }
