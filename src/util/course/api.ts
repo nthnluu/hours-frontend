@@ -2,6 +2,7 @@ import APIClient from "@util/APIClient";
 
 const enum Endpoint {
     CREATE_COURSE = '/courses',
+    GET_COURSE = '/courses'
 }
 
 export interface Course {
@@ -9,6 +10,17 @@ export interface Course {
     title: string;
     code: string;
     term: string;
+}
+
+/**
+ * Gets a course with the given title, code, and term.
+ */
+ async function getCourse(id: string): Promise<Course> {
+    try {
+        return await APIClient.get(`${Endpoint.GET_COURSE}/${id}`, {});
+    } catch (e) {
+        throw e;
+    }
 }
 
 /**
@@ -26,7 +38,8 @@ async function createCourse(title: string, code: string, term: string): Promise<
 }
 
 const CourseAPI = {
-    createCourse
+    getCourse,
+    createCourse,
 };
 
 
