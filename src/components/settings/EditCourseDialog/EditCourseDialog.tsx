@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {useForm} from "react-hook-form";
 import CourseAPI, { Course, CoursePermission } from "@util/course/api";
 import AuthAPI, { User } from "@util/auth/api";
+import {toast} from "react-hot-toast";
 
 export interface EditCourseDialogProps {
     course: Course;
@@ -34,7 +35,8 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
     const {register: registerAddPermission, handleSubmit: handleAddPermissionSubmit, formState: {errors: addPermissionErrors}} = useForm<AddPermissionFormData>();
     const onAddPermissionSubmit = handleAddPermissionSubmit(data => {
         CourseAPI.addCoursePermission(course.id, data.email, data.permission)
-            .then(_ => setTrigger(!trigger));
+            .then(_ => setTrigger(!trigger))
+            .catch(_ => toast.error(`User with email "${data.email}" not found.`));
     });
 
     const [trigger, setTrigger] = useState(false);

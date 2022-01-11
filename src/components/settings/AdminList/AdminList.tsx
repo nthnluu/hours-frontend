@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AuthAPI from "@util/auth/api";
 import useAdmins from "@util/auth/hooks";
 import {useForm} from "react-hook-form";
+import {toast} from "react-hot-toast";
 
 type FormData = {
     email: string;
@@ -30,7 +31,10 @@ type FormData = {
 export default function AdminList() {
     const [admins, loading] = useAdmins();
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
-    const onSubmit = handleSubmit(data => AuthAPI.updateUserByEmail(data.email, true));
+    const onSubmit = handleSubmit(data => {
+        AuthAPI.updateUserByEmail(data.email, true)
+            .catch(_ => toast.error(`User with email "${data.email}" not found.`));
+    });
 
     if (loading) return <></>;
 
@@ -47,7 +51,10 @@ export default function AdminList() {
                         key={x.id}
                         secondaryAction={
                             <IconButton label="Revoke admin access" edge="end" aria-label="delete"
-                            onClick={() => AuthAPI.updateUser(x.id, x.displayName, false)}>
+                            onClick={() => {
+                                AuthAPI.updateUser(x.id, x.displayName, false)
+                                    .catch(e => console.log(e));
+                            }}>
                                 <DeleteIcon/>
                             </IconButton>
                         }>
