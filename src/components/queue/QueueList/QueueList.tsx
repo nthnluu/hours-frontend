@@ -50,7 +50,7 @@ const QueueList: FC<QueueListProps> = ({ queueID }) => {
             </Stack>
             <Box p={2.5}>
                 <Stack spacing={2}>
-                    {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} ticket={ticket}/>)}
+                    {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} queueID={queueID as string} ticket={ticket}/>)}
                     {tickets && tickets.length == 0 && <EmptyQueue />}
                 </Stack>
             </Box>

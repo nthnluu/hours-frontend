@@ -70,7 +70,7 @@ async function createTicket(queueID: string, description: string): Promise<void>
  */
 async function editTicket(id: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.CREATE_TICKET}/${queueID}`, {
+        await APIClient.post(`${Endpoint.EDIT_TICKET}/${queueID}`, {
             id,
             status,
             description
@@ -86,7 +86,7 @@ async function editTicket(id: string, queueID: string, status: TicketStatus, des
  */
 async function deleteTicket(id: string, queueID: string): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.CREATE_TICKET}/${queueID}`, {id});
+        await APIClient.post(`${Endpoint.DELETE_TICKET}/${queueID}`, {id});
         return;
     } catch (e) {
         throw e;
