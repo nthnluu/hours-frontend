@@ -1,10 +1,10 @@
 import {FC, useState, useEffect} from "react";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, List, ListItem, ListItemText} from "@mui/material";
+import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, List, ListItem, ListItemText, FormControl, InputLabel, Select, MenuItem} from "@mui/material";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useForm} from "react-hook-form";
-import CourseAPI, { Course } from "@util/course/api";
+import CourseAPI, { Course, CoursePermission } from "@util/course/api";
 import AuthAPI, { User } from "@util/auth/api";
 
 export interface EditCourseDialogProps {
@@ -20,7 +20,7 @@ type EditFormData = {
 };
 
 type AddPermissionFormData = {
-    userID: string;
+    email: string;
     permission: string;
 };
 
@@ -33,7 +33,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
 
     const {register: registerAddPermission, handleSubmit: handleAddPermissionSubmit, formState: {errors: addPermissionErrors}} = useForm<AddPermissionFormData>();
     const onAddPermissionSubmit = handleAddPermissionSubmit(data => {
-        CourseAPI.addCoursePermission(course.id, data.userID, data.permission);
+        CourseAPI.addCoursePermission(course.id, data.email, data.permission);
         onClose();
     });
 
@@ -95,25 +95,32 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
             <DialogContent>
                 <Stack spacing={2} my={1}>
                     <TextField
-                        {...registerAddPermission("userID")}
+                        {...registerAddPermission("email")}
                         required
                         autoFocus
-                        label="User ID"
+                        label="Email"
                         type="text"
                         fullWidth
                         size="small"
                         variant="outlined"
                     />
-                    <TextField
-                        {...registerAddPermission("permission")}
-                        required
-                        autoFocus
-                        label="Permission"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="permission-label">Permission</InputLabel>
+                        <Select
+                            {...registerAddPermission("permission")}
+                            required
+                            defaultValue={""}
+                            fullWidth
+                            labelId="permission-label"
+                            id="permission"
+                            label="Permission"
+                            type="text"
+                            variant="outlined"
+                        >   
+                            <MenuItem value={CoursePermission.CourseAdmin}>HTA</MenuItem>
+                            <MenuItem value={CoursePermission.CourseStaff}>UTA</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Stack>
             </DialogContent>
             <DialogActions>

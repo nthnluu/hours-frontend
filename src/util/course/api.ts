@@ -75,10 +75,10 @@ async function editCourse(courseID: string, title: string, code: string, term: s
 /**
  * Creates a course with the given title, code, and term.
  */
-async function addCoursePermission(courseID: string, userID: string, permission: string): Promise<void> {
+async function addCoursePermission(courseID: string, email: string, permission: string): Promise<void> {
     try {
         await APIClient.post(`${Endpoint.ADD_COURSE_PERMISSION}/${courseID}`, {
-            userID, permission
+            email, permission
         });
         return;
     } catch (e) {

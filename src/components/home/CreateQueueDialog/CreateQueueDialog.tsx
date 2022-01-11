@@ -64,6 +64,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                     <FormControl fullWidth>
                         <InputLabel id="course-select-label">Course</InputLabel>
                         <Select
+                            {...register("courseID")}
                             required
                             defaultValue={""}
                             fullWidth
