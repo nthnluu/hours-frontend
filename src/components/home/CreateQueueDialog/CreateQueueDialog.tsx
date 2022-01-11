@@ -1,8 +1,9 @@
 import {FC} from "react";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
+import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
+import {useSession} from "@util/auth/hooks";
 
 export interface CreateCourseDialogProps {
     open: boolean;
@@ -18,6 +19,9 @@ type FormData = {
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => QueueAPI.createQueue(data.title, data.description, data.courseID));
+    const {currentUser, loading} = useSession();
+
+    if (loading) return <></>;
 
     return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <form onSubmit={onSubmit}>
@@ -45,15 +49,22 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         variant="outlined"
                     />
 
-                    <TextField
-                        {...register("courseID")}
-                        required
-                        label="Course ID"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="course-select-label">Course</InputLabel>
+                        <Select
+                            required
+                            fullWidth
+                            labelId="course-select-label"
+                            id="course-select"
+                            label="Course"
+                            type="text"
+                            variant="outlined"
+                        >
+                            {Object.keys(currentUser!.coursePermissions).map(x => (
+                                    <MenuItem key={x} value={x}>{x}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Stack>
             </DialogContent>
             <DialogActions>

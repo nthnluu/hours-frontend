@@ -5,7 +5,6 @@ import AppLayout from "@components/shared/AppLayout";
 import QueueCard from "@components/home/QueueCard";
 import CreateQueueDialog from "@components/home/CreateQueueDialog";
 import CreateQueueCard from "@components/home/CreateQueueCard";
-import Button from "@components/shared/Button";
 
 export default function Home() {
     const [queues, loading] = useQueues(true);

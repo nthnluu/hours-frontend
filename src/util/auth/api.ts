@@ -13,6 +13,11 @@ const enum Endpoint {
     SIGN_OUT = '/users/signout',
 }
 
+const enum CoursePermission {
+    CourseAdmin = "ADMIN",
+    CourseStaff = "STAFF"
+}
+
 /** A User in the authentication system */
 export interface User {
     id: string;
@@ -20,6 +25,7 @@ export interface User {
     displayName: string;
     photoUrl: string;
     isAdmin: boolean;
+    coursePermissions: Map<string, CoursePermission>
 }
 
 /**
