@@ -5,11 +5,17 @@ const enum Endpoint {
     GET_COURSE = '/courses'
 }
 
+const enum CoursePermission {
+    CourseAdmin = "ADMIN",
+    CourseStaff = "STAFF"
+}
+
 export interface Course {
     id: string;
     title: string;
     code: string;
     term: string;
+    coursePermissions: Map<string, CoursePermission>
 }
 
 /**

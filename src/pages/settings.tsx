@@ -14,6 +14,7 @@ import AppLayout from "@components/shared/AppLayout";
 import IconButton from "@components/shared/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useAuth} from "@util/auth/hooks";
+import YourCoursesSection from "@components/settings/YourCoursesSection";
 import AllCoursesSection from "@components/settings/AllCoursesSection";
 
 export default function Settings() {
@@ -96,14 +97,8 @@ export default function Settings() {
                     </Box>
                 </Paper>}
 
-                <Paper variant="outlined">
-                    <Box p={3}>
-                        <Typography variant="h5" fontWeight={600}>
-                            Your Courses
-                        </Typography>
-                    </Box>
-                </Paper>
-                <AllCoursesSection/>
+                <YourCoursesSection/>
+                {currentUser!.isAdmin && <AllCoursesSection/>}
             </Stack>
         </AppLayout>
     );
