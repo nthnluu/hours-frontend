@@ -113,12 +113,14 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                         </ListItemButton>
                                     </ListItem>
                                     <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <Feedback/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Send feedback"/>
-                                        </ListItemButton>
+                                        <Link href="https://forms.gle/Ue9wQDXDuczLk7b56">
+                                            <ListItemButton>
+                                                <ListItemIcon>
+                                                    <Feedback/>
+                                                </ListItemIcon>
+                                                <ListItemText primary="Send feedback"/>
+                                            </ListItemButton>
+                                        </Link>
                                     </ListItem>
                                     <ListItem disablePadding>
                                         <Link href="/settings">
