@@ -22,7 +22,7 @@ export interface QueueListProps {
  */
 const QueueList: FC<QueueListProps> = ({ queueID }) => {
     const {currentUser, isAuthenticated} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queueID);
+    const [tickets, ticketsLoading] = useTickets(queueID, true);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
     if (ticketsLoading) return <></>;

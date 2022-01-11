@@ -26,6 +26,7 @@ export interface Ticket {
         PhotoUrl: string;
     };
     description: string;
+    status: TicketStatus;
 }
 
 export interface Queue {

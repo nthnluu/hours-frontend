@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Queue, Ticket} from "@util/queue/api";
+import {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {collection, doc, Firestore, getFirestore, onSnapshot, query, where} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
@@ -39,7 +39,7 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
     return [queues, loading];
 }
 
-export function useTickets(queueID: string): [Ticket[] | undefined, boolean] {
+export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [tickets, setTickets] = useState<Ticket[] | undefined>(undefined);
 
@@ -47,11 +47,15 @@ export function useTickets(queueID: string): [Ticket[] | undefined, boolean] {
         const db = getFirestore();
 
         onSnapshot(collection(db, "queues", queueID, "tickets"), (querySnapshot) => {
-            const res: Ticket[] = [];
+            let res: Ticket[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 res.push({id: doc.id, ...data} as Ticket);
             });
+
+            if (filterCompleted) {
+                res = res.filter(x => x.status != TicketStatus.StatusComplete);
+            }
 
             setTickets(res);
             setLoading(false);

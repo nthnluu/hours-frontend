@@ -25,72 +25,71 @@ export interface QueueOptionsProps {
  */
 const QueueOptions: FC<QueueOptionsProps> = ({ queue }) => {
     return (
-                    
-<Grid item xs={12} md={3}>
-                        <Stack spacing={3} divider={<Divider/>}>
-                            {queue.description && <Box width="100%">
-                                <Typography variant="h6">
-                                    About
-                                </Typography>
-                                <Typography>
-                                    {queue.description}
-                                </Typography>
-                            </Box>}
+        <Grid item xs={12} md={3}>
+            <Stack spacing={3} divider={<Divider/>}>
+                {queue.description && <Box width="100%">
+                    <Typography variant="h6">
+                        About
+                    </Typography>
+                    <Typography>
+                        {queue.description}
+                    </Typography>
+                </Box>}
 
-                            <Box width="100%">
-                                <Typography variant="h6">
-                                    Manage Queue
-                                </Typography>
+                <Box width="100%">
+                    <Typography variant="h6">
+                        Manage Queue
+                    </Typography>
 
-                                <List>
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <EditIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Edit queue"/>
-                                        </ListItemButton>
-                                    </ListItem>
+                    <List>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <EditIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Edit queue"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <CampaignIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Make announcement"/>
-                                        </ListItemButton>
-                                    </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <CampaignIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Make announcement"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <ShuffleIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Shuffle tickets"/>
-                                        </ListItemButton>
-                                    </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <ShuffleIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Shuffle tickets"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <DoNotDisturbOnIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Cutoff signups"/>
-                                        </ListItemButton>
-                                    </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <DoNotDisturbOnIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Cutoff signups"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                <CancelIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Close queue"/>
-                                        </ListItemButton>
-                                    </ListItem>
-                                </List>
-                            </Box>
-                        </Stack>
-                    </Grid>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <CancelIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Close queue"/>
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Box>
+            </Stack>
+        </Grid>
     );
 };
 
