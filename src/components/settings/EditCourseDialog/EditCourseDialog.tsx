@@ -33,17 +33,18 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
 
     const {register: registerAddPermission, handleSubmit: handleAddPermissionSubmit, formState: {errors: addPermissionErrors}} = useForm<AddPermissionFormData>();
     const onAddPermissionSubmit = handleAddPermissionSubmit(data => {
-        CourseAPI.addCoursePermission(course.id, data.email, data.permission);
-        onClose();
+        CourseAPI.addCoursePermission(course.id, data.email, data.permission)
+            .then(_ => setTrigger(!trigger));
     });
 
+    const [trigger, setTrigger] = useState(false);
     const [staff, setStaff] = useState<User[]>([]);
     useEffect(() => {
         if (course && course.coursePermissions)
             Promise.all(Object.keys(course.coursePermissions)
-            .map(userID => AuthAPI.getUserById(userID)))
-            .then(res => setStaff(res));
-    }, [course, open]);
+                .map(userID => AuthAPI.getUserById(userID)))
+                .then(res => setStaff(res));
+    }, [course, open, trigger]);
 
     if (!course) return <></>;
 
