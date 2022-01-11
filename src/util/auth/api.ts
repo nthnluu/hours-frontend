@@ -8,10 +8,11 @@ import {
 import APIClient from "@util/APIClient";
 
 const enum Endpoint {
-    GET_SESSION = '/users/session',
     ME = '/users/me',
-    SIGN_OUT = '/users/signout',
     USER = '/users',
+    UPDATE = '/users/update',
+    GET_SESSION = '/users/session',
+    SIGN_OUT = '/users/signout',
 }
 
 export const enum CoursePermission {
@@ -46,6 +47,19 @@ async function getCurrentUser(): Promise<User> {
 async function getUserById(id: string): Promise<User> {
     try {
         return await APIClient.get(`${Endpoint.USER}/${id}`);
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
+ * Fetches profile information corresponding to the currently logged in user.
+ */
+async function updateUser(userID: string, displayName: string, isAdmin: boolean): Promise<void> {
+    try {
+        return await APIClient.post(`${Endpoint.UPDATE}/${userID}`, {
+            displayName, isAdmin
+        });
     } catch (e) {
         throw e;
     }
@@ -95,6 +109,7 @@ async function signOut(): Promise<void> {
 const AuthAPI = {
     getCurrentUser,
     getUserById,
+    updateUser,
     signInWithGoogle,
     signOut
 };
