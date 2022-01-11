@@ -1,10 +1,10 @@
-import React, {FC, useState} from "react";
+import React, {FC} from "react";
 import {Box, ButtonBase, Paper, Stack, Typography} from "@mui/material";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {useRouter} from "next/router";
-import {Queue} from "@util/queue/queue_helpers";
+import {Queue} from "@util/queue/api";
 
 export interface QueueCardProps {
     queue: Queue;
@@ -19,13 +19,13 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
 
     return <Paper variant="outlined" sx={{overflow: 'hidden'}}>
         <ButtonBase onClick={() => router.push('/queue/' + queue.id)} sx={{width: "100%", textAlign: "left"}} focusRipple>
-            <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: queue.color}}>
+            <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: queue.color ?? "#172c35"}}>
                 <Typography variant="body1" noWrap>
-                    {queue.courseTitle}
+                    {queue.course.title}
                 </Typography>
 
                 <Typography variant="h5" fontWeight={600}>
-                    {queue.queueTitle}
+                    {queue.title}
                 </Typography>
             </Box>
         </ButtonBase>

@@ -1,8 +1,6 @@
 import React, {useEffect} from "react";
 import {
-    Avatar,
     Box,
-    Container,
     Divider,
     Grid,
     List,
@@ -23,10 +21,21 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import useQueue from "@hooks/useQueue";
+import {useQueue} from "@util/queue/hooks";
 import {useRouter} from "next/router";
 import {toast} from "react-hot-toast";
 import AppLayout from "@components/shared/AppLayout";
+import {Ticket} from "@util/queue/api";
+
+// TODO: much opportunity for refactoring into components
+
+const tickets: Ticket[] = [
+    {id: "0000", name: "Nathan Luu", createdAt: new Date(Date.now() - 1000 * 60)},
+    {id: "1111", name: "Spike Spiegel", createdAt: new Date(Date.now() - 1000 * 120)},
+    {id: "2222", name: "Toph Beifong", createdAt: new Date(Date.now() - 1000 * 180)},
+    {id: "3333", name: "Tommy Chong", createdAt: new Date(Date.now() - 1000 * 250)},
+    {id: "4444", name: "Jayce Brighthammer", createdAt: new Date(Date.now() - 1000 * 380)}
+];
 
 export default function Queue() {
     const router = useRouter();
@@ -128,35 +137,29 @@ export default function Queue() {
                     </Grid>
 
                     <Grid item xs={12} md={9}>
-                        {/*<Paper variant="elevation" elevation={4}>*/}
-                        {/*    <Box width="100%" textAlign="center" p={4}>*/}
-                        {/*        <Lottie options={defaultOptions} height={100} width={150}/>*/}
-                        {/*        <Box mt={4}>*/}
-                        {/*            <Typography fontSize={28} fontWeight={500}>You&apos;re up next!</Typography>*/}
-                        {/*            /!*<Typography variant="body1">4 people ahead of you</Typography>*!/*/}
-                        {/*            <Stack direction="row-reverse" spacing={1} justifyContent="center"*/}
-                        {/*                   marginTop={3}>*/}
-                        {/*                <Button size="small" variant="contained" startIcon={<EditIcon/>}>*/}
-                        {/*                    Edit Ticket*/}
-                        {/*                </Button>*/}
-                        {/*                <Button size="small" variant="outlined" startIcon={<CloseIcon/>}*/}
-                        {/*                        color="secondary">*/}
-                        {/*                    Exit Queue*/}
-                        {/*                </Button>*/}
-                        {/*            </Stack>*/}
-                        {/*        </Box>*/}
-                        {/*    </Box>*/}
-                        {/*</Paper>*/}
+                        <Box mb={2}>
+                            <Paper variant="elevation" elevation={4}>
+                                <Box width="100%" textAlign="center" p={4}>
+                                    <Lottie options={defaultOptions} height={100} width={150}/>
+                                    <Box mt={4}>
+                                        <Typography fontSize={28} fontWeight={500}>You&apos;re up next!</Typography>
+                                        {/*<Typography variant="body1">4 people ahead of you</Typography>*/}
+                                        <Stack direction="row-reverse" spacing={1} justifyContent="center"
+                                               marginTop={3}>
+                                            <Button size="small" variant="contained" startIcon={<EditIcon/>}>
+                                                Edit Ticket
+                                            </Button>
+                                            <Button size="small" variant="outlined" startIcon={<CloseIcon/>}
+                                                    color="secondary">
+                                                Exit Queue
+                                            </Button>
+                                        </Stack>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
                         <Stack spacing={2}>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
-                            <QueueListItem/>
+                            {tickets.map(ticket => <QueueListItem key={ticket.id} ticket={ticket}/>)}
                         </Stack>
                     </Grid>
                 </Grid>

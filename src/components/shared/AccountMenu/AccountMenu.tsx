@@ -11,7 +11,7 @@ import {
 import AuthAPI, {User} from "@util/auth/api";
 import FocusTrap from "focus-trap-react";
 import {Feedback, Logout, Settings, WbSunny} from "@mui/icons-material";
-import useThemeMode from "@util/useThemeMode";
+import useThemeMode from "@util/mui/useThemeMode";
 import Link from "next/link";
 
 export interface AccountMenuProps {
@@ -69,10 +69,10 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                     onClick={() => setOpen(!open)} focusRipple>
             <Avatar src={user.photoUrl}
                     sx={{
-                        width: 32,
-                        height: 32,
+                        width: 40,
+                        height: 40,
                         border: "1px solid #989898",
-                        fontSize: 14
+                        fontSize: 16
                     }}>{getInitials(user.displayName)}</Avatar>
         </ButtonBase>
 
@@ -95,7 +95,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                             fontSize: 36,
                                             marginBottom: 2,
                                         }}>{getInitials(user.displayName)}</Avatar>
-                                    <Typography variant="h5" fontWeight={600}>
+                                    <Typography variant="h6" fontWeight={600}>
                                         {user.displayName}
                                     </Typography>
                                     <Typography variant="subtitle1">

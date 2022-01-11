@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import APIClient from "@util/APIClient";
 
-const enum AuthAPIEndpoint {
+const enum Endpoint {
     GET_SESSION = '/users/session',
     ME = '/users/me',
     SIGN_OUT = '/users/signout',
@@ -24,12 +24,10 @@ export interface User {
 
 /**
  * Fetches profile information corresponding to the currently logged in user.
- *
- * @returns a User containing information about the current user.
  */
 async function getCurrentUser(): Promise<User> {
     try {
-        return await APIClient.get(AuthAPIEndpoint.ME);
+        return await APIClient.get(Endpoint.ME);
     } catch (e) {
         throw e;
     }
@@ -56,7 +54,7 @@ async function signInWithGoogle() {
                 .then(async (idToken) => {
                     // Session login endpoint is queried and the session cookie is set.
                     // TODO: CSRF protection should be taken into account.
-                    return await APIClient.post(AuthAPIEndpoint.GET_SESSION, {token: idToken.toString()});
+                    return await APIClient.post(Endpoint.GET_SESSION, {token: idToken.toString()});
                 });
         })
         .catch(() => {
@@ -69,7 +67,7 @@ async function signInWithGoogle() {
  */
 async function signOut(): Promise<void> {
     try {
-        await APIClient.post(AuthAPIEndpoint.SIGN_OUT);
+        await APIClient.post(Endpoint.SIGN_OUT);
         return;
     } catch (e) {
         throw e;

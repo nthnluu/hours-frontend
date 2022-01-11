@@ -2,14 +2,14 @@ import type {AppProps} from 'next/app';
 import {CssBaseline, responsiveFontSizes, ThemeProvider, useMediaQuery} from "@mui/material";
 import Head from "next/head";
 import theme from "@util/theme";
-import createEmotionCache from "@util/createEmotionCache";
+import createEmotionCache from "@util/mui/createEmotionCache";
 import {CacheProvider, EmotionCache} from "@emotion/react";
 import {createTheme} from "@mui/material/styles";
 import React, {useMemo, useState} from "react";
-import {firebaseInit} from "@util/firebase_app";
+import {firebaseInit} from "@util/firebase/firebase_app";
 import {Toaster} from "react-hot-toast";
 import {useSession, AuthProvider} from "@util/auth/hooks";
-import {ThemeMode, ThemeModeProvider} from "@util/useThemeMode";
+import {ThemeMode, ThemeModeProvider} from "@util/mui/useThemeMode";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

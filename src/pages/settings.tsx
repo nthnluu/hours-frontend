@@ -1,9 +1,20 @@
 import React from "react";
-import {Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, Typography} from "@mui/material";
+import {
+    Avatar,
+    Box,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Paper,
+    Stack,
+    Typography
+} from "@mui/material";
 import AppLayout from "@components/shared/AppLayout";
 import IconButton from "@components/shared/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useAuth} from "@util/auth/hooks";
+import AllCoursesSection from "@components/settings/AllCoursesSection";
 
 export default function Settings() {
     const {currentUser} = useAuth();
@@ -92,14 +103,7 @@ export default function Settings() {
                         </Typography>
                     </Box>
                 </Paper>
-
-                <Paper variant="outlined">
-                    <Box p={3}>
-                        <Typography variant="h5" fontWeight={600}>
-                            All Courses
-                        </Typography>
-                    </Box>
-                </Paper>
+                <AllCoursesSection/>
             </Stack>
         </AppLayout>
     );
