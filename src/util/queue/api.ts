@@ -8,7 +8,9 @@ const enum Endpoint {
 export interface Ticket {
     id: string;
     createdAt: Date;
-    name: string;
+    createdBy: {
+        DisplayName: string
+    };
 }
 
 export interface Queue {
@@ -36,8 +38,21 @@ async function createQueue(title: string, description: string, courseID: string)
     }
 }
 
+/**
+ * Creates a ticket for the given user.
+ */
+async function createTicket(queueID: string, description: string): Promise<void> {
+    try {
+        await APIClient.post(Endpoint.CREATE_QUEUE + `/${queueID}`, {description});
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
 const QueueAPI = {
-    createQueue
+    createQueue,
+    createTicket
 };
 
 

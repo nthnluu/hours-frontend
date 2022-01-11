@@ -13,9 +13,9 @@ const QueueListItem: FC<QueueListItemProps> = ({ticket}) => {
             <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar>:)</Avatar>
                 <Box>
-                    <Typography fontSize={16} fontWeight={600}>{ticket.name}</Typography>
-                    <Typography
-                        fontSize={14}>Joined {formatDistance(ticket.createdAt, new Date(), {addSuffix: true})}</Typography>
+                    <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName}</Typography>
+                    {/*<Typography*/}
+                    {/*    fontSize={14}>Joined {formatDistance(ticket.createdAt, new Date(), {addSuffix: true})}</Typography>*/}
                 </Box>
             </Stack>
         </Box>

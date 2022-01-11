@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     Divider,
@@ -21,11 +21,12 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import {useQueue} from "@util/queue/hooks";
+import {useQueue, useTickets} from "@util/queue/hooks";
 import {useRouter} from "next/router";
 import {toast} from "react-hot-toast";
 import AppLayout from "@components/shared/AppLayout";
 import {Ticket} from "@util/queue/api";
+import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 
 // TODO: much opportunity for refactoring into components
 
@@ -40,15 +41,17 @@ const tickets: Ticket[] = [
 export default function Queue() {
     const router = useRouter();
     const {queueID} = router.query;
-    const [queue, loading] = useQueue(queueID as string);
+    const [queue, queueLoading] = useQueue(queueID as string);
+    const [tickets, ticketsLoading] = useTickets(queueID as string);
+    const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
     // redirect user back to home page if no queue with given ID is found
     useEffect(() => {
-        if (router.isReady && !loading && !queue) {
+        if (router.isReady && !queueLoading && !queue) {
             router.push("/")
                 .then(() => toast.error("We couldn't find the queue you were looking for."));
         }
-    }, [router, queue, loading]);
+    }, [router, queue, queueLoading]);
 
     const defaultOptions = {
         loop: true,
@@ -60,9 +63,12 @@ export default function Queue() {
     };
 
     return (
-        <AppLayout maxWidth="lg" loading={loading}>
+        <AppLayout maxWidth="lg" loading={queueLoading}>
+            <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
+                                queueID={queueID as string}/>
             {queue && <>
                 <QueuePageHeader queue={queue}/>
+                <Button onClick={() => setCreateTicketDialog(true)}>Join Queue</Button>
                 <Grid container spacing={3} marginTop={1}>
                     <Grid item xs={12} md={3}>
                         <Stack spacing={3} divider={<Divider/>}>
@@ -159,7 +165,7 @@ export default function Queue() {
                             </Paper>
                         </Box>
                         <Stack spacing={2}>
-                            {tickets.map(ticket => <QueueListItem key={ticket.id} ticket={ticket}/>)}
+                            {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} ticket={ticket}/>)}
                         </Stack>
                     </Grid>
                 </Grid>
