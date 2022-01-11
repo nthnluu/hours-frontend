@@ -4,14 +4,28 @@ import {Course} from "@util/course/api";
 const enum Endpoint {
     CREATE_QUEUE = '/queues/create',
     CREATE_TICKET = '/queues/ticket/create',
+    EDIT_TICKET = '/queues/ticket/edit',
+    DELETE_TICKET = '/queues/ticket/delete',
+}
+
+export const enum TicketStatus {
+	StatusWaiting = "WAITING",
+	StatusClaimed = "CLAIMED",
+	StatusMissing = "MISSING",
+	StatusComplete = "COMPLETE",
 }
 
 export interface Ticket {
     id: string;
     createdAt: Date;
     createdBy: {
-        DisplayName: string
+        DisplayName: string;
+        Email: string;
+        IsAdmin: boolean;
+        PhoneNumber: string;
+        PhotoUrl: string;
     };
+    description: string;
 }
 
 export interface Queue {
@@ -51,9 +65,39 @@ async function createTicket(queueID: string, description: string): Promise<void>
     }
 }
 
+/**
+ * Creates a ticket for the given user.
+ */
+async function editTicket(id: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
+    try {
+        await APIClient.post(`${Endpoint.CREATE_TICKET}/${queueID}`, {
+            id,
+            status,
+            description
+        });
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
+ * Creates a ticket for the given user.
+ */
+async function deleteTicket(id: string, queueID: string): Promise<void> {
+    try {
+        await APIClient.post(`${Endpoint.CREATE_TICKET}/${queueID}`, {id});
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
 const QueueAPI = {
     createQueue,
-    createTicket
+    createTicket,
+    editTicket,
+    deleteTicket
 };
 
 

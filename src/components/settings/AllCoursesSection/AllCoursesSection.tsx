@@ -30,6 +30,8 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
 
     const [courses, loading] = useCourses();
 
+    if (loading) return <></>;
+
     return <>
         <CreateCourseDialog open={openCreate} onClose={handleCloseCreate}/>
         <EditCourseDialog course={course!} open={openEdit} onClose={handleCloseEdit}/>
