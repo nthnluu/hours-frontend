@@ -11,9 +11,10 @@ const enum Endpoint {
     GET_SESSION = '/users/session',
     ME = '/users/me',
     SIGN_OUT = '/users/signout',
+    USER = '/users',
 }
 
-const enum CoursePermission {
+export const enum CoursePermission {
     CourseAdmin = "ADMIN",
     CourseStaff = "STAFF"
 }
@@ -34,6 +35,17 @@ export interface User {
 async function getCurrentUser(): Promise<User> {
     try {
         return await APIClient.get(Endpoint.ME);
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
+ * Fetches profile information corresponding to the currently logged in user.
+ */
+async function getUserById(id: string): Promise<User> {
+    try {
+        return await APIClient.get(`${Endpoint.USER}/${id}`);
     } catch (e) {
         throw e;
     }
@@ -81,8 +93,9 @@ async function signOut(): Promise<void> {
 }
 
 const AuthAPI = {
-    signInWithGoogle,
     getCurrentUser,
+    getUserById,
+    signInWithGoogle,
     signOut
 };
 

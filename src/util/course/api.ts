@@ -9,7 +9,7 @@ const enum Endpoint {
     REMOVE_COURSE_PERMISSION = '/courses/removePermission',
 }
 
-const enum CoursePermission {
+export const enum CoursePermission {
     CourseAdmin = "ADMIN",
     CourseStaff = "STAFF"
 }
