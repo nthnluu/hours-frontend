@@ -39,12 +39,6 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue }) => {
 
                             <Box width="100%">
                                 <Typography variant="h6">
-                                    Active TAs
-                                </Typography>
-                            </Box>
-
-                            <Box width="100%">
-                                <Typography variant="h6">
                                     Manage Queue
                                 </Typography>
 
