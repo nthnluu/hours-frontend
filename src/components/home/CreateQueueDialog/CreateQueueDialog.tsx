@@ -1,8 +1,9 @@
-import {FC} from "react";
+import {FC, useState, useEffect} from "react";
 import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
+import CourseAPI from "@util/course/api";
 import {useSession} from "@util/auth/hooks";
 
 export interface CreateCourseDialogProps {
@@ -20,6 +21,14 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => QueueAPI.createQueue(data.title, data.description, data.courseID));
     const {currentUser, loading} = useSession();
+    const [coursePerms, setCoursePerms] = useState<CourseAPI.Course[]>([]);
+
+    useEffect(() => {
+        if (currentUser)
+            Promise.all(Object.keys(currentUser!.coursePermissions)
+            .map(c => CourseAPI.getCourse(c)))
+            .then(res => setCoursePerms(res));
+    }, [currentUser]);
 
     if (loading) return <></>;
 
@@ -53,16 +62,15 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         <InputLabel id="course-select-label">Course</InputLabel>
                         <Select
                             required
+                            defaultValue={""}
                             fullWidth
                             labelId="course-select-label"
                             id="course-select"
                             label="Course"
                             type="text"
                             variant="outlined"
-                        >
-                            {Object.keys(currentUser!.coursePermissions).map(x => (
-                                    <MenuItem key={x} value={x}>{x}</MenuItem>
-                            ))}
+                        >   
+                            {coursePerms.map(x => <MenuItem key={x.id} value={x.id}>{x.title}</MenuItem>)}
                         </Select>
                     </FormControl>
                 </Stack>
