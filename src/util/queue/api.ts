@@ -2,7 +2,8 @@ import APIClient from "@util/APIClient";
 import {Course} from "@util/course/api";
 
 const enum Endpoint {
-    CREATE_QUEUE = '/queues',
+    CREATE_QUEUE = '/queues/create',
+    CREATE_TICKET = '/queues/ticket/create',
 }
 
 export interface Ticket {
@@ -43,7 +44,7 @@ async function createQueue(title: string, description: string, courseID: string)
  */
 async function createTicket(queueID: string, description: string): Promise<void> {
     try {
-        await APIClient.post(Endpoint.CREATE_QUEUE + `/${queueID}`, {description});
+        await APIClient.post(`${Endpoint.CREATE_TICKET}/${queueID}`, {description});
         return;
     } catch (e) {
         throw e;
