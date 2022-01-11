@@ -22,6 +22,12 @@ export default function Settings() {
                         <Typography variant="h5" fontWeight={600}>
                             Your Profile
                         </Typography>
+                        <Typography variant="body1">
+                            Display Name: {currentUser?.displayName}
+                        </Typography>
+                        <Typography variant="body1">
+                            Email: {currentUser?.email}
+                        </Typography>
                     </Box>
                 </Paper>
                 {currentUser!.isAdmin && <AdminList/>}
