@@ -5,6 +5,7 @@ import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useCourses from "@util/course/hooks";
+import CourseAPI from "@util/course/api";
 
 export interface AllCoursesSectionProps {
 }

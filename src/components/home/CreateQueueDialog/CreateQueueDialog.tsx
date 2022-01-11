@@ -19,7 +19,10 @@ type FormData = {
 
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
-    const onSubmit = handleSubmit(data => QueueAPI.createQueue(data.title, data.description, data.courseID));
+    const onSubmit = handleSubmit(data => {
+        QueueAPI.createQueue(data.title, data.description, data.courseID);
+        onClose();
+    });
     const {currentUser, loading} = useSession();
     const [coursePerms, setCoursePerms] = useState<CourseAPI.Course[]>([]);
 
