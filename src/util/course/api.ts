@@ -1,8 +1,9 @@
 import APIClient from "@util/APIClient";
 
 const enum Endpoint {
+    GET_COURSE = '/courses',
     CREATE_COURSE = '/courses',
-    GET_COURSE = '/courses'
+    DELETE_COURSE = '/courses',
 }
 
 const enum CoursePermission {
@@ -19,7 +20,7 @@ export interface Course {
 }
 
 /**
- * Gets a course with the given title, code, and term.
+ * Gets a course with the given id.
  */
  async function getCourse(id: string): Promise<Course> {
     try {
@@ -43,9 +44,21 @@ async function createCourse(title: string, code: string, term: string): Promise<
     }
 }
 
+/**
+ * Deletes a course with the given id.
+ */
+ async function deleteCourse(id: string): Promise<Course> {
+    try {
+        return await APIClient.delete(`${Endpoint.DELETE_COURSE}/${id}`, {});
+    } catch (e) {
+        throw e;
+    }
+}
+
 const CourseAPI = {
     getCourse,
     createCourse,
+    deleteCourse,
 };
 
 

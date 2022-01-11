@@ -38,7 +38,7 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
                         key={course.id}
                         disableGutters
                         secondaryAction={
-                            <IconButton label="Delete course" edge="end" aria-label="delete">
+                            <IconButton label="Delete course" edge="end" aria-label="delete" onClick={() => CourseAPI.deleteCourse(course.id)}>
                                 <DeleteIcon/>
                             </IconButton>
                         }>

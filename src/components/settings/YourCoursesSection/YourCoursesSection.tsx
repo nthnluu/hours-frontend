@@ -4,6 +4,7 @@ import IconButton from "@components/shared/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useCourses from "@util/course/hooks";
 import {useSession} from "@util/auth/hooks";
+import CourseAPI from "@util/course/api";
 
 export interface YourCoursesSectionProps {
 }
@@ -35,7 +36,7 @@ const YourCoursesSection: FC<YourCoursesSectionProps> = ({}) => {
                             key={course.id}
                             disableGutters
                             secondaryAction={
-                                <IconButton label="Delete course" edge="end" aria-label="delete">
+                                <IconButton label="Delete course" edge="end" aria-label="delete" onClick={() => CourseAPI.deleteCourse(course.id)}>
                                     <DeleteIcon/>
                                 </IconButton>
                             }>

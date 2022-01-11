@@ -24,9 +24,22 @@ async function performPostRequest<V>(endpoint: Endpoint, data?: { [key: string]:
     }
 }
 
+async function performDeleteRequest<V>(endpoint: Endpoint, config?: AxiosRequestConfig) {
+    try {
+        const res = await axios.delete<V>(urls.API_URL + endpoint, {
+            withCredentials: true,
+            ...config
+        });
+        return res.data;
+    } catch (e) {
+        throw e;
+    }
+}
+
 const APIClient = {
     get: performGetRequest,
-    post: performPostRequest
+    post: performPostRequest,
+    delete: performDeleteRequest
 };
 
 export default APIClient;
