@@ -11,6 +11,7 @@ const enum Endpoint {
     ME = '/users/me',
     USER = '/users',
     UPDATE = '/users/update',
+    UPDATE_BY_EMAIL = '/users/updateByEmail',
     GET_SESSION = '/users/session',
     SIGN_OUT = '/users/signout',
 }
@@ -66,6 +67,19 @@ async function updateUser(userID: string, displayName: string, isAdmin: boolean)
 }
 
 /**
+ * Fetches profile information corresponding to the currently logged in user.
+ */
+async function updateUserByEmail(email: string, isAdmin: boolean): Promise<void> {
+    try {
+        return await APIClient.post(Endpoint.UPDATE_BY_EMAIL, {
+            email, isAdmin
+        });
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
  * Redirects the user to a Google sign in page, then creates a session with the SMU API.
  */
 async function signInWithGoogle() {
@@ -110,6 +124,7 @@ const AuthAPI = {
     getCurrentUser,
     getUserById,
     updateUser,
+    updateUserByEmail,
     signInWithGoogle,
     signOut
 };
