@@ -12,7 +12,7 @@ export default function Home() {
     const [queues, loading] = useQueues(true);
     const [createQueueDialog, setCreateQueueDialog] = useState(false);
 
-    const isTA = currentUser && (Object.keys(currentUser.coursePermissions).length > 0);
+    const isTA = isAuthenticated && currentUser && currentUser.coursePermissions && (Object.keys(currentUser.coursePermissions).length > 0);
 
     return <AppLayout maxWidth={false} loading={loading}>
         <CreateQueueDialog open={createQueueDialog} onClose={() => setCreateQueueDialog(false)}/>

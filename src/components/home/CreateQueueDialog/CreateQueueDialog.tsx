@@ -28,8 +28,8 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const [coursePerms, setCoursePerms] = useState<Course[]>([]);
 
     useEffect(() => {
-        if (currentUser)
-            Promise.all(Object.keys(currentUser!.coursePermissions)
+        if (currentUser && currentUser.coursePermissions)
+            Promise.all(Object.keys(currentUser.coursePermissions)
             .map(c => CourseAPI.getCourse(c)))
             .then(res => setCoursePerms(res));
     }, [currentUser]);
