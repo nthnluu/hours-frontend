@@ -6,7 +6,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import useCourses from "@util/course/hooks";
 import {useSession} from "@util/auth/hooks";
-import CourseAPI, { Course, CoursePermission } from "@util/course/api";
+import CourseAPI, { Course } from "@util/course/api";
+import { CoursePermission } from "@util/auth/api";
 
 export interface YourCoursesSectionProps {
 }

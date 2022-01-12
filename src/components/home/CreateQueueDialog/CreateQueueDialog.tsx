@@ -3,7 +3,7 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Sel
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
-import CourseAPI from "@util/course/api";
+import CourseAPI, {Course} from "@util/course/api";
 import {useSession} from "@util/auth/hooks";
 
 export interface CreateCourseDialogProps {
@@ -24,7 +24,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
         onClose();
     });
     const {currentUser, loading} = useSession();
-    const [coursePerms, setCoursePerms] = useState<CourseAPI.Course[]>([]);
+    const [coursePerms, setCoursePerms] = useState<Course[]>([]);
 
     useEffect(() => {
         if (currentUser)
