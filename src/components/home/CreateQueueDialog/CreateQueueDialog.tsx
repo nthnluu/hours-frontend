@@ -67,7 +67,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         <Select
                             {...register("courseID")}
                             required
-                            defaultValue={""}
+                            defaultValue={coursePerms.length > 0 ? coursePerms[0].id : ""}
                             fullWidth
                             labelId="course-select-label"
                             id="course-select"

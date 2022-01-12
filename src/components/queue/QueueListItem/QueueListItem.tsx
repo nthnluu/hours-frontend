@@ -1,9 +1,8 @@
 import React, {FC, useState} from "react";
-import {Avatar, Box, Paper, Stack, Typography} from "@mui/material";
+import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
@@ -37,19 +36,22 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                           queueID={queueID as string}/>
         <Paper variant="outlined">
             <Box p={2.5}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={0}>
                     <Stack direction="row" spacing={2} alignItems="center">
                         <Avatar src={ticket.createdBy.PhotoURL}>
                             {getInitials(ticket.createdBy.DisplayName)}
                         </Avatar>
                         <Box>
-                            <Typography fontSize={16}
-                                        fontWeight={600}>{ticket.createdBy.DisplayName}{missing && " (MISSING)"}</Typography>
-                            <Typography fontSize={14}>{ticket.description}</Typography>
+
+                        <Stack direction="row" spacing={1}>
+                            <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName} </Typography>
+                            {missing && <Chip label="(MISSING)" size="small" variant="outlined" color="error"/>}
+                        </Stack>
+                        <Typography fontSize={14}>{ticket.description}</Typography>
                         </Box>
                     </Stack>
 
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={0}>
                         {staffPerm && !claimed && <IconButton label="Claim ticket" edge="end" aria-label="claim"
                                                               onClick={() => QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)}>
                             <ConfirmationNumberOutlinedIcon/>
