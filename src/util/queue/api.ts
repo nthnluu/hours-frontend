@@ -23,7 +23,7 @@ export interface Ticket {
         Email: string;
         IsAdmin: boolean;
         PhoneNumber: string;
-        PhotoUrl: string;
+        PhotoURL: string;
     };
     description: string;
     status: TicketStatus;

@@ -30,9 +30,9 @@ const QueueList: FC<QueueListProps> = ({ queueID }) => {
     const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.Email == currentUser?.email).length > 0;
 
     const EmptyQueue = () => (
-        <Stack spacing={2} justifyContent="center" alignItems="center">
+        <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
             <Typography variant="body1">
-                Nobody is here!
+                Nobody is here... yet 😉.
             </Typography>
         </Stack>
     );
@@ -41,14 +41,14 @@ const QueueList: FC<QueueListProps> = ({ queueID }) => {
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)} queueID={queueID as string}/>
         <Grid item xs={12} md={9}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography variant="h5" fontWeight={600}>
+                <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!inQueue && <Button size="large" variant="contained" onClick={() => setCreateTicketDialog(true)}>
+                {!inQueue && <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                     Join Queue
                 </Button>}
             </Stack>
-            <Box p={2.5}>
+            <Box mt={1}>
                 <Stack spacing={2}>
                     {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} queueID={queueID as string} ticket={ticket}/>)}
                     {tickets && tickets.length == 0 && <EmptyQueue />}
