@@ -20,7 +20,7 @@ export interface QueueListProps {
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({ queueID }) => {
+const QueueList: FC<QueueListProps> = ({ queueID, queue }) => {
     const {currentUser, isAuthenticated} = useAuth();
     const [tickets, ticketsLoading] = useTickets(queueID, true);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
@@ -44,7 +44,7 @@ const QueueList: FC<QueueListProps> = ({ queueID }) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!inQueue && <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
+                {queue.isActive && !inQueue && <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                     Join Queue
                 </Button>}
             </Stack>
