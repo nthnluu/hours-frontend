@@ -19,7 +19,7 @@ export interface Course {
     title: string;
     code: string;
     term: string;
-    coursePermissions: Map<string, CoursePermission>
+    coursePermissions: { [key: string]: CoursePermission };
 }
 
 /**

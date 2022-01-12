@@ -28,7 +28,7 @@ export interface User {
     displayName: string;
     photoUrl: string;
     isAdmin: boolean;
-    coursePermissions: Map<string, CoursePermission>
+    coursePermissions: { [key: string]: CoursePermission };
 }
 
 /**
