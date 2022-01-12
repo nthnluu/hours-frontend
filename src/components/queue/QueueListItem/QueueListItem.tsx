@@ -1,4 +1,6 @@
-import React, {FC, useState} from "react";
+import React, {FC, useState, useEffect} from "react";
+import {intervalToDuration} from "date-fns";
+import {Timestamp} from "@firebase/firestore";
 import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
@@ -22,6 +24,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
     const {currentUser} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
+    const [time, setTime] = useState("0:0");
 
     const claimed = ticket.status === TicketStatus.StatusClaimed;
     const missing = ticket.status === TicketStatus.StatusMissing;
@@ -30,6 +33,16 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
     const staffPerm = isTA || currentUser?.isAdmin;
     const ownedPerm = staffPerm || ownsTicket;
+
+    useEffect(() => {
+        const intervalID = setInterval(() => {
+            const timer = Timestamp.now() - ticket.claimedAt;
+            const duration = intervalToDuration({ start: 0, end: timer * 1000 });
+            const formatted = `${duration.minutes! < 10 ? "0" + duration.minutes : duration.minutes}:${duration.seconds! < 10 ? "0" + duration.seconds : duration.seconds}`;
+            setTime(formatted);
+        }, 1000);
+        return () => clearInterval(intervalID);
+      }, [ticket.claimedAt]);
 
     return (<>
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
@@ -45,7 +58,8 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
                         <Stack direction="row" spacing={1}>
                             <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName} </Typography>
-                            {missing && <Chip label="(MISSING)" size="small" variant="outlined" color="error"/>}
+                            {missing && <Chip label="(MISSING)" size="small" color="error"/>}
+                            {claimed && <Chip label={`(CLAIMED) - ${time}`} size="small" color="success"/>}
                         </Stack>
                         <Typography fontSize={14}>{ticket.description}</Typography>
                         </Box>

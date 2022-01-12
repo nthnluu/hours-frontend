@@ -25,6 +25,7 @@ export interface Ticket {
         PhoneNumber: string;
         PhotoURL: string;
     };
+    claimedAt: Date;
     description: string;
     status: TicketStatus;
 }
