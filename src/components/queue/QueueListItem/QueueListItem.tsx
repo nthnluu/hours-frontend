@@ -24,7 +24,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
     const {currentUser} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [time, setTime] = useState("0:0");
+    const [time, setTime] = useState("00:00");
 
     const claimed = ticket.status === TicketStatus.StatusClaimed;
     const missing = ticket.status === TicketStatus.StatusMissing;
@@ -36,10 +36,12 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
     useEffect(() => {
         const intervalID = setInterval(() => {
-            const timer = Timestamp.now() - ticket.claimedAt;
-            const duration = intervalToDuration({ start: 0, end: timer * 1000 });
-            const formatted = `${duration.minutes! < 10 ? "0" + duration.minutes : duration.minutes}:${duration.seconds! < 10 ? "0" + duration.seconds : duration.seconds}`;
-            setTime(formatted);
+            if (ticket.claimedAt) {
+                const timer = Timestamp.now().seconds - ticket.claimedAt.seconds;
+                const duration = intervalToDuration({ start: 0, end: timer * 1000 });
+                const formatted = `${duration.minutes! < 10 ? "0" + duration.minutes : duration.minutes}:${duration.seconds! < 10 ? "0" + duration.seconds : duration.seconds}`;
+                setTime(formatted);
+            }
         }, 1000);
         return () => clearInterval(intervalID);
       }, [ticket.claimedAt]);
@@ -67,7 +69,10 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
                     <Stack direction="row" spacing={0}>
                         {staffPerm && !claimed && <IconButton label="Claim ticket" edge="end" aria-label="claim"
-                                                              onClick={() => QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)}>
+                                                              onClick={() => {
+                                                                    setTime("00:00");
+                                                                    QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description);
+                                                                  }}>
                             <ConfirmationNumberOutlinedIcon/>
                         </IconButton>}
                         {staffPerm && claimed &&

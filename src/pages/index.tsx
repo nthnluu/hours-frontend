@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Grid} from "@mui/material";
+import {Grid, Stack, Typography} from "@mui/material";
 import {useQueues} from "@util/queue/hooks";
 import AppLayout from "@components/shared/AppLayout";
 import QueueCard from "@components/home/QueueCard";
@@ -25,5 +25,12 @@ export default function Home() {
                 <CreateQueueCard clickHandler={() => setCreateQueueDialog(true)} />
             </Grid>}
         </Grid>}
+        {queues && queues.length === 0 && !isTA && (
+            <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
+            <Typography variant="body1">
+                No active queues!
+            </Typography>
+        </Stack>
+        )}
     </AppLayout>;
 }

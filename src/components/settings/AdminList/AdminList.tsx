@@ -55,7 +55,7 @@ export default function AdminList() {
                                 message={`Delete admin ${x.displayName}?`}
                                 open={openConfirm}  
                                 onClose={() => setOpenConfirm(false)}
-                                onConfirm={() => AuthAPI.updateUser(x.id, x.displayName, false).catch(e => console.log(e))}>
+                                onConfirm={() => AuthAPI.updateUser(x.id, x.displayName, false).catch(_ => toast.error(`Error deleting admin "${x.displayName}".`))}>
                                 <IconButton label="Revoke admin access" edge="end" aria-label="delete" onClick={() => setOpenConfirm(true)}>
                                     <DeleteIcon/>
                                 </IconButton>

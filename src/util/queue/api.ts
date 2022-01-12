@@ -1,5 +1,6 @@
 import APIClient from "@util/APIClient";
 import {Course} from "@util/course/api";
+import {Timestamp} from "@firebase/firestore";
 
 const enum Endpoint {
     CREATE_QUEUE = '/queues/create',
@@ -17,7 +18,7 @@ export const enum TicketStatus {
 
 export interface Ticket {
     id: string;
-    createdAt: Date;
+    createdAt: Timestamp;
     createdBy: {
         DisplayName: string;
         Email: string;
@@ -25,7 +26,7 @@ export interface Ticket {
         PhoneNumber: string;
         PhotoURL: string;
     };
-    claimedAt: Date;
+    claimedAt: Timestamp;
     description: string;
     status: TicketStatus;
 }
