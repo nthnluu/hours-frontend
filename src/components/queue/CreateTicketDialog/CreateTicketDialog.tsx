@@ -3,6 +3,7 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} fro
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
+import {toast} from "react-hot-toast";
 
 export interface CreateTicketDialogProps {
     open: boolean;
@@ -15,13 +16,20 @@ type FormData = {
 };
 
 const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID}) => {
-    const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, formState: {errors}, reset} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.createTicket(queueID, data.description);
-        onClose();
+        toast.promise(QueueAPI.createTicket(queueID, data.description), {
+            loading: "Creating ticket...",
+            success: "Ticket created!",
+            error: "Something went wrong, please try again later."
+        })
+            .then(() => {
+                onClose();
+                reset();
+            });
     });
 
-    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>
             <DialogTitle>Join Queue</DialogTitle>
             <DialogContent>
@@ -41,7 +49,7 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Add</Button>
+                <Button type="submit" variant="contained">Add</Button>
             </DialogActions>
         </form>
     </Dialog>;

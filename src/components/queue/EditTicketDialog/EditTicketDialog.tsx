@@ -2,12 +2,12 @@ import {FC} from "react";
 import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
-import QueueAPI, { TicketStatus } from "@util/queue/api";
+import QueueAPI, {Ticket} from "@util/queue/api";
+import {toast} from "react-hot-toast";
 
 export interface EditTicketDialogProps {
-    id: string;
+    ticket: Ticket;
     queueID: string;
-    status: TicketStatus;
     open: boolean;
     onClose: () => void;
 }
@@ -16,14 +16,18 @@ type FormData = {
     description: string;
 };
 
-const EditTicketDialog: FC<EditTicketDialogProps> = ({id, queueID, status, open, onClose}) => {
+const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onClose}) => {
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.editTicket(id, queueID, status, data.description);
-        onClose();
+        toast.promise(QueueAPI.editTicket(ticket.id, queueID, ticket.status, data.description), {
+            loading: "Updating ticket...",
+            success: "Ticket updated!",
+            error: "Something went wrong, please try again later."
+        })
+            .then(() => onClose());
     });
 
-    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>
             <DialogTitle>Edit Ticket</DialogTitle>
             <DialogContent>
@@ -31,8 +35,8 @@ const EditTicketDialog: FC<EditTicketDialogProps> = ({id, queueID, status, open,
                     <TextField
                         {...register("description")}
                         multiline
+                        defaultValue={ticket.description}
                         required
-                        autoFocus
                         label="Question"
                         type="text"
                         fullWidth
@@ -43,7 +47,7 @@ const EditTicketDialog: FC<EditTicketDialogProps> = ({id, queueID, status, open,
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Edit</Button>
+                <Button type="submit" variant="contained">Edit</Button>
             </DialogActions>
         </form>
     </Dialog>;

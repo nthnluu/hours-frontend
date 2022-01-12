@@ -27,7 +27,7 @@ export default function Queue() {
             {queue && (
                 <>
                     <QueuePageHeader queue={queue}/>
-                    <Grid container spacing={3} marginTop={1}>
+                    <Grid container spacing={4} marginTop={1}>
                         <QueueOptions queue={queue} />
                         <QueueList queueID={queueID as string} queue={queue} />
                     </Grid>

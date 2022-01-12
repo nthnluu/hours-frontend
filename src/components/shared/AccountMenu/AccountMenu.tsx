@@ -13,6 +13,7 @@ import FocusTrap from "focus-trap-react";
 import {Feedback, Logout, Settings, WbSunny} from "@mui/icons-material";
 import useThemeMode from "@util/mui/useThemeMode";
 import Link from "next/link";
+import getInitials from "@util/shared/getInitials";
 
 export interface AccountMenuProps {
     /** The current user. */
@@ -21,17 +22,6 @@ export interface AccountMenuProps {
 
 function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function getInitials(name: string) {
-    const names = name.split(' ');
-    let initials = names[0].substring(0, 1).toUpperCase();
-
-    if (names.length > 1) {
-        initials += names[names.length - 1].substring(0, 1).toUpperCase();
-    }
-
-    return initials;
 }
 
 /**
