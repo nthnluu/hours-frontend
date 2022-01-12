@@ -61,7 +61,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         variant="outlined"
                     />
 
-                    <FormControl fullWidth>
+                    <FormControl fullWidth size="small">
                         <InputLabel id="course-select-label">Course</InputLabel>
                         <Select
                             {...register("courseID")}
