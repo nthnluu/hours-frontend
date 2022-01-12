@@ -4,9 +4,10 @@ import EditCourseDialog from "@components/settings/EditCourseDialog";
 import {Box, List, ListItem, ListItemText, Paper, Stack, Typography} from "@mui/material";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
+import ConfirmButton from "@components/shared/ConfirmButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import useCourses from "@util/course/hooks";
+import {useCourses} from "@util/course/hooks";
 import CourseAPI, { Course } from "@util/course/api";
 
 export interface AllCoursesSectionProps {
@@ -16,10 +17,8 @@ export interface AllCoursesSectionProps {
  * Write a short description of this component here...
  */
 const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
+    const [openConfirm, setOpenConfirm] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
-    const handleOpenCreate = () => setOpenCreate(true);
-    const handleCloseCreate = () => setOpenCreate(false);
-
     const [course, setCourse] = useState<Course>();
     const [openEdit, setOpenEdit] = useState(false);
     const handleOpenEdit = (course: Course) => {
@@ -33,7 +32,7 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
     if (loading) return <></>;
 
     return <>
-        <CreateCourseDialog open={openCreate} onClose={handleCloseCreate}/>
+        <CreateCourseDialog open={openCreate} onClose={() => setOpenCreate(false)}/>
         <EditCourseDialog course={course!} open={openEdit} onClose={handleCloseEdit}/>
         <Paper variant="outlined">
             <Box p={3}>
@@ -42,7 +41,7 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
                         All Courses
                     </Typography>
 
-                    <Button variant="contained" onClick={handleOpenCreate}>
+                    <Button variant="contained" onClick={() => setOpenCreate(true)}>
                         New
                     </Button>
                 </Stack>
@@ -56,9 +55,15 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
                             <IconButton label="Edit course" edge="end" aria-label="delete" onClick={() => handleOpenEdit(course)}>
                                 <EditIcon/>
                             </IconButton>
-                            <IconButton label="Delete course" edge="end" aria-label="delete" onClick={() => CourseAPI.deleteCourse(course.id)}>
-                                <DeleteIcon/>
-                            </IconButton>
+                            <ConfirmButton
+                                message={`Delete course ${course.title}?`}
+                                open={openConfirm}  
+                                onClose={() => setOpenConfirm(false)}
+                                onConfirm={() => CourseAPI.deleteCourse(course.id)}>
+                                <IconButton label="Delete course" edge="end" aria-label="delete" onClick={() => setOpenConfirm(true)}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </ConfirmButton>
                             </>
                         }>
                         <ListItemText

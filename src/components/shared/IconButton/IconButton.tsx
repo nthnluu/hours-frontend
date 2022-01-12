@@ -3,7 +3,6 @@ import {IconButtonProps as MuiIconButtonProps, Tooltip} from "@mui/material";
 import MuiIconButton from "@mui/material/IconButton";
 
 export interface IconButtonProps extends MuiIconButtonProps {
-    /** Text that describes this button */
     label: string;
 }
 

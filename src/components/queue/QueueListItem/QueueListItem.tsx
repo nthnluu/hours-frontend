@@ -1,6 +1,7 @@
 import React, {FC, useState} from "react";
 import {Box, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
+import ConfirmButton from "@components/shared/ConfirmButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
@@ -8,7 +9,6 @@ import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumb
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import QueueAPI, {Ticket, TicketStatus} from "@util/queue/api";
-import {toast} from "react-hot-toast";
 import {useAuth} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
 
@@ -20,6 +20,7 @@ export interface QueueListItemProps {
 const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
     const {currentUser, isAuthenticated} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
+    const [openConfirm, setOpenConfirm] = useState(false);
 
     const claimed = ticket.status === TicketStatus.StatusClaimed;
     const missing = ticket.status === TicketStatus.StatusMissing;
@@ -28,8 +29,6 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
     const staffPerm = isTA || currentUser?.isAdmin;
     const ownedPerm = staffPerm || ownsTicket;
-
-    // TODO: EditTicketDialog should be in QueueList to avoid rendering many times.
 
     return (<>
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} id={ticket.id} queueID={queueID as string} status={ticket.status} />
@@ -56,9 +55,17 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                         {ownedPerm && <IconButton label="Edit ticket" edge="end" aria-label="edit" onClick={() => setEditTicketDialog(true)}>
                             <EditIcon/>
                         </IconButton>}
-                        {ownedPerm && <IconButton label="Delete ticket" edge="end" aria-label="delete" onClick={() => QueueAPI.deleteTicket(ticket.id, queueID)}>
-                            <DeleteIcon/>
-                        </IconButton>}
+                        {ownedPerm && 
+                            <ConfirmButton
+                                message={"Delete ticket?"}
+                                open={openConfirm}  
+                                onClose={() => setOpenConfirm(false)}
+                                onConfirm={() => QueueAPI.deleteTicket(ticket.id, queueID)}>
+                                <IconButton label="Delete ticket" edge="end" aria-label="delete" onClick={() => setOpenConfirm(true)}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </ConfirmButton>
+                        }
                     </Box>
                 </Stack>
             </Box>

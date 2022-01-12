@@ -1,8 +1,9 @@
 import {useEffect, useState} from "react";
 import {Course} from "@util/course/api";
-import {collection, getFirestore, onSnapshot} from "@firebase/firestore";
+import {collection, doc, getFirestore, onSnapshot} from "@firebase/firestore";
+import AuthAPI from "@util/auth/api";
 
-export default function useCourses(): [Course[] | undefined, boolean] {
+export function useCourses(): [Course[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [courses, setCourses] = useState<Course[] | undefined>(undefined);
 
@@ -20,4 +21,25 @@ export default function useCourses(): [Course[] | undefined, boolean] {
     }, []);
 
     return [courses, loading];
+}
+
+export function useCourseStaff(courseID: string): [User[] | undefined, boolean] {
+    const [loading, setLoading] = useState(true);
+    const [staff, setStaff] = useState<User[] | undefined>(undefined);
+
+    useEffect(() => {
+        if (courseID) {
+            const db = getFirestore();
+            onSnapshot(doc(db, "courses", courseID), (doc) => {
+                const staffIDs = Object.keys(doc.data()?.coursePermissions);
+                Promise.all(staffIDs.map(staffID => AuthAPI.getUserById(staffID)))
+                    .then(res => {
+                        setStaff(res);
+                        setLoading(false);
+                    });
+            });
+        }
+    }, [courseID]);
+
+    return [staff, loading];
 }

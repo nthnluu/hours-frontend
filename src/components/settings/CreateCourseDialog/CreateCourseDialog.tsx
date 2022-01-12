@@ -16,9 +16,10 @@ type FormData = {
 };
 
 const CreateCourseDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
-    const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         CourseAPI.createCourse(data.courseTitle, data.courseCode, data.term);
+        reset();
         onClose();
     });
 

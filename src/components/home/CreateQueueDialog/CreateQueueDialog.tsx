@@ -18,9 +18,10 @@ type FormData = {
 };
 
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
-    const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         QueueAPI.createQueue(data.title, data.description, data.courseID);
+        reset();
         onClose();
     });
     const {currentUser, loading} = useSession();

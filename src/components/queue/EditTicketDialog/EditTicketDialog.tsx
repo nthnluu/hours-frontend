@@ -17,9 +17,10 @@ type FormData = {
 };
 
 const EditTicketDialog: FC<EditTicketDialogProps> = ({id, queueID, status, open, onClose}) => {
-    const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         QueueAPI.editTicket(id, queueID, status, data.description);
+        reset();
         onClose();
     });
 

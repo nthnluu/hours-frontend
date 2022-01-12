@@ -41,7 +41,7 @@ const QueueList: FC<QueueListProps> = ({ queueID }) => {
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)} queueID={queueID as string}/>
         <Grid item xs={12} md={9}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography variant="h3" fontWeight={600}>
+                <Typography variant="h5" fontWeight={600}>
                     Queue
                 </Typography>
                 {!inQueue && <Button size="large" variant="contained" onClick={() => setCreateTicketDialog(true)}>

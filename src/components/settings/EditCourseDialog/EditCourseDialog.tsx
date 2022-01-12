@@ -1,12 +1,13 @@
-import {FC, useState, useEffect} from "react";
+import {FC} from "react";
 import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, List, ListItem, ListItemText, FormControl, InputLabel, Select, MenuItem} from "@mui/material";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useForm} from "react-hook-form";
 import CourseAPI, { Course, CoursePermission } from "@util/course/api";
-import AuthAPI, { User } from "@util/auth/api";
+import { User } from "@util/auth/api";
 import {toast} from "react-hot-toast";
+import { useCourseStaff } from "@util/course/hooks";
 
 export interface EditCourseDialogProps {
     course: Course;
@@ -26,29 +27,23 @@ type AddPermissionFormData = {
 };
 
 const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) => {
-    const {register: registerEdit, handleSubmit: handleEditSubmit, formState: {errors: editErrors}} = useForm<EditFormData>();
+    const {register: registerEdit, handleSubmit: handleEditSubmit, reset: resetEdit, formState: {errors: editErrors}} = useForm<EditFormData>();
     const onEditSubmit = handleEditSubmit(data => {
         CourseAPI.editCourse(course.id, data.courseTitle, data.courseCode, data.term);
+        resetEdit();
         onClose();
     });
 
-    const {register: registerAddPermission, handleSubmit: handleAddPermissionSubmit, formState: {errors: addPermissionErrors}} = useForm<AddPermissionFormData>();
+    const {register: registerAddPermission, handleSubmit: handleAddPermissionSubmit, reset: resetAddPermission, formState: {errors: addPermissionErrors}} = useForm<AddPermissionFormData>();
     const onAddPermissionSubmit = handleAddPermissionSubmit(data => {
         CourseAPI.addCoursePermission(course.id, data.email, data.permission)
-            .then(_ => setTrigger(!trigger))
+            .then(_ => resetAddPermission())
             .catch(_ => toast.error(`User with email "${data.email}" not found.`));
     });
 
-    const [trigger, setTrigger] = useState(false);
-    const [staff, setStaff] = useState<User[]>([]);
-    useEffect(() => {
-        if (course && course.coursePermissions)
-            Promise.all(Object.keys(course.coursePermissions)
-                .map(userID => AuthAPI.getUserById(userID)))
-                .then(res => setStaff(res));
-    }, [course, open, trigger]);
-
-    if (!course) return <></>;
+    const [staff, loadingStaff] = useCourseStaff(course?.id);
+            
+    if (!course || loadingStaff) return <></>;
 
     return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <form onSubmit={onEditSubmit}>
@@ -135,22 +130,21 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
             <DialogTitle>Remove Staff</DialogTitle>
             <DialogContent>
                 <List>
-                {staff.map((user: User) => (
-                        <ListItem
-                            key={user.id + course.id}
-                            disableGutters
-                            secondaryAction={
-                                <>
-                                <IconButton label="Remove TA" edge="end" aria-label="delete" onClick={() => {
-                                    CourseAPI.removeCoursePermission(course.id, user.id);
-                                    setStaff(staff.filter(x => x.id != user.id));
-                                }}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                                </>
-                            }>
-                        <ListItemText primary={user.email} secondary={user.displayName} />
-                    </ListItem>))}
+                {staff && staff.map((user: User) => (
+                    <ListItem
+                        key={user.id + course.id}
+                        disableGutters
+                        secondaryAction={
+                            <>
+                            <IconButton label="Remove TA" edge="end" aria-label="delete" onClick={() => {
+                                CourseAPI.removeCoursePermission(course.id, user.id);
+                            }}>
+                                <DeleteIcon/>
+                            </IconButton>
+                            </>
+                        }>
+                    <ListItemText primary={user.email} secondary={user.displayName} />
+                </ListItem>))}
                 </List>
             </DialogContent>
     </Dialog>;

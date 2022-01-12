@@ -1,9 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import {
     Avatar,
     Box,
-    Button,
-    DialogActions,
     DialogContent,
     List,
     ListItem,
@@ -15,6 +13,7 @@ import {
     Typography,
 } from "@mui/material";
 import IconButton from "@components/shared/IconButton";
+import ConfirmButton from "@components/shared/ConfirmButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AuthAPI from "@util/auth/api";
 import useAdmins from "@util/auth/hooks";
@@ -29,10 +28,12 @@ type FormData = {
  * AdminList renders a list of all of the admins.
  */
 export default function AdminList() {
+    const [openConfirm, setOpenConfirm] = useState(false);
     const [admins, loading] = useAdmins();
-    const {register, handleSubmit, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         AuthAPI.updateUserByEmail(data.email, true)
+            .then(_ => reset())
             .catch(_ => toast.error(`User with email "${data.email}" not found.`));
     });
 
@@ -50,13 +51,15 @@ export default function AdminList() {
                     <ListItem
                         key={x.id}
                         secondaryAction={
-                            <IconButton label="Revoke admin access" edge="end" aria-label="delete"
-                            onClick={() => {
-                                AuthAPI.updateUser(x.id, x.displayName, false)
-                                    .catch(e => console.log(e));
-                            }}>
-                                <DeleteIcon/>
-                            </IconButton>
+                            <ConfirmButton
+                                message={`Delete admin ${x.displayName}?`}
+                                open={openConfirm}  
+                                onClose={() => setOpenConfirm(false)}
+                                onConfirm={() => AuthAPI.updateUser(x.id, x.displayName, false).catch(e => console.log(e))}>
+                                <IconButton label="Revoke admin access" edge="end" aria-label="delete" onClick={() => setOpenConfirm(true)}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </ConfirmButton>
                         }>
                         <ListItemAvatar>
                             <Avatar>
