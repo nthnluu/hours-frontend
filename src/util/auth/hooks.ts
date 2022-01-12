@@ -1,6 +1,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import AuthAPI, {User} from "@util/auth/api";
 import {collection, getFirestore, onSnapshot} from "@firebase/firestore";
+import { useAsyncEffect } from "@util/hooks/useAsyncEffect";
 
 type AuthState = { loading: boolean, isAuthenticated: boolean, currentUser: User | undefined };
 const initialAuthState: AuthState = {
@@ -18,10 +19,13 @@ export const AuthProvider = authContext.Provider;
 export function useSession(): AuthState {
     const [authState, setAuthState] = useState(initialAuthState);
 
-    useEffect(() => {
-        AuthAPI.getCurrentUser()
-            .then(user => setAuthState({loading: false, isAuthenticated: true, currentUser: user}))
-            .catch(() => setAuthState({loading: false, isAuthenticated: false, currentUser: undefined}));
+    useAsyncEffect(async (): Promise<void> => {
+        try {
+            const user = await AuthAPI.getCurrentUser();
+            setAuthState({ loading: false, isAuthenticated: true, currentUser: user });
+        } catch {
+            setAuthState({ loading: false, isAuthenticated: false, currentUser: undefined });
+        }
     }, []);
 
     return authState;
