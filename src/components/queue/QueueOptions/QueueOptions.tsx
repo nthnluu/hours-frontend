@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useState} from "react";
 import {
     Box,
     Divider,
@@ -16,6 +16,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import QueueAPI, { Queue } from "@util/queue/api";
+import EditQueueDialog from "@components/queue/EditQueueDialog";
 import {useRouter} from "next/router";
 import {toast} from "react-hot-toast";
 
@@ -29,15 +30,18 @@ export interface QueueOptionsProps {
  */
 const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID }) => {
     const router = useRouter();
+    const [open, setOpen] = useState(false);
 
     return (
+    <>
+        <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
         <Grid item xs={12} md={3}>
             <Stack spacing={3} divider={<Divider/>}>
                 {queue.description && <Box width="100%">
                     <Typography variant="h6">
                         About
                     </Typography>
-                    <Typography>
+                    <Typography variant="body1" style={{ wordWrap: "break-word" }}>
                         {queue.description}
                     </Typography>
                 </Box>}
@@ -49,7 +53,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID }) => {
 
                     <List>
                         <ListItem disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={() => setOpen(true)}>
                                 <ListItemIcon>
                                     <EditIcon/>
                                 </ListItemIcon>
@@ -101,6 +105,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID }) => {
                 </Box>
             </Stack>
         </Grid>
+    </>
     );
 };
 
