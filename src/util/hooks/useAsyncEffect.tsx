@@ -19,5 +19,5 @@ export const useAsyncEffect = (
     // determine whether it's total. Nothing we can do about this, so we'll disable the warning.
     // 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },                 deps);
+    }, deps);
 };
