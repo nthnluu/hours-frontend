@@ -23,7 +23,7 @@ export function useSession(): AuthState {
         try {
             const user = await AuthAPI.getCurrentUser();
             setAuthState({ loading: false, isAuthenticated: true, currentUser: user });
-        } catch (e) {
+        } catch {
             setAuthState({ loading: false, isAuthenticated: false, currentUser: undefined });
         }
     }, []);
