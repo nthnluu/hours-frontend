@@ -1,7 +1,6 @@
 import React, {FC} from "react";
 import {Box, ButtonBase, Paper, Stack, Typography} from "@mui/material";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import MyLocationIcon from '@mui/icons-material/MyLocation';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {useRouter} from "next/router";
 import {Queue} from "@util/queue/api";
@@ -35,14 +34,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
                 <Stack direction="row" spacing={0.5} alignItems="center">
                     <PeopleAltIcon/>
                     <Typography variant="body2">
-                        {queue.numTickets}
-                    </Typography>
-                </Stack>
-
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <MyLocationIcon/>
-                    <Typography variant="body2">
-                        {queue.location}
+                        {queue.tickets.length}
                     </Typography>
                 </Stack>
 

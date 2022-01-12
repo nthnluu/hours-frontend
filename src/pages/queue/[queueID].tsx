@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import { Grid } from "@mui/material";
 import QueuePageHeader from "@components/queue/QueuePageHeader";
 import {useQueue} from "@util/queue/hooks";
@@ -28,7 +28,7 @@ export default function Queue() {
                 <>
                     <QueuePageHeader queue={queue}/>
                     <Grid container spacing={4} marginTop={1}>
-                        <QueueOptions queue={queue} />
+                        <QueueOptions queue={queue} queueID={queueID as string} />
                         <QueueList queueID={queueID as string} queue={queue} />
                     </Grid>
                 </>)}

@@ -12,18 +12,24 @@ import {
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
-import { Queue } from "@util/queue/api";
+import QueueAPI, { Queue } from "@util/queue/api";
+import {useRouter} from "next/router";
+import {toast} from "react-hot-toast";
 
 export interface QueueOptionsProps {
-    queue: Queue
+    queue: Queue;
+    queueID: string;
 }
 
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
-const QueueOptions: FC<QueueOptionsProps> = ({ queue }) => {
+const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID }) => {
+    const router = useRouter();
+
     return (
         <Grid item xs={12} md={3}>
             <Stack spacing={3} divider={<Divider/>}>
@@ -70,16 +76,21 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue }) => {
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", !queue.isActive).catch(_ => toast.error("Error closing queue."))}>
                                 <ListItemIcon>
-                                    <DoNotDisturbOnIcon/>
+                                    {queue.isActive ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
                                 </ListItemIcon>
-                                <ListItemText primary="Cutoff signups"/>
+                                <ListItemText primary={queue.isActive ? "Cutoff signups" : "Reopen signups"}/>
                             </ListItemButton>
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={() => {
+                                QueueAPI.deleteQueue(queueID)
+                                    .then(_ => toast.success("Queue deleted."))
+                                    .catch(_ => toast.error("Error closing queue."));
+                                router.push("/");
+                            }}>
                                 <ListItemIcon>
                                     <CancelIcon/>
                                 </ListItemIcon>
