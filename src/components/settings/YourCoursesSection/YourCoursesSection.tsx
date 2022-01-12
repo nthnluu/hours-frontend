@@ -1,37 +1,23 @@
-import React, {FC, useState} from "react";
-import EditCourseDialog from "@components/settings/EditCourseDialog";
-import {Box, List, ListItem, ListItemText, Paper, Stack, Typography} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@components/shared/IconButton";
-import ConfirmButton from "@components/shared/ConfirmButton";
-import EditIcon from "@mui/icons-material/Edit";
+import React, {FC} from "react";
+import {Box, List, Paper, Stack, Typography} from "@mui/material";
 import {useCourses} from "@util/course/hooks";
 import {useSession} from "@util/auth/hooks";
-import CourseAPI, { Course } from "@util/course/api";
 import { CoursePermission } from "@util/auth/api";
+import CourseListItem from "../CourseListItem";
 
 export interface YourCoursesSectionProps {
 }
 
 /**
- * Write a short description of this component here...
+ * Lists your own courses.
  */
 const YourCoursesSection: FC<YourCoursesSectionProps> = ({}) => {
     const {currentUser, loading} = useSession();
     const [courses, loadingCourses] = useCourses();
-    const [openConfirm, setOpenConfirm] = useState(false);
-    const [course, setCourse] = useState<Course>();
-    const [open, setOpen] = useState(false);
-    const handleOpen = (course: Course) => {
-        setCourse(course);
-        setOpen(true);
-    };
-    const handleClose = () => setOpen(false);
 
     if (loading || loadingCourses) return <></>;
 
-    return <>
-        <EditCourseDialog course={course!} open={open} onClose={handleClose}/>
+    return (
         <Paper variant="outlined">
             <Box p={3}>
                 <Stack direction="row" justifyContent="space-between">
@@ -41,37 +27,13 @@ const YourCoursesSection: FC<YourCoursesSectionProps> = ({}) => {
                 </Stack>
 
                 {courses && <List>
-                    {courses
-                        .filter(course => currentUser?.coursePermissions && (currentUser.coursePermissions[course.id] === CoursePermission.CourseAdmin))
-                        .map(course => <ListItem
-                            key={course.id}
-                            disableGutters
-                            secondaryAction={
-                                <>
-                                <IconButton label="Edit course" edge="end" aria-label="delete" onClick={() => handleOpen(course)}>
-                                    <EditIcon/>
-                                </IconButton>
-                                <ConfirmButton
-                                    message={`Delete course ${course.title}?`}
-                                    open={openConfirm}  
-                                    onClose={() => setOpenConfirm(false)}
-                                    onConfirm={() => CourseAPI.deleteCourse(course.id)}>
-                                    <IconButton label="Delete course" edge="end" aria-label="delete" onClick={() => setOpenConfirm(true)}>
-                                        <DeleteIcon/>
-                                    </IconButton>
-                                </ConfirmButton>
-                                </>
-                            }>
-                            <ListItemText
-                                primary={`${course.code}: ${course.title}`}
-                                secondary={course.term}
-                            />
-                        </ListItem>)}
+                    {courses.filter(course => currentUser?.coursePermissions && (currentUser.coursePermissions[course.id] === CoursePermission.CourseAdmin))
+                            .map(course => <CourseListItem key={course.id} course={course} />)}
                 </List>}
 
             </Box>
         </Paper>
-    </>;
+    );
 };
 
 export default YourCoursesSection;

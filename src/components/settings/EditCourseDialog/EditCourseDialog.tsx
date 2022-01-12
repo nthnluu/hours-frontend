@@ -52,6 +52,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                 <Stack spacing={2} my={1}>
                     <TextField
                         {...registerEdit("courseCode")}
+                        defaultValue={course.code}
                         required
                         autoFocus
                         label="Course code"
@@ -63,6 +64,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
 
                     <TextField
                         {...registerEdit("courseTitle")}
+                        defaultValue={course.title}
                         required
                         label="Course title"
                         type="text"
@@ -73,6 +75,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
 
                     <TextField
                         {...registerEdit("term")}
+                        defaultValue={course.term}
                         required
                         label="Term"
                         type="text"
