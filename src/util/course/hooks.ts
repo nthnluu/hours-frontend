@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Course} from "@util/course/api";
 import {collection, doc, getFirestore, onSnapshot} from "@firebase/firestore";
-import AuthAPI from "@util/auth/api";
+import AuthAPI, {User} from "@util/auth/api";
 
 export function useCourses(): [Course[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
