@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import useCourses from "@util/course/hooks";
 import {useSession} from "@util/auth/hooks";
-import CourseAPI, { Course, CourseAdmin } from "@util/course/api";
+import CourseAPI, { Course, CoursePermission } from "@util/course/api";
 
 export interface YourCoursesSectionProps {
 }
@@ -42,7 +42,7 @@ const YourCoursesSection: FC<YourCoursesSectionProps> = ({}) => {
 
                 {courses && <List>
                     {courses
-                        .filter(course => currentUser?.coursePermissions && (currentUser.coursePermissions[course.id] != CourseAdmin))
+                        .filter(course => currentUser?.coursePermissions && (currentUser.coursePermissions[course.id] != CoursePermission.CourseAdmin))
                         .map(course => <ListItem
                             key={course.id}
                             disableGutters
