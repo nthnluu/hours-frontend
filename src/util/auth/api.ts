@@ -59,8 +59,7 @@ async function getUserById(id: string): Promise<User> {
 async function updateUser(userID: string, displayName: string, isAdmin: boolean): Promise<void> {
     try {
         return await APIClient.post(`${Endpoint.UPDATE}/${userID}`, {
-            displayName: displayName,
-            isAdmin: (isAdmin ? "true" : "false"),
+            displayName, isAdmin
         });
     } catch (e) {
         throw e;
@@ -73,8 +72,7 @@ async function updateUser(userID: string, displayName: string, isAdmin: boolean)
 async function updateUserByEmail(email: string, isAdmin: boolean): Promise<void> {
     try {
         return await APIClient.post(Endpoint.UPDATE_BY_EMAIL, {
-            email: email,
-            isAdmin: (isAdmin ? "true" : "false"),
+            email, isAdmin
         });
     } catch (e) {
         throw e;
