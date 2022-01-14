@@ -16,7 +16,8 @@ import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import {useForm} from "react-hook-form";
-import CourseAPI, {Course, CoursePermission} from "@util/course/api";
+import CourseAPI, {Course} from "@util/course/api";
+import {CoursePermission} from "@util/auth/api";
 import {User} from "@util/auth/api";
 import {toast} from "react-hot-toast";
 import {useCourseStaff} from "@util/course/hooks";
@@ -199,7 +200,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                                                 <CloseIcon/>
                                             </IconButton>
                                         }>
-                                        <ListItemText primary={user.displayName} secondary={user.email}/>
+                                        <ListItemText primary={`${user.displayName} - ${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "HTA" : "UTA"}`} secondary={user.email}/>
                                     </ListItem>))}
                             </List>
                         </Box>
