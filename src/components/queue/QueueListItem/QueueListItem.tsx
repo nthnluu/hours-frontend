@@ -61,7 +61,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                         <Stack direction="row" spacing={1}>
                             <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName} </Typography>
                             {missing && <Chip label="MISSING" size="small" color="error"/>}
-                            {claimed && <Chip label={`CLAIMED - ${time}`} size="small" color="success"/>}
+                            {claimed && <Chip label={`CLAIMED - ${time}`} size="small" color="success" style={{ width: "15ch", overflow: "hidden"}}/>}
                         </Stack>
                         <Typography fontSize={14}>{ticket.description}</Typography>
                         </Box>
