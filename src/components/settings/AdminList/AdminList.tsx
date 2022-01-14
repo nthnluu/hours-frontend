@@ -15,7 +15,7 @@ import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
 import CloseIcon from '@mui/icons-material/Close';
 import AuthAPI, {User} from "@util/auth/api";
-import useAdmins from "@util/auth/hooks";
+import useAdmins, {useAuth} from "@util/auth/hooks";
 import {useForm} from "react-hook-form";
 import {toast} from "react-hot-toast";
 import SettingsSection from "@components/settings/SettingsSection";
@@ -33,6 +33,8 @@ type FormData = {
 export default function AdminList() {
     const [currentConfirmDialog, setCurrentConfirmDialog] = useState("");
     const [admins, loading] = useAdmins();
+    const {currentUser} = useAuth();
+
     const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         toast.promise(AuthAPI.updateUserByEmail(data.email, true), {
@@ -58,7 +60,7 @@ export default function AdminList() {
                     disableGutters
                     key={admin.id}
                     secondaryAction={
-                        <ConfirmButton
+                        currentUser?.id !== admin.id && <ConfirmButton
                             message={`Delete admin ${admin.displayName}?`}
                             open={currentConfirmDialog === admin.id}
                             onClose={() => setCurrentConfirmDialog("")}
