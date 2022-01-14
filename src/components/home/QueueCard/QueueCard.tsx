@@ -3,7 +3,8 @@ import {Box, ButtonBase, Paper, Stack, Typography} from "@mui/material";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {useRouter} from "next/router";
-import {Queue} from "@util/queue/api";
+import {useTickets} from "@util/queue/hooks";
+import {Queue, TicketStatus} from "@util/queue/api";
 
 export interface QueueCardProps {
     queue: Queue;
@@ -15,6 +16,8 @@ export interface QueueCardProps {
  */
 const QueueCard: FC<QueueCardProps> = ({queue}) => {
     const router = useRouter();
+    // TODO: Ideally we don't pull tickets in this way to get the line length, but for now this will do.
+    const [tickets, ticketsLoading] = useTickets(queue.id, false);
 
     return <Paper variant="outlined" sx={{overflow: 'hidden'}}>
         <ButtonBase onClick={() => router.push('/queue/' + queue.id)} sx={{width: "100%", textAlign: "left"}} focusRipple>
@@ -34,7 +37,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
                 <Stack direction="row" spacing={0.5} alignItems="center">
                     <PeopleAltIcon/>
                     <Typography variant="body2">
-                        {queue.tickets.length}
+                        {tickets ? tickets.filter(x => x.status != TicketStatus.StatusComplete).length : 0}
                     </Typography>
                 </Stack>
 
