@@ -202,7 +202,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                                         }>
                                         {/* TODO: Should maybe map the HTA and UTA to other names? But this works for now. */}
                                         <ListItemText
-                                            primary={`${user.displayName} - ${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "HTA" : "UTA"}`}
+                                            primary={`${user.displayName} - ${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "Admin" : "Staff"}`}
                                             secondary={user.email}
                                         />
                                     </ListItem>))}

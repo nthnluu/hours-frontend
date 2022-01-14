@@ -19,6 +19,7 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import QueueAPI, { Queue } from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
 import {useRouter} from "next/router";
+import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 
 export interface QueueOptionsProps {
@@ -33,7 +34,9 @@ export interface QueueOptionsProps {
  */
 const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID, filterLoading, setFilterLoading }) => {
     const router = useRouter();
+    const {currentUser, isAuthenticated} = useAuth();
     const [open, setOpen] = useState(false);
+    const isTA = currentUser && (currentUser.coursePermissions[queue.courseID] != undefined);
 
     return (
     <>
@@ -49,7 +52,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID, filterLoading, se
                     </Typography>
                 </Box>}
 
-                <Box width="100%">
+                {isTA && <Box width="100%">
                     <Typography variant="h6">
                         Manage Queue
                     </Typography>
@@ -114,7 +117,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID, filterLoading, se
                             </ListItemButton>
                         </ListItem>
                     </List>
-                </Box>
+                </Box>}
             </Stack>
         </Grid>
     </>
