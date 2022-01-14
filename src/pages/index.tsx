@@ -17,13 +17,13 @@ export default function Home() {
     return <AppLayout maxWidth={false} loading={loading}>
         <CreateQueueDialog open={createQueueDialog} onClose={() => setCreateQueueDialog(false)}/>
         {queues &&
-        <Grid spacing={3} container>
-            {queues.map(queue => <Grid key={queue.id} item xs={12} sm={6} lg={4} xl={3}>
-                <QueueCard queue={queue}/>
-            </Grid>)}
+        <Grid spacing={3} container direction="row"  alignItems="stretch">
             {isTA && <Grid key={queues.length} item xs={12} sm={6} lg={4} xl={3}>
                 <CreateQueueCard clickHandler={() => setCreateQueueDialog(true)} />
             </Grid>}
+            {queues.map(queue => <Grid key={queue.id} item xs={12} sm={6} lg={4} xl={3}>
+                <QueueCard queue={queue}/>
+            </Grid>)}
         </Grid>}
         {queues && queues.length === 0 && !isTA && (
             <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
