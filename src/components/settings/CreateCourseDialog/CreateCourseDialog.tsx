@@ -36,7 +36,7 @@ const CreateCourseDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
 
                     <TextField
@@ -46,7 +46,7 @@ const CreateCourseDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
 
                     <TextField
@@ -56,13 +56,13 @@ const CreateCourseDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
                 </Stack>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Add</Button>
+                <Button type="submit" variant="contained">Add</Button>
             </DialogActions>
         </form>
     </Dialog>;
