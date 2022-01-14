@@ -12,7 +12,7 @@ export interface CreateQueueCardProps {
 const CreateQueueCard: FC<CreateQueueCardProps> = ({clickHandler}) => {
     return <Paper variant="outlined" sx={{overflow: "hidden", height: "100%"}}>
         <ButtonBase onClick={clickHandler} sx={{width: "100%", height: "100%", textAlign: "left"}} focusRipple>
-            <Box width="100%" color="#fff">
+            <Box width="100%">
                 <Stack alignItems="center" justifyContent="center" height="100%">
                     <Stack direction="row" spacing={1} alignItems="center">
                         <AddIcon/>
