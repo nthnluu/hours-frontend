@@ -23,20 +23,23 @@ export function useCourses(): [Course[] | undefined, boolean] {
     return [courses, loading];
 }
 
-export function useCourseStaff(courseID: string): [User[] | undefined, boolean] {
+export function useCourseStaff(courseID: string): [User[], boolean] {
     const [loading, setLoading] = useState(true);
-    const [staff, setStaff] = useState<User[] | undefined>(undefined);
+    const [staff, setStaff] = useState<User[]>([]);
 
     useEffect(() => {
         if (courseID) {
             const db = getFirestore();
             onSnapshot(doc(db, "courses", courseID), (doc) => {
-                const staffIDs = Object.keys(doc.data()?.coursePermissions);
-                Promise.all(staffIDs.map(staffID => AuthAPI.getUserById(staffID)))
-                    .then(res => {
-                        setStaff(res);
-                        setLoading(false);
-                    });
+                const data = doc.data();
+                if (data) {
+                    const staffIDs = Object.keys(data.coursePermissions);
+                    Promise.all(staffIDs.map(staffID => AuthAPI.getUserById(staffID)))
+                        .then(res => {
+                            setStaff(res);
+                            setLoading(false);
+                        });
+                }
             });
         }
     }, [courseID]);
