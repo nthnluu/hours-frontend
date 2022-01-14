@@ -11,7 +11,7 @@ export interface ConfirmButtonProps {
 
 const ConfirmButton: FC<ConfirmButtonProps> = ({open, onClose, onConfirm, message, children}) => {
     return (<>
-        <Dialog open={open} onClose={onClose} maxWidth="md">
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{message}</DialogTitle>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>

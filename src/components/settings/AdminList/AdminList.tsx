@@ -2,23 +2,26 @@ import React, {useState} from "react";
 import {
     Avatar,
     Box,
-    DialogContent,
+    Divider,
     List,
     ListItem,
     ListItemAvatar,
     ListItemText,
-    Paper,
     Stack,
     TextField,
     Typography,
 } from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
-import DeleteIcon from '@mui/icons-material/Delete';
-import AuthAPI from "@util/auth/api";
+import CloseIcon from '@mui/icons-material/Close';
+import AuthAPI, {User} from "@util/auth/api";
 import useAdmins from "@util/auth/hooks";
 import {useForm} from "react-hook-form";
 import {toast} from "react-hot-toast";
+import SettingsSection from "@components/settings/SettingsSection";
+import getInitials from "@util/shared/getInitials";
+import Button from "@components/shared/Button";
+import {Add} from "@mui/icons-material";
 
 type FormData = {
     email: string;
@@ -28,67 +31,78 @@ type FormData = {
  * AdminList renders a list of all of the admins.
  */
 export default function AdminList() {
-    const [openConfirm, setOpenConfirm] = useState(false);
+    const [currentConfirmDialog, setCurrentConfirmDialog] = useState("");
     const [admins, loading] = useAdmins();
     const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        AuthAPI.updateUserByEmail(data.email, true)
-            .then(_ => reset())
-            .catch(_ => toast.error(`User with email "${data.email}" not found.`));
+        toast.promise(AuthAPI.updateUserByEmail(data.email, true), {
+            loading: "Adding admin...",
+            success: `${data.email} is now an admin.`,
+            error: "Something went wrong, please try again later."
+        })
+            .then(() => reset());
     });
 
-    if (loading) return <></>;
+    function handleDeleteAdmin(user: User) {
+        toast.promise(AuthAPI.updateUser(user.id, user.displayName, false), {
+            loading: "Removing admin...",
+            success: `${user.displayName} is no longer an admin.`,
+            error: "Something went wrong, please try again later."
+        });
+    }
 
-    return (
-        <Paper variant="outlined">
-            <Box p={3}>
-                <Typography variant="h5" fontWeight={600}>
-                    Manage Admin Access
-                </Typography>
-            </Box>
-            <List>
-                {admins?.map(x => (
-                    <ListItem
-                        key={x.id}
-                        secondaryAction={
-                            <ConfirmButton
-                                message={`Delete admin ${x.displayName}?`}
-                                open={openConfirm}  
-                                onClose={() => setOpenConfirm(false)}
-                                onConfirm={() => AuthAPI.updateUser(x.id, x.displayName, false).catch(_ => toast.error(`Error deleting admin "${x.displayName}".`))}>
-                                <IconButton label="Revoke admin access" edge="end" aria-label="delete" onClick={() => setOpenConfirm(true)}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </ConfirmButton>
-                        }>
-                        <ListItemAvatar>
-                            <Avatar>
-                                NB
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={x.displayName}
-                            secondary={x.email}
-                        />
-                    </ListItem>))}
-            </List>
-
+    return <SettingsSection title="Manage admin access" loading={loading}>
+        <List dense>
+            {admins?.map(admin => (
+                <ListItem
+                    disableGutters
+                    key={admin.id}
+                    secondaryAction={
+                        <ConfirmButton
+                            message={`Delete admin ${admin.displayName}?`}
+                            open={currentConfirmDialog === admin.id}
+                            onClose={() => setCurrentConfirmDialog("")}
+                            onConfirm={() => handleDeleteAdmin(admin)}>
+                            <IconButton label="Revoke admin access" edge="end" aria-label="delete"
+                                        onClick={() => setCurrentConfirmDialog(admin.id)}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </ConfirmButton>
+                    }>
+                    <ListItemAvatar>
+                        <Avatar src={admin.photoUrl}>
+                            {getInitials(admin.displayName)}
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={admin.displayName}
+                        secondary={admin.email}
+                    />
+                </ListItem>))}
+        </List>
+        <Box my={2}>
+            <Divider/>
+        </Box>
+        <Stack spacing={2}>
+            <Typography fontWeight={500}>
+                Add admin
+            </Typography>
             <form onSubmit={onSubmit}>
-                <DialogContent>
-                    <Stack spacing={2} my={1}>
-                        <TextField
-                            {...register("email")}
-                            required
-                            autoFocus
-                            label="Email"
-                            type="text"
-                            fullWidth
-                            size="small"
-                            variant="outlined"
-                        />
-                    </Stack>
-                </DialogContent>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <TextField
+                        {...register("email")}
+                        required
+                        label="Email"
+                        type="email"
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                    />
+                    <Button type="submit" startIcon={<Add/>}>
+                        Add
+                    </Button>
+                </Stack>
             </form>
-        </Paper>
-    );
+        </Stack>
+    </SettingsSection>;
 };
