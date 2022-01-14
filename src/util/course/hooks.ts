@@ -23,9 +23,9 @@ export function useCourses(): [Course[] | undefined, boolean] {
     return [courses, loading];
 }
 
-export function useCourseStaff(courseID: string): [User[] | undefined, boolean] {
+export function useCourseStaff(courseID: string): [User[], boolean] {
     const [loading, setLoading] = useState(true);
-    const [staff, setStaff] = useState<User[] | undefined>(undefined);
+    const [staff, setStaff] = useState<User[]>([]);
 
     useEffect(() => {
         if (courseID) {

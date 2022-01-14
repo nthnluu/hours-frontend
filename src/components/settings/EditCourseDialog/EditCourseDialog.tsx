@@ -1,13 +1,26 @@
-import {FC} from "react";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, List, ListItem, ListItemText, FormControl, InputLabel, Select, MenuItem} from "@mui/material";
+import {FC, useEffect, useState} from "react";
+import {
+    Dialog,
+    DialogTitle,
+    Stack,
+    TextField,
+    List,
+    ListItem,
+    ListItemText,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem, Box, Tabs, Tab, Divider, Paper, Typography, LinearProgress
+} from "@mui/material";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import {useForm} from "react-hook-form";
-import CourseAPI, { Course, CoursePermission } from "@util/course/api";
-import { User } from "@util/auth/api";
+import CourseAPI, {Course, CoursePermission} from "@util/course/api";
+import {User} from "@util/auth/api";
 import {toast} from "react-hot-toast";
-import { useCourseStaff } from "@util/course/hooks";
+import {useCourseStaff} from "@util/course/hooks";
+import TabPanel from "@components/shared/TabPanel";
 
 export interface EditCourseDialogProps {
     course: Course;
@@ -26,130 +39,218 @@ type AddPermissionFormData = {
     permission: string;
 };
 
+function a11yProps(index: number) {
+    return {
+        id: `tab-${index}`,
+        'aria-controls': `tabpanel-${index}`,
+    };
+}
+
+const DialogButtons: FC = ({children}) => {
+    return <Stack direction="row-reverse" justifyContent="end" spacing={1} mt={4}>
+        {children}
+    </Stack>;
+};
+
 const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) => {
-    const {register: registerEdit, handleSubmit: handleEditSubmit, reset: resetEdit, formState: {errors: editErrors}} = useForm<EditFormData>();
+    const [currentTab, setCurrentTab] = useState(0);
+    const [editLoading, setEditLoading] = useState(false);
+    const [addMemberLoading, setAddMemberLoading] = useState(false);
+    const [revokeAccessLoading, setRevokeAccessLoading] = useState(false);
+
+    // Edit form
+    const {
+        register: registerEdit,
+        handleSubmit: handleEditSubmit,
+        reset: resetEdit,
+        formState: {errors: editErrors}
+    } = useForm<EditFormData>();
+
     const onEditSubmit = handleEditSubmit(data => {
-        CourseAPI.editCourse(course.id, data.courseTitle, data.courseCode, data.term);
-        resetEdit();
-        onClose();
+        setEditLoading(true);
+        CourseAPI.editCourse(course.id, data.courseTitle, data.courseCode, data.term)
+            .then(() => {
+                toast.success("Course information updated successfully!");
+                onClose();
+                setEditLoading(false);
+            })
+            .catch(() => {
+                toast.error("Something went wrong, please try again later.");
+                setEditLoading(false);
+            });
     });
 
-    const {register: registerAddPermission, handleSubmit: handleAddPermissionSubmit, reset: resetAddPermission, formState: {errors: addPermissionErrors}} = useForm<AddPermissionFormData>();
+    // Add permission form
+    const {
+        register: registerAddPermission,
+        handleSubmit: handleAddPermissionSubmit,
+        reset: resetAddPermission,
+        formState: {errors: addPermissionErrors}
+    } = useForm<AddPermissionFormData>();
+
     const onAddPermissionSubmit = handleAddPermissionSubmit(data => {
+        setAddMemberLoading(true);
         CourseAPI.addCoursePermission(course.id, data.email, data.permission)
-            .then(_ => resetAddPermission())
-            .catch(_ => toast.error(`User with email "${data.email}" not found.`));
+            .then(() => {
+                toast.success(`${data.email} has been added.`);
+                resetAddPermission();
+                setAddMemberLoading(false);
+            })
+            .catch(() => {
+                toast.error(`User with email "${data.email}" not found.`);
+                setAddMemberLoading(false);
+            });
     });
 
     const [staff, loadingStaff] = useCourseStaff(course?.id);
-            
-    if (!course || loadingStaff) return <></>;
 
-    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-        <form onSubmit={onEditSubmit}>
-            <DialogTitle>Edit Course</DialogTitle>
-            <DialogContent>
-                <Stack spacing={2} my={1}>
-                    <TextField
-                        {...registerEdit("courseCode")}
-                        defaultValue={course.code}
-                        required
-                        autoFocus
-                        label="Course code"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    />
+    // Reset edit form when dialog is opened.
+    useEffect(() => {
+        if (open) {
+            resetEdit();
+        }
+    }, [open]);
 
-                    <TextField
-                        {...registerEdit("courseTitle")}
-                        defaultValue={course.title}
-                        required
-                        label="Course title"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    />
+    function handleRevokeAccess(user: User) {
+        const confirmed = confirm(`Are you sure you want to revoke ${user.displayName}'s (${user.email}) permissions?`);
+        if (confirmed) {
+            setRevokeAccessLoading(true);
+            CourseAPI.removeCoursePermission(course.id, user.id)
+                .then(() => {
+                    toast.success(`${user.displayName} (${user.email}) removed.`);
+                    setRevokeAccessLoading(false);
+                })
+                .catch(() => {
+                    toast.error("Something went wrong, please try again later.");
+                    setRevokeAccessLoading(false);
+                });
+        }
+    }
 
-                    <TextField
-                        {...registerEdit("term")}
-                        defaultValue={course.term}
-                        required
-                        label="Term"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    />
-                </Stack>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Submit</Button>
-            </DialogActions>
-        </form>
-        
-        <form onSubmit={onAddPermissionSubmit}>
-            <DialogTitle>Add Staff</DialogTitle>
-            <DialogContent>
-                <Stack spacing={2} my={1}>
-                    <TextField
-                        {...registerAddPermission("email")}
-                        required
-                        autoFocus
-                        label="Email"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    />
-                    <FormControl fullWidth>
-                        <InputLabel id="permission-label">Permission</InputLabel>
-                        <Select
-                            {...registerAddPermission("permission")}
+    const loading = loadingStaff || editLoading || addMemberLoading || revokeAccessLoading;
+
+    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
+        <Box sx={{opacity: loading ? 100 : 0}}>
+            <LinearProgress/>
+        </Box>
+        <DialogTitle>Course Settings</DialogTitle>
+        <Box sx={{width: '100%'}}>
+            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                <Tabs value={currentTab} onChange={(e, v) => setCurrentTab(v)} aria-label="course settings tabs"
+                      centered
+                      variant="fullWidth">
+                    <Tab label="Course Info" {...a11yProps(0)} />
+                    <Tab label="Manage Access" {...a11yProps(1)} />
+                    <Tab label="Queue Templates" {...a11yProps(2)} />
+                </Tabs>
+            </Box>
+            <TabPanel value={currentTab} index={0}>
+                <form onSubmit={onEditSubmit}>
+                    <Stack spacing={2}>
+                        <TextField
+                            {...registerEdit("courseCode")}
+                            defaultValue={course.code}
                             required
-                            defaultValue={""}
-                            fullWidth
-                            labelId="permission-label"
-                            id="permission"
-                            label="Permission"
+                            label="Course code"
+                            placeholder="CSCI 1951L"
                             type="text"
-                            variant="outlined"
-                        >   
-                            <MenuItem value={CoursePermission.CourseAdmin}>HTA</MenuItem>
-                            <MenuItem value={CoursePermission.CourseStaff}>UTA</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Stack>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Add</Button>
-            </DialogActions>
-        </form>
-
-            <DialogTitle>Remove Staff</DialogTitle>
-            <DialogContent>
-                <List>
-                {staff && staff.map((user: User) => (
-                    <ListItem
-                        key={user.id + course.id}
-                        disableGutters
-                        secondaryAction={
-                            <>
-                            <IconButton label="Remove TA" edge="end" aria-label="delete" onClick={() => {
-                                CourseAPI.removeCoursePermission(course.id, user.id);
-                            }}>
-                                <DeleteIcon/>
-                            </IconButton>
-                            </>
-                        }>
-                    <ListItemText primary={user.email} secondary={user.displayName} />
-                </ListItem>))}
-                </List>
-            </DialogContent>
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                        />
+                        <TextField
+                            {...registerEdit("courseTitle")}
+                            defaultValue={course.title}
+                            required
+                            label="Course title"
+                            placeholder="Blockchains and Crypocurrencies"
+                            type="text"
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                        />
+                        <TextField
+                            {...registerEdit("term")}
+                            defaultValue={course.term}
+                            required
+                            label="Term"
+                            placeholder="Spring 2021"
+                            type="text"
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                        />
+                    </Stack>
+                    <DialogButtons>
+                        <Button type="submit" variant="contained" disabled={editLoading}>Save</Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </DialogButtons>
+                </form>
+            </TabPanel>
+            <TabPanel value={currentTab} index={1}>
+                {staff.length > 0 && <>
+                    <Paper variant="outlined" sx={{bgcolor: 'error'}}>
+                        <Box maxHeight={300} overflow="auto">
+                            <List dense>
+                                {staff.map(user => (
+                                    <ListItem
+                                        key={user.id}
+                                        secondaryAction={
+                                            <IconButton label="Revoke access" edge="end" aria-label="delete"
+                                                        disabled={revokeAccessLoading}
+                                                        onClick={() => handleRevokeAccess(user)}>
+                                                <CloseIcon/>
+                                            </IconButton>
+                                        }>
+                                        <ListItemText primary={user.displayName} secondary={user.email}/>
+                                    </ListItem>))}
+                            </List>
+                        </Box>
+                    </Paper>
+                    <Box my={2}>
+                        <Divider/>
+                    </Box>
+                </>}
+                <Typography variant="h6" mb={2}>Add member</Typography>
+                <form onSubmit={onAddPermissionSubmit}>
+                    <Stack spacing={2}>
+                        <TextField
+                            {...registerAddPermission("email")}
+                            required
+                            label="Email"
+                            type="email"
+                            autoComplete="off"
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                        />
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="permission-label">Role</InputLabel>
+                            <Select
+                                {...registerAddPermission("permission")}
+                                required
+                                defaultValue={""}
+                                fullWidth
+                                labelId="permission-label"
+                                id="permission"
+                                label="Role"
+                                type="text"
+                            >
+                                <MenuItem value={CoursePermission.CourseAdmin}>Admin</MenuItem>
+                                <MenuItem value={CoursePermission.CourseStaff}>Staff</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Stack>
+                    <DialogButtons>
+                        <Button type="submit" variant="contained" disabled={addMemberLoading}>Add member</Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </DialogButtons>
+                </form>
+            </TabPanel>
+            <TabPanel value={currentTab} index={2}>
+                TODO
+            </TabPanel>
+        </Box>
     </Dialog>;
 };
 

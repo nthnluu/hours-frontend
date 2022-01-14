@@ -7,12 +7,14 @@ export interface ButtonProps extends MuiButtonProps {
     tooltip?: string;
     /** Disables the button and displays a loading indicator. */
     loading?: boolean;
+    /** Disables the button. */
+    disabled?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({tooltip = "", loading, ...props}) => {
-    return <Box sx={{ position: 'relative', width: "auto" }}>
+const Button: FC<ButtonProps> = ({tooltip = "", loading, disabled, ...props}) => {
+    return <Box sx={{position: 'relative', width: "auto"}}>
         <Tooltip title={tooltip}>
-            <MuiButton {...props} disabled={loading}/>
+            <MuiButton {...props} disabled={loading || disabled}/>
         </Tooltip>
         {loading && <CircularProgress
             thickness={5}
