@@ -28,6 +28,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
     const claimed = ticket.status === TicketStatus.StatusClaimed;
     const missing = ticket.status === TicketStatus.StatusMissing;
+    const completed = ticket.status === TicketStatus.StatusComplete;
     const isTA = currentUser && (currentUser.coursePermissions[queueID] != undefined);
     const ownsTicket = currentUser && ticket.createdBy.Email === currentUser.email;
 
@@ -60,8 +61,9 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
 
                         <Stack direction="row" spacing={1}>
                             <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName} </Typography>
-                            {missing && <Chip label="MISSING" size="small" color="error"/>}
                             {claimed && <Chip label={`CLAIMED - ${time}`} size="small" color="success" style={{ width: "15ch", overflow: "hidden"}}/>}
+                            {missing && <Chip label="MISSING" size="small" color="error"/>}
+                            {completed && <Chip label="COMPLETED" size="small" color="info"/>}
                         </Stack>
                         <Typography fontSize={14}>{ticket.description}</Typography>
                         </Box>

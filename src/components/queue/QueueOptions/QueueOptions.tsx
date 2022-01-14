@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
@@ -23,12 +24,14 @@ import {toast} from "react-hot-toast";
 export interface QueueOptionsProps {
     queue: Queue;
     queueID: string;
+    filterLoading: boolean;
+    setFilterLoading: (filterLoading: boolean) => void;
 }
 
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
-const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID }) => {
+const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID, filterLoading, setFilterLoading }) => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
 
@@ -76,6 +79,15 @@ const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID }) => {
                                     <ShuffleIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary="Shuffle tickets"/>
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => setFilterLoading(!filterLoading)}>
+                                <ListItemIcon>
+                                    <CheckCircleIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Show completed tickets"/>
                             </ListItemButton>
                         </ListItem>
 

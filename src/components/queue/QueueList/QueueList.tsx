@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {
     Box,
     Grid,
@@ -15,14 +15,15 @@ import {useAuth} from "@util/auth/hooks";
 export interface QueueListProps {
     queueID: string
     queue: Queue
+    filterLoading: boolean;
 }
 
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({ queueID, queue }) => {
+const QueueList: FC<QueueListProps> = ({ queueID, queue, filterLoading }) => {
     const {currentUser, isAuthenticated} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queueID, true);
+    const [tickets, ticketsLoading] = useTickets(queueID, filterLoading);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
     if (ticketsLoading) return <></>;

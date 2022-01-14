@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { Grid } from "@mui/material";
 import QueuePageHeader from "@components/queue/QueuePageHeader";
 import {useQueue} from "@util/queue/hooks";
@@ -13,6 +13,7 @@ export default function Queue() {
     const router = useRouter();
     const {queueID} = router.query;
     const [queue, queueLoading] = useQueue(queueID as string);
+    const [filterLoading, setFilterLoading] = useState(true);
 
     // Redirect user back to home page if no queue with given ID is found
     useEffect(() => {
@@ -28,8 +29,8 @@ export default function Queue() {
                 <>
                     <QueuePageHeader queue={queue}/>
                     <Grid container spacing={4} marginTop={1}>
-                        <QueueOptions queue={queue} queueID={queueID as string} />
-                        <QueueList queueID={queueID as string} queue={queue} />
+                        <QueueOptions queue={queue} queueID={queueID as string} filterLoading={filterLoading} setFilterLoading={setFilterLoading} />
+                        <QueueList queueID={queueID as string} queue={queue} filterLoading={filterLoading} />
                     </Grid>
                 </>)}
         </AppLayout>

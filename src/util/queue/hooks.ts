@@ -60,8 +60,8 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
             setTickets(res);
             setLoading(false);
         });
-    }, [queueID]);
+    }, [queueID, filterCompleted]);
 
-    return [tickets, loading];
+    return [tickets, loading, setLoading];
 }
 
