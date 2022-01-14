@@ -152,7 +152,6 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                             defaultValue={course.code}
                             required
                             label="Course code"
-                            placeholder="CSCI 1951L"
                             type="text"
                             fullWidth
                             size="small"
@@ -163,7 +162,6 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                             defaultValue={course.title}
                             required
                             label="Course title"
-                            placeholder="Blockchains and Crypocurrencies"
                             type="text"
                             fullWidth
                             size="small"
@@ -174,7 +172,6 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                             defaultValue={course.term}
                             required
                             label="Term"
-                            placeholder="Spring 2021"
                             type="text"
                             fullWidth
                             size="small"
