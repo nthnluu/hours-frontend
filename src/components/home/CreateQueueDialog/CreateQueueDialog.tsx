@@ -49,7 +49,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
 
                     <TextField
@@ -59,10 +59,10 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
 
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" variant="standard">
                         <InputLabel id="course-select-label">Course</InputLabel>
                         <Select
                             {...register("courseID")}
@@ -73,7 +73,6 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                             id="course-select"
                             label="Course"
                             type="text"
-                            variant="outlined"
                         >   
                             {coursePerms.map(x => <MenuItem key={x.id} value={x.id}>{x.title}</MenuItem>)}
                         </Select>
@@ -82,7 +81,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Add</Button>
+                <Button type="submit" variant="contained">Add</Button>
             </DialogActions>
         </form>
     </Dialog>;
