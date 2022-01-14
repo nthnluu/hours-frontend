@@ -65,7 +65,16 @@ function MyApp(props: MyAppProps) {
                     </Head>
                     <ThemeProvider theme={muiTheme}>
                         <CssBaseline/>
-                        <Toaster/>
+                        <Toaster toastOptions={{
+                            style: {
+                                padding: '10px',
+                                backgroundColor: currentThemeMode() === "dark" ? "#353535" : "#fff",
+                                color:  currentThemeMode() === "dark" ? "#fff" :  "#212121",
+                                fontWeight: 500
+                            },
+                        }} containerStyle={{
+                            top: 9
+                        }}/>
                         <Component {...pageProps} />
                     </ThemeProvider>
                 </ThemeModeProvider>
