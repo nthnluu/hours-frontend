@@ -35,7 +35,7 @@ export default function AdminList() {
     const [admins, loading] = useAdmins();
     const {currentUser} = useAuth();
 
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         toast.promise(AuthAPI.updateUserByEmail(data.email, true), {
             loading: "Adding admin...",
@@ -53,7 +53,7 @@ export default function AdminList() {
         });
     }
 
-    return <SettingsSection title="Manage admin access" loading={loading}>
+    return <SettingsSection adminOnly title="Manage admin access" loading={loading}>
         <List dense>
             {admins?.map(admin => (
                 <ListItem

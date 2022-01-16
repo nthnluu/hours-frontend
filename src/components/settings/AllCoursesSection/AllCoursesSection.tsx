@@ -19,7 +19,7 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
 
     return <>
         <CreateCourseDialog open={openCreate} onClose={() => setOpenCreate(false)}/>
-        <SettingsSection title="All courses" actionButton={{label: "New", onClick: () => setOpenCreate(true)}}>
+        <SettingsSection adminOnly title="All courses" actionButton={{label: "New", onClick: () => setOpenCreate(true)}}>
             {courses && <List>
                 {courses.map(course => <CourseListItem key={course.id} course={course}/>)}
             </List>}

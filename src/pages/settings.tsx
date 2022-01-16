@@ -10,6 +10,7 @@ import Button from "@components/shared/Button";
 
 export default function Settings() {
     const {currentUser} = useAuth();
+    const isTA = currentUser && Object.keys(currentUser.coursePermissions).length > 0;
 
     return (
         <AppLayout maxWidth="md">
@@ -18,6 +19,7 @@ export default function Settings() {
                     <Stack spacing={3} mt={4}>
                         <TextField size="small" label="Name" value={currentUser?.displayName}/>
                         <TextField size="small" label="Email" value={currentUser?.email}/>
+                        {isTA && <TextField size="small" label="Zoom link"/>}
                         <Stack direction="row" justifyContent="end">
                             <Button variant="contained">
                                 Save
@@ -25,9 +27,9 @@ export default function Settings() {
                         </Stack>
                     </Stack>
                 </SettingsSection>
-                {currentUser!.isAdmin && <AdminList/>}
+                <AdminList/>
                 <YourCoursesSection/>
-                {currentUser!.isAdmin && <AllCoursesSection/>}
+                <AllCoursesSection/>
             </Stack>
         </AppLayout>
     );
