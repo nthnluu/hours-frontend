@@ -4,13 +4,18 @@ import {Container} from "@mui/material";
 import {Router} from "next/router";
 import AccountMenu from "@components/shared/AccountMenu";
 import {useAuth} from "@util/auth/hooks";
+import Button from "@components/shared/Button";
 
 export interface AppLayoutProps {
     maxWidth: "xl" | "md" | "sm" | "xs" | "lg" | false;
     loading?: boolean;
+    actionButton?: {
+        label: string;
+        onClick: () => void;
+    }
 }
 
-const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, children}) => {
+const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, children}) => {
     const [pageLoading, setPageLoading] = useState(false);
     const {currentUser, isAuthenticated} = useAuth();
 
@@ -27,9 +32,15 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, children}) => {
         return <></>;
     }
 
+    const endItems = [<AccountMenu key="account" user={currentUser!}/>];
+    if (actionButton) {
+        endItems.push(<Button variant="contained" key="action-button" onClick={actionButton.onClick}>{actionButton.label}</Button>);
+        endItems.reverse();
+    }
+
     return <div>
         <Navbar fixed loading={loading || pageLoading}
-                endItems={[<AccountMenu key="account" user={currentUser!}/>]}/>
+                endItems={endItems}/>
         <Container maxWidth={maxWidth} sx={{marginY: 10}}>
             {children}
         </Container>

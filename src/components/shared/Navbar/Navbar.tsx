@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import {AppBar, Box, Divider, LinearProgress, Link, Stack, Toolbar} from "@mui/material";
 import IconButton from "../IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import Image from "next/image";
 
 export interface NavbarProps {
     /** Displays a menu button on the leading edge of the navbar. */
@@ -63,7 +64,7 @@ const Navbar: FC<NavbarProps> = ({
                         <MenuIcon/>
                     </IconButton>}
                     <Stack sx={{flexGrow: 1}} direction="row" alignItems="center" spacing={1}>
-                        <img src="/signmeup.svg" alt="" width={32} height={32}/>
+                        <Image src="/signmeup.svg" alt="" width={32} height={32}/>
                         <NextLink href="/">
                             <Link variant="h6" component="button" color="inherit" underline="hover">
                                 SignMeUp
@@ -71,7 +72,7 @@ const Navbar: FC<NavbarProps> = ({
                         </NextLink>
                         {startItems}
                     </Stack>
-                    <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <Stack direction="row" alignItems="center" spacing={1.5}>
                         {endItems}
                     </Stack>
                 </Toolbar>
