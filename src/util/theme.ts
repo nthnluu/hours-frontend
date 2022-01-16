@@ -30,6 +30,21 @@ const theme = (mode: "light" | "dark"): ThemeOptions => {
                 textTransform: "none" as const,
                 fontWeight: 500
             },
+            body1: {
+                fontFamily: [
+                    'Roboto',
+                    '-apple-system',
+                    'BlinkMacSystemFont',
+                    '"Segoe UI"',
+                    'Roboto',
+                    '"Helvetica Neue"',
+                    'Arial',
+                    'sans-serif',
+                    '"Apple Color Emoji"',
+                    '"Segoe UI Emoji"',
+                    '"Segoe UI Symbol"',
+                ].join(','),
+            },
             fontFamily: [
                 'Google Sans',
                 '-apple-system',
