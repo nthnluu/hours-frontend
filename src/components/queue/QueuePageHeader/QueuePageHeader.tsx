@@ -10,10 +10,10 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
     return <Paper sx={{overflow: "hidden"}}>
         <Box width="100%" height={225} color="#fff" position="relative" sx={{bgcolor: queue.color ?? "#172c35"}}>
             <Box position="absolute" bottom={18} left={20}>
-                <Typography variant="h6" noWrap>
+                <Typography variant="body1" noWrap>
                     {queue.course.code}: {queue.course.title}
                 </Typography>
-                <Stack direction="row" spacing={1.5} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center" mt={1}>
                     <Typography variant="h4" fontWeight={600}>
                         {queue.title}
                     </Typography>
