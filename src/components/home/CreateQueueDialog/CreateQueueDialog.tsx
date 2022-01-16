@@ -18,7 +18,7 @@ type FormData = {
 };
 
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         QueueAPI.createQueue(data.title, data.description, data.courseID);
         reset();
@@ -54,7 +54,6 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
 
                     <TextField
                         {...register("description")}
-                        required
                         label="Description"
                         type="text"
                         fullWidth
