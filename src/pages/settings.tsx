@@ -1,5 +1,5 @@
 import React from "react";
-import {Stack, TextField} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Stack, TextField} from "@mui/material";
 import AppLayout from "@components/shared/AppLayout";
 import {useAuth} from "@util/auth/hooks";
 import AdminList from "@components/settings/AdminList";
@@ -17,8 +17,22 @@ export default function Settings() {
             <Stack spacing={4} mt={4}>
                 <SettingsSection title="Your profile">
                     <Stack spacing={3} mt={4}>
-                        <TextField size="small" label="Name" value={currentUser?.displayName}/>
+                        <TextField size="small" label="Name" required value={currentUser?.displayName}/>
                         <TextField size="small" label="Email" disabled value={currentUser?.email}/>
+                        <FormControl fullWidth size="small">
+                            <InputLabel id="pronouns-label">Pronouns</InputLabel>
+                            <Select
+                                labelId="pronouns-label"
+                                id="pronouns"
+                                label="Pronouns"
+                            >
+                                <MenuItem value="he/him">He/him</MenuItem>
+                                <MenuItem value="she/her">She/her</MenuItem>
+                                <MenuItem value="they/them">They/them</MenuItem>
+                                <MenuItem value="na">Prefer not to say</MenuItem>
+                            </Select>
+                        </FormControl>
+
                         {isTA && <TextField size="small" label="Zoom link"/>}
                         <Stack direction="row" justifyContent="end">
                             <Button variant="contained">
