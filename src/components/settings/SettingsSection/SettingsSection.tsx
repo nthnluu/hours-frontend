@@ -1,18 +1,22 @@
 import React, {FC} from "react";
 import {Box, CircularProgress, Paper, Stack, Typography} from "@mui/material";
 import Button from "@components/shared/Button";
+import {useAuth} from "@util/auth/hooks";
 
 export interface SettingsSectionProps {
     title: string;
     loading?: boolean;
+    adminOnly?: boolean;
     actionButton?: {
         label: string;
         onClick: () => void;
     }
 }
 
-const SettingsSection: FC<SettingsSectionProps> = ({title, loading, actionButton, children}) => {
-    return <Paper variant="outlined">
+const SettingsSection: FC<SettingsSectionProps> = ({title, loading, adminOnly, actionButton, children}) => {
+    const {currentUser} = useAuth();
+
+    return (adminOnly && currentUser?.isAdmin) || !adminOnly ? <Paper variant="outlined">
         <Box p={3}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" fontWeight={600}>
@@ -26,7 +30,7 @@ const SettingsSection: FC<SettingsSectionProps> = ({title, loading, actionButton
                 <CircularProgress/>
             </Box> : children}
         </Box>
-    </Paper>;
+    </Paper> : <></>;
 };
 
 export default SettingsSection;
