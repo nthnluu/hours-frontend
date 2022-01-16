@@ -11,7 +11,6 @@ import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
 import { Queue } from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
-import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
 export interface QueueListProps {
     queueID: string
@@ -33,7 +32,6 @@ const QueueList: FC<QueueListProps> = ({ queueID, queue, filterLoading }) => {
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
-            <BouncingCubesAnimation/>
             <Typography variant="body1">
                 Nobody is here... yet 😉.
             </Typography>
