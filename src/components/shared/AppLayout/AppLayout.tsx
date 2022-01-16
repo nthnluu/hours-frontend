@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, ReactNode, useEffect, useState} from "react";
 import Navbar from "@components/shared/Navbar";
 import {Container} from "@mui/material";
 import {Router} from "next/router";
@@ -12,6 +12,7 @@ export interface AppLayoutProps {
     actionButton?: {
         label: string;
         onClick: () => void;
+        icon?: ReactNode;
     }
 }
 
@@ -34,7 +35,9 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
 
     const endItems = [<AccountMenu key="account" user={currentUser!}/>];
     if (actionButton) {
-        endItems.push(<Button variant="contained" key="action-button" onClick={actionButton.onClick}>{actionButton.label}</Button>);
+        endItems.push(<Button variant="contained" key="action-button"
+                              startIcon={actionButton.icon}
+                              onClick={actionButton.onClick}>{actionButton.label}</Button>);
         endItems.reverse();
     }
 
