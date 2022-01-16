@@ -6,10 +6,10 @@ import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import CheckIcon from '@mui/icons-material/Check';
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import UndoIcon from '@mui/icons-material/Undo';
 import QueueAPI, {Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
@@ -52,16 +52,16 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                           queueID={queueID as string}/>
         <Paper variant="outlined">
             <Box p={2.5}>
-                <Stack direction={["column", null, "row"]} justifyContent="space-between" alignItems={["start", null, "center"]} spacing={0}>
+                <Stack direction={["column", null, "row"]} justifyContent="space-between"
+                       alignItems={["start", null, "center"]} spacing={0}>
                     <Stack direction="row" spacing={2} alignItems="center">
                         <Avatar src={ticket.createdBy.PhotoURL}>
                             {getInitials(ticket.createdBy.DisplayName)}
                         </Avatar>
                         <Box>
-
                             <Stack direction="row" spacing={1}>
                                 <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName} </Typography>
-                                {claimed && <Chip label={`CLAIMED - ${time}`} size="small" color="success"
+                                {claimed && <Chip label={`CLAIMED - ${time}`} size="small" variant="outlined"
                                                   style={{width: "15ch", overflow: "hidden"}}/>}
                                 {missing && <Chip label="MISSING" size="small" color="error"/>}
                                 {completed && <Chip label="COMPLETED" size="small" color="info"/>}
@@ -78,18 +78,18 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                                                               }}>
                             <ConfirmationNumberOutlinedIcon/>
                         </IconButton>}
+                        {staffPerm && claimed && <IconButton label="Mark as completed"
+                                                             onClick={() => QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusComplete, ticket.description)}>
+                            <CheckIcon/>
+                        </IconButton>}
                         {staffPerm && claimed &&
                         <IconButton label="Mark as missing"
                                     onClick={() => QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusMissing, ticket.description)}>
-                            <HelpCenterIcon/>
+                            <QuestionMarkIcon/>
                         </IconButton>}
-                        {staffPerm && claimed && <IconButton label="Checkoff ticket"
-                                                             onClick={() => QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusComplete, ticket.description)}>
-                            <CheckBoxIcon/>
-                        </IconButton>}
-                        {staffPerm && claimed && <IconButton label="Unclaim ticket"
+                        {staffPerm && claimed && <IconButton label="Return to queue"
                                                              onClick={() => QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusWaiting, ticket.description)}>
-                            <ConfirmationNumberIcon/>
+                            <UndoIcon/>
                         </IconButton>}
                         {ownedPerm && <IconButton label="Edit ticket"
                                                   onClick={() => setEditTicketDialog(true)}>
