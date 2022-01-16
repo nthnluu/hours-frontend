@@ -20,7 +20,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
         <ButtonBase onClick={() => router.push('/queue/' + queue.id)} sx={{width: "100%", textAlign: "left"}} focusRipple>
             <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: queue.color ?? "#172c35"}}>
                 <Typography variant="body1" noWrap>
-                    {queue.course.title}
+                    {queue.course.code}: {queue.course.title}
                 </Typography>
 
                 <Typography variant="h5" fontWeight={600}>
