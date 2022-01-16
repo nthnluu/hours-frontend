@@ -13,7 +13,7 @@ const theme = (mode: "light" | "dark"): ThemeOptions => {
         palette: {
             mode: mode,
             primary: {
-                main: '#4285F4',
+                main: '#057FFE',
             },
             secondary: {
                 main: '#6d6d6d',
@@ -45,6 +45,6 @@ const theme = (mode: "light" | "dark"): ThemeOptions => {
             ].join(','),
         },
     };
-}
+};
 
 export default theme;

@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, useState} from "react";
 import {
     Box,
     Grid,
@@ -11,6 +11,7 @@ import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
 import { Queue } from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
+import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
 export interface QueueListProps {
     queueID: string
@@ -22,7 +23,7 @@ export interface QueueListProps {
  * QueueList lists out the tickets in a queue.
  */
 const QueueList: FC<QueueListProps> = ({ queueID, queue, filterLoading }) => {
-    const {currentUser, isAuthenticated} = useAuth();
+    const {currentUser} = useAuth();
     const [tickets, ticketsLoading] = useTickets(queueID, filterLoading);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
@@ -32,6 +33,7 @@ const QueueList: FC<QueueListProps> = ({ queueID, queue, filterLoading }) => {
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
+            <BouncingCubesAnimation/>
             <Typography variant="body1">
                 Nobody is here... yet 😉.
             </Typography>

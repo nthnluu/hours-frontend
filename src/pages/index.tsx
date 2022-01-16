@@ -38,7 +38,7 @@ export default function Home() {
             <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
                 <BouncingCubesAnimation/>
                 <Typography variant="h6">
-                    No courses are holding hours right now
+                    No courses are currently holding hours.
                 </Typography>
             </Stack>
         )}
