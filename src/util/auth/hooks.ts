@@ -1,13 +1,14 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import AuthAPI, {User} from "@util/auth/api";
 import {collection, getFirestore, onSnapshot} from "@firebase/firestore";
-import { useAsyncEffect } from "@util/hooks/useAsyncEffect";
+import {useAsyncEffect} from "@util/hooks/useAsyncEffect";
 
-type AuthState = { loading: boolean, isAuthenticated: boolean, currentUser: User | undefined };
+type AuthState = { loading: boolean, isAuthenticated: boolean, currentUser: User | undefined, isTA: (courseID: string) => boolean };
 const initialAuthState: AuthState = {
     loading: true,
     isAuthenticated: false,
-    currentUser: undefined
+    currentUser: undefined,
+    isTA: () => false
 };
 
 const authContext = createContext(initialAuthState);
@@ -22,9 +23,14 @@ export function useSession(): AuthState {
     useAsyncEffect(async (): Promise<void> => {
         try {
             const user = await AuthAPI.getCurrentUser();
-            setAuthState({ loading: false, isAuthenticated: true, currentUser: user });
+            setAuthState({
+                loading: false,
+                isAuthenticated: true,
+                currentUser: user,
+                isTA: courseID => user.coursePermissions[courseID] != undefined
+            });
         } catch {
-            setAuthState({ loading: false, isAuthenticated: false, currentUser: undefined });
+            setAuthState({loading: false, isAuthenticated: false, currentUser: undefined, isTA: () => false});
         }
     }, []);
 

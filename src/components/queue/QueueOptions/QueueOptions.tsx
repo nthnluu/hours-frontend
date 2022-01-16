@@ -16,7 +16,7 @@ import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
-import QueueAPI, { Queue } from "@util/queue/api";
+import QueueAPI, {Queue} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
 import {useRouter} from "next/router";
 import {useAuth} from "@util/auth/hooks";
@@ -32,95 +32,95 @@ export interface QueueOptionsProps {
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
-const QueueOptions: FC<QueueOptionsProps> = ({ queue, queueID, filterLoading, setFilterLoading }) => {
+const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, filterLoading, setFilterLoading}) => {
     const router = useRouter();
-    const {currentUser, isAuthenticated} = useAuth();
+    const {isTA} = useAuth();
     const [open, setOpen] = useState(false);
-    const isTA = currentUser && (currentUser.coursePermissions[queue.courseID] != undefined);
 
     return (
-    <>
-        <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
-        <Grid item xs={12} md={3}>
-            <Stack spacing={3} divider={<Divider/>}>
-                {queue.description && <Box width="100%">
-                    <Typography variant="h6">
-                        About
-                    </Typography>
-                    <Typography variant="body1" style={{ wordWrap: "break-word" }}>
-                        {queue.description}
-                    </Typography>
-                </Box>}
+        <>
+            <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
+            <Grid item xs={12} md={3}>
+                <Stack spacing={3} divider={<Divider/>}>
+                    {queue.description && <Box width="100%">
+                        <Typography variant="h6">
+                            About
+                        </Typography>
+                        <Typography variant="body1" style={{wordWrap: "break-word"}}>
+                            {queue.description}
+                        </Typography>
+                    </Box>}
 
-                {isTA && <Box width="100%">
-                    <Typography variant="h6">
-                        Manage Queue
-                    </Typography>
+                    {isTA(queue.course.id) && <Box width="100%">
+                        <Typography variant="h6">
+                            Manage Queue
+                        </Typography>
 
-                    <List>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => setOpen(true)}>
-                                <ListItemIcon>
-                                    <EditIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Edit queue"/>
-                            </ListItemButton>
-                        </ListItem>
+                        <List>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => setOpen(true)}>
+                                    <ListItemIcon>
+                                        <EditIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Edit queue"/>
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <CampaignIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Make announcement"/>
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <CampaignIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Make announcement"/>
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <ShuffleIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Shuffle tickets"/>
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <ShuffleIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Shuffle tickets"/>
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => setFilterLoading(!filterLoading)}>
-                                <ListItemIcon>
-                                    <CheckCircleIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Show completed tickets"/>
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => setFilterLoading(!filterLoading)}>
+                                    <ListItemIcon>
+                                        <CheckCircleIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Show completed tickets"/>
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", !queue.isActive).catch(_ => toast.error("Error closing queue."))}>
-                                <ListItemIcon>
-                                    {queue.isActive ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
-                                </ListItemIcon>
-                                <ListItemText primary={queue.isActive ? "Cutoff signups" : "Reopen signups"}/>
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton
+                                    onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", !queue.isActive).catch(_ => toast.error("Error closing queue."))}>
+                                    <ListItemIcon>
+                                        {queue.isActive ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
+                                    </ListItemIcon>
+                                    <ListItemText primary={queue.isActive ? "Cutoff signups" : "Reopen signups"}/>
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => {
-                                QueueAPI.deleteQueue(queueID)
-                                    .then(_ => toast.success("Queue deleted."))
-                                    .catch(_ => toast.error("Error closing queue."));
-                                router.push("/");
-                            }}>
-                                <ListItemIcon>
-                                    <CancelIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Close queue"/>
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-                </Box>}
-            </Stack>
-        </Grid>
-    </>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => {
+                                    QueueAPI.deleteQueue(queueID)
+                                        .then(_ => toast.success("Queue deleted."))
+                                        .catch(_ => toast.error("Error closing queue."));
+                                    router.push("/");
+                                }}>
+                                    <ListItemIcon>
+                                        <CancelIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Close queue"/>
+                                </ListItemButton>
+                            </ListItem>
+                        </List>
+                    </Box>}
+                </Stack>
+            </Grid>
+        </>
     );
 };
 

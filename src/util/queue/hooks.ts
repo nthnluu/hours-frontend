@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Queue, Ticket, TicketStatus} from "@util/queue/api";
-import {collection, doc, Firestore, getFirestore, onSnapshot, query, where} from "@firebase/firestore";
+import {collection, doc, getFirestore, onSnapshot} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
     const [loading, setLoading] = useState(true);
@@ -62,6 +62,6 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
         });
     }, [queueID, filterCompleted]);
 
-    return [tickets, loading, setLoading];
+    return [tickets, loading];
 }
 
