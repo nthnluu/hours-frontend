@@ -17,7 +17,7 @@ type FormData = {
 };
 
 const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         QueueAPI.editQueue(queueID, data.title, data.description, queue.isActive);
         reset();
@@ -38,24 +38,23 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
 
                     <TextField
                         {...register("description")}
                         defaultValue={queue.description}
-                        required
                         label="Description"
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
                 </Stack>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Add</Button>
+                <Button type="submit" variant="contained">Save</Button>
             </DialogActions>
         </form>
     </Dialog>;
