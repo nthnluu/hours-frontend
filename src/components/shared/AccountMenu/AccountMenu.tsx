@@ -5,7 +5,7 @@ import {
     Divider, Fade, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
     Paper,
     Popper,
-    Stack,
+    Stack, Tooltip,
     Typography
 } from "@mui/material";
 import AuthAPI, {User} from "@util/auth/api";
@@ -55,16 +55,17 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
 
     return (<>
         {/*Avatar button*/}
-        <ButtonBase aria-label="account menu" sx={{borderRadius: '100%'}} ref={buttonRef}
-                    onClick={() => setOpen(!open)} focusRipple>
-            <Avatar src={user.photoUrl}
-                    sx={{
-                        width: 40,
-                        height: 40,
-                        border: "1px solid #989898",
-                        fontSize: 16
-                    }}>{getInitials(user.displayName)}</Avatar>
-        </ButtonBase>
+        <Tooltip title={`Signed in as ${user.displayName}`}>
+            <ButtonBase aria-label="account menu" sx={{borderRadius: '100%'}} ref={buttonRef}
+                        onClick={() => setOpen(!open)} focusRipple>
+                <Avatar src={user.photoUrl}
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            fontSize: 16
+                        }}>{getInitials(user.displayName)}</Avatar>
+            </ButtonBase>
+        </Tooltip>
 
         {/*Account menu popover*/}
         <Popper id={id} open={open} anchorEl={buttonRef.current} transition>
