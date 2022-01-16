@@ -9,7 +9,7 @@ import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
-import { Queue } from "@util/queue/api";
+import {Queue} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 
 export interface QueueListProps {
@@ -21,8 +21,8 @@ export interface QueueListProps {
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({ queueID, queue, filterLoading }) => {
-    const {currentUser} = useAuth();
+const QueueList: FC<QueueListProps> = ({queueID, queue, filterLoading}) => {
+    const {currentUser, isTA} = useAuth();
     const [tickets, ticketsLoading] = useTickets(queueID, filterLoading);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
@@ -39,20 +39,23 @@ const QueueList: FC<QueueListProps> = ({ queueID, queue, filterLoading }) => {
     );
 
     return (<>
-        <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)} queueID={queueID as string}/>
+        <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
+                            queueID={queueID as string}/>
         <Grid item xs={12} md={9}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {queue.isActive && !inQueue && <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
+                {queue.isActive && !inQueue && !isTA(queue.course.id) &&
+                <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                     Join Queue
                 </Button>}
             </Stack>
             <Box mt={1}>
                 <Stack spacing={2}>
-                    {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} queueID={queueID as string} ticket={ticket}/>)}
-                    {tickets && tickets.length == 0 && <EmptyQueue />}
+                    {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} queueID={queueID as string}
+                                                                     ticket={ticket}/>)}
+                    {tickets && tickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>
         </Grid>
