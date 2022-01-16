@@ -12,8 +12,8 @@ import AuthAPI, {User} from "@util/auth/api";
 import FocusTrap from "focus-trap-react";
 import {Feedback, Logout, Settings, WbSunny} from "@mui/icons-material";
 import useThemeMode from "@util/mui/useThemeMode";
-import Link from "next/link";
 import getInitials from "@util/shared/getInitials";
+import {useRouter} from "next/router";
 
 export interface AccountMenuProps {
     /** The current user. */
@@ -30,6 +30,7 @@ function capitalizeFirstLetter(str: string) {
 const AccountMenu: FC<AccountMenuProps> = ({user}) => {
     const [open, setOpen] = useState(false);
     const [themeMode, setThemeMode, prefersDarkMode] = useThemeMode();
+    const router = useRouter();
 
     const id = open ? 'simple-popper' : undefined;
     const buttonRef = useRef(null);
@@ -53,6 +54,11 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
             .then(() => window.location.href = "/login");
     }
 
+    function handleClick(href: string) {
+        setOpen(false);
+        router.push(href);
+    }
+
     return (<>
         {/*Avatar button*/}
         <Tooltip title={`Signed in as ${user.displayName}`}>
@@ -68,7 +74,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
         </Tooltip>
 
         {/*Account menu popover*/}
-        <Popper id={id} open={open} anchorEl={buttonRef.current} transition>
+        <Popper id={id} open={open} anchorEl={buttonRef.current} transition keepMounted={true}>
             {({TransitionProps}) => (
                 <Fade {...TransitionProps}>
                     <Paper elevation={5} sx={{width: 320, m: 1, textAlign: "center"}}>
@@ -104,24 +110,21 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                         </ListItemButton>
                                     </ListItem>
                                     <ListItem disablePadding>
-                                        <Link href="https://forms.gle/Ue9wQDXDuczLk7b56">
-                                            <ListItemButton>
-                                                <ListItemIcon>
-                                                    <Feedback/>
-                                                </ListItemIcon>
-                                                <ListItemText primary="Send feedback"/>
-                                            </ListItemButton>
-                                        </Link>
+                                        <ListItemButton
+                                            onClick={() => handleClick("https://forms.gle/Ue9wQDXDuczLk7b56")}>
+                                            <ListItemIcon>
+                                                <Feedback/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Send feedback"/>
+                                        </ListItemButton>
                                     </ListItem>
                                     <ListItem disablePadding>
-                                        <Link href="/settings">
-                                            <ListItemButton>
-                                                <ListItemIcon>
-                                                    <Settings/>
-                                                </ListItemIcon>
-                                                <ListItemText primary="Settings"/>
-                                            </ListItemButton>
-                                        </Link>
+                                        <ListItemButton onClick={() => handleClick("/settings")}>
+                                            <ListItemIcon>
+                                                <Settings/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Settings"/>
+                                        </ListItemButton>
                                     </ListItem>
                                     <ListItem disablePadding>
                                         <ListItemButton onClick={handleSignOut}>
