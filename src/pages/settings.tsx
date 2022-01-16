@@ -18,7 +18,7 @@ export default function Settings() {
                 <SettingsSection title="Your profile">
                     <Stack spacing={3} mt={4}>
                         <TextField size="small" label="Name" value={currentUser?.displayName}/>
-                        <TextField size="small" label="Email" value={currentUser?.email}/>
+                        <TextField size="small" label="Email" disabled value={currentUser?.email}/>
                         {isTA && <TextField size="small" label="Zoom link"/>}
                         <Stack direction="row" justifyContent="end">
                             <Button variant="contained">
