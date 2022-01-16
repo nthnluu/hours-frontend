@@ -64,7 +64,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
         register: registerEdit,
         handleSubmit: handleEditSubmit,
         reset: resetEdit,
-        formState: {errors: editErrors}
+        formState: {}
     } = useForm<EditFormData>();
 
     const onEditSubmit = handleEditSubmit(data => {
@@ -86,7 +86,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
         register: registerAddPermission,
         handleSubmit: handleAddPermissionSubmit,
         reset: resetAddPermission,
-        formState: {errors: addPermissionErrors}
+        formState: {}
     } = useForm<AddPermissionFormData>();
 
     const onAddPermissionSubmit = handleAddPermissionSubmit(data => {
@@ -142,7 +142,6 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                       variant="fullWidth">
                     <Tab label="Course Info" {...a11yProps(0)} />
                     <Tab label="Manage Access" {...a11yProps(1)} />
-                    <Tab label="Queue Templates" {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <TabPanel value={currentTab} index={0}>
@@ -202,7 +201,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                                         }>
                                         {/* TODO: Should maybe map the HTA and UTA to other names? But this works for now. */}
                                         <ListItemText
-                                            primary={`${user.displayName} - ${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "Admin" : "Staff"}`}
+                                            primary={`${user.displayName} (${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "Admin" : "Staff"})`}
                                             secondary={user.email}
                                         />
                                     </ListItem>))}
@@ -248,9 +247,6 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                         <Button onClick={onClose}>Cancel</Button>
                     </DialogButtons>
                 </form>
-            </TabPanel>
-            <TabPanel value={currentTab} index={2}>
-                TODO
             </TabPanel>
         </Box>
     </Dialog>;
