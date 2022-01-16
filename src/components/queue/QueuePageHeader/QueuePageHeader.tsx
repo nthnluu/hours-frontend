@@ -13,12 +13,12 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
                 <Typography variant="h6" noWrap>
                     {queue.course.code}: {queue.course.title}
                 </Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1.5} alignItems="center">
                     <Typography variant="h4" fontWeight={600}>
                         {queue.title}
                     </Typography>
-                    {queue.isActive ? <Chip label="Open" size="medium" color="success"/> :
-                        <Chip label="Closed" size="medium" color="error"/>}
+                    {queue.isActive ? <Chip label="Open" size="medium" color="success" sx={{fontWeight: 600}}/> :
+                        <Chip label="Closed" size="medium" color="error" sx={{fontWeight: 600}}/>}
                 </Stack>
             </Box>
         </Box>
