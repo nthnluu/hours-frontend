@@ -45,6 +45,21 @@ const theme = (mode: "light" | "dark"): ThemeOptions => {
                     '"Segoe UI Symbol"',
                 ].join(','),
             },
+            body2: {
+                fontFamily: [
+                    'Roboto',
+                    '-apple-system',
+                    'BlinkMacSystemFont',
+                    '"Segoe UI"',
+                    'Roboto',
+                    '"Helvetica Neue"',
+                    'Arial',
+                    'sans-serif',
+                    '"Apple Color Emoji"',
+                    '"Segoe UI Emoji"',
+                    '"Segoe UI Symbol"',
+                ].join(','),
+            },
             fontFamily: [
                 'Google Sans',
                 '-apple-system',

@@ -6,20 +6,28 @@ export interface ConfirmButtonProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    confirmButtonText?: string;
     message: string;
 }
 
-const ConfirmButton: FC<ConfirmButtonProps> = ({open, onClose, onConfirm, message, children}) => {
+const ConfirmButton: FC<ConfirmButtonProps> = ({
+                                                   open,
+                                                   onClose,
+                                                   onConfirm,
+                                                   confirmButtonText = "Confirm",
+                                                   message,
+                                                   children
+                                               }) => {
     return (<>
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{message}</DialogTitle>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={() => {
+                <Button variant="contained" onClick={() => {
                     onConfirm();
                     onClose();
                 }}>
-                    Confirm
+                    {confirmButtonText}
                 </Button>
             </DialogActions>
         </Dialog>

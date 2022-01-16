@@ -3,7 +3,7 @@ import EditCourseDialog from "@components/settings/EditCourseDialog";
 import {Box, ListItem, ListItemText} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
-import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import CourseAPI, {Course} from "@util/course/api";
 
@@ -31,11 +31,12 @@ const CourseListItem: FC<CourseListItemProps> = ({course}) => {
                     <ConfirmButton
                         message={`Delete course ${course.title}?`}
                         open={openConfirm}
+                        confirmButtonText="Delete course"
                         onClose={() => setOpenConfirm(false)}
                         onConfirm={() => CourseAPI.deleteCourse(course.id)}>
                         <IconButton label="Delete course" edge="end" aria-label="delete"
                                     onClick={() => setOpenConfirm(true)}>
-                            <DeleteIcon/>
+                            <CloseIcon/>
                         </IconButton>
                     </ConfirmButton>
                 </>
