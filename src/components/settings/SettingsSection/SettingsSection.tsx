@@ -10,16 +10,27 @@ export interface SettingsSectionProps {
     subtitle?: string;
     loading?: boolean;
     adminOnly?: boolean;
+    taOnly?: boolean;
     actionButton?: {
         label: string;
         onClick: () => void;
     }
 }
 
-const SettingsSection: FC<SettingsSectionProps> = ({title, subtitle, loading, adminOnly, actionButton, children}) => {
+const SettingsSection: FC<SettingsSectionProps> = ({
+                                                       title,
+                                                       subtitle,
+                                                       loading,
+                                                       adminOnly,
+                                                       taOnly,
+                                                       actionButton,
+                                                       children
+                                                   }) => {
     const {currentUser} = useAuth();
+    const isTA = currentUser && Object.keys(currentUser.coursePermissions).length > 0;
+    const display = ((adminOnly && currentUser?.isAdmin) || !adminOnly) && (!taOnly || (taOnly && isTA));
 
-    return (adminOnly && currentUser?.isAdmin) || !adminOnly ? <Paper variant="outlined">
+    return display ? <Paper variant="outlined">
         <Box p={3}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Stack mb={subtitle ? 2 : 0}>

@@ -15,11 +15,11 @@ export interface YourCoursesSectionProps {
 const YourCoursesSection: FC<YourCoursesSectionProps> = ({}) => {
     const {currentUser, loading} = useSession();
     const [courses, loadingCourses] = useCourses();
-
-    return <SettingsSection title="Your courses" loading={loading || loadingCourses}>
-        {courses && <List>
-            {courses.filter(course => currentUser?.coursePermissions && (currentUser.coursePermissions[course.id] === CoursePermission.CourseAdmin))
-                .map(course => <CourseListItem key={course.id} course={course}/>)}
+    const filteredCourses = courses && courses.filter(course => currentUser?.coursePermissions && (currentUser.coursePermissions[course.id] === CoursePermission.CourseAdmin));
+    return <SettingsSection taOnly title="Your courses" loading={loading || loadingCourses}>
+        {filteredCourses && <List>
+            {filteredCourses.map((course, index) => <CourseListItem key={course.id} course={course}
+                                                                    isLastChild={index === (filteredCourses.length - 1)}/>)}
         </List>}
     </SettingsSection>;
 };

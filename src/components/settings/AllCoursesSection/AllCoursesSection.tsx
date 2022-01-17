@@ -21,7 +21,7 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
         <CreateCourseDialog open={openCreate} onClose={() => setOpenCreate(false)}/>
         <SettingsSection adminOnly title="All courses" actionButton={{label: "New", onClick: () => setOpenCreate(true)}}>
             {courses && <List>
-                {courses.map(course => <CourseListItem key={course.id} course={course}/>)}
+                {courses.map((course, index) => <CourseListItem key={course.id} course={course} isLastChild={index === (courses.length - 1)}/>)}
             </List>}
         </SettingsSection>
     </>;

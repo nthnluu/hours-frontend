@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import EditCourseDialog from "@components/settings/EditCourseDialog";
-import {Box, ListItem, ListItemText} from "@mui/material";
+import {Box, Divider, ListItem, ListItemText} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -9,9 +9,10 @@ import CourseAPI, {Course} from "@util/course/api";
 
 export interface CourseListItemProps {
     course: Course;
+    isLastChild?: boolean;
 }
 
-const CourseListItem: FC<CourseListItemProps> = ({course}) => {
+const CourseListItem: FC<CourseListItemProps> = ({course, isLastChild}) => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const handleCloseEdit = () => setOpenEdit(false);
@@ -44,8 +45,12 @@ const CourseListItem: FC<CourseListItemProps> = ({course}) => {
             <ListItemText
                 primary={`${course.code}: ${course.title}`}
                 secondary={course.term}
+                primaryTypographyProps={{
+                    noWrap: true
+                }}
             />
         </ListItem>
+        {!isLastChild && <Divider/>}
     </>);
 };
 
