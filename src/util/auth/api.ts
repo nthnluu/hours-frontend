@@ -1,8 +1,6 @@
 import {
     getAuth,
     GoogleAuthProvider,
-    inMemoryPersistence,
-    setPersistence,
     signInWithPopup,
 } from "firebase/auth";
 import APIClient from "@util/APIClient";
@@ -29,6 +27,7 @@ export interface User {
     photoUrl: string;
     isAdmin: boolean;
     coursePermissions: { [key: string]: CoursePermission };
+    zoomLink?: string;
 }
 
 /**
@@ -86,7 +85,6 @@ async function signInWithGoogle() {
     const auth = getAuth();
 
     // As httpOnly cookies are to be used, do not persist any state client side.
-    await setPersistence(auth, inMemoryPersistence);
 
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({
@@ -114,6 +112,8 @@ async function signInWithGoogle() {
 async function signOut(): Promise<void> {
     try {
         await APIClient.post(Endpoint.SIGN_OUT);
+        const auth = getAuth();
+        await auth.signOut();
         return;
     } catch (e) {
         throw e;

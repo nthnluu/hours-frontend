@@ -9,6 +9,7 @@ import {
     Stack,
     Typography
 } from "@mui/material";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -16,6 +17,7 @@ import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueueAPI, {Queue} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
 import {useRouter} from "next/router";
@@ -42,14 +44,29 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, filterLoading, set
             <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
             <Grid item xs={12} md={3}>
                 <Stack spacing={3} divider={<Divider/>}>
-                    {queue.description && <Box width="100%">
+                    <Box width="100%">
                         <Typography variant="h6">
                             About
                         </Typography>
                         <Typography variant="body1" style={{wordWrap: "break-word"}}>
                             {queue.description}
                         </Typography>
-                    </Box>}
+
+                        <Stack spacing={1.5} mt={2}>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                                <LocationOnIcon/>
+                                <Typography>
+                                    SunLab
+                                </Typography>
+                            </Stack>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                                <AccessTimeIcon/>
+                                <Typography>
+                                    Ends at 2:00 PM
+                                </Typography>
+                            </Stack>
+                        </Stack>
+                    </Box>
 
                     {isTA(queue.course.id) && <Box width="100%">
                         <Typography variant="h6">

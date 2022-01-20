@@ -46,7 +46,10 @@ const CourseListItem: FC<CourseListItemProps> = ({course, isLastChild}) => {
                 primary={`${course.code}: ${course.title}`}
                 secondary={course.term}
                 primaryTypographyProps={{
-                    noWrap: true
+                    noWrap: true,
+                    sx: {
+                        marginRight: 3
+                    }
                 }}
             />
         </ListItem>

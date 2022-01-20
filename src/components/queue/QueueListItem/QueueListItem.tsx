@@ -16,11 +16,12 @@ import EditTicketDialog from "@components/queue/EditTicketDialog";
 import getInitials from "@util/shared/getInitials";
 
 export interface QueueListItemProps {
+    courseID: string;
     queueID: string;
     ticket: Ticket;
 }
 
-const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
+const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
     const {currentUser} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -29,10 +30,10 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
     const claimed = ticket.status === TicketStatus.StatusClaimed;
     const missing = ticket.status === TicketStatus.StatusMissing;
     const completed = ticket.status === TicketStatus.StatusComplete;
-    const isTA = currentUser && (currentUser.coursePermissions[queueID] != undefined);
+    const isTA = currentUser && (currentUser.coursePermissions[courseID] != undefined);
     const ownsTicket = currentUser && ticket.createdBy.Email === currentUser.email;
 
-    const staffPerm = isTA || currentUser?.isAdmin;
+    const staffPerm = isTA;
     const ownedPerm = staffPerm || ownsTicket;
 
     useEffect(() => {
@@ -52,15 +53,18 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                           queueID={queueID as string}/>
         <Paper variant="outlined">
             <Box p={2.5}>
-                <Stack direction={["column", null, "row"]} justifyContent="space-between"
-                       alignItems={["start", null, "center"]} spacing={0}>
+                <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" spacing={2} alignItems="center">
-                        <Avatar src={ticket.createdBy.PhotoURL}>
+                        <Avatar src={ticket.createdBy.PhotoURL} sx={{display: ["none", null, "flex"]}}>
                             {getInitials(ticket.createdBy.DisplayName)}
                         </Avatar>
                         <Box>
                             <Stack direction="row" spacing={1}>
-                                <Typography fontSize={16} fontWeight={600}>{ticket.createdBy.DisplayName} </Typography>
+                                <Box>
+                                    <Typography fontSize={16} fontWeight={600}>
+                                        {ticket.createdBy.DisplayName}
+                                    </Typography>
+                                </Box>
                                 {claimed && <Chip label={`CLAIMED - ${time}`} size="small" variant="outlined"
                                                   style={{width: "15ch", overflow: "hidden"}}/>}
                                 {missing && <Chip label="MISSING" size="small" color="error"/>}
@@ -69,7 +73,6 @@ const QueueListItem: FC<QueueListItemProps> = ({queueID, ticket}) => {
                             <Typography fontSize={14}>{ticket.description}</Typography>
                         </Box>
                     </Stack>
-
                     <Stack direction="row" spacing={0}>
                         {staffPerm && !claimed && <IconButton label="Claim ticket"
                                                               onClick={() => {
