@@ -46,7 +46,7 @@ export default function AdminList() {
     });
 
     function handleDeleteAdmin(user: User) {
-        toast.promise(AuthAPI.updateUser(user.id, user.displayName, false), {
+        toast.promise(AuthAPI.updateUser(user.displayName, false), {
             loading: "Removing admin...",
             success: `${user.displayName} is no longer an admin.`,
             error: "Something went wrong, please try again later."

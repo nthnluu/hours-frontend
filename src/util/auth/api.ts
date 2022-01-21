@@ -56,9 +56,9 @@ async function getUserById(id: string): Promise<User> {
 /**
  * Fetches profile information corresponding to the currently logged in user.
  */
-async function updateUser(userID: string, displayName: string, isAdmin: boolean): Promise<void> {
+async function updateUser(displayName: string, isAdmin: boolean): Promise<void> {
     try {
-        return await APIClient.post(`${Endpoint.UPDATE}/${userID}`, {
+        return await APIClient.post(`${Endpoint.UPDATE}`, {
             displayName, isAdmin
         });
     } catch (e) {
