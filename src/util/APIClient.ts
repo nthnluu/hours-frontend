@@ -24,6 +24,15 @@ async function performPostRequest<V>(endpoint: Endpoint, data?: { [key: string]:
     }
 }
 
+async function performPatchRequest<V>(endpoint: Endpoint, data?: { [key: string]: any }, config?: AxiosRequestConfig) {
+    try {
+        const res = await axios.patch<V>(urls.API_URL + endpoint, data, {withCredentials: true, ...config});
+        return res.data;
+    } catch (e) {
+        throw e;
+    }
+}
+
 async function performDeleteRequest<V>(endpoint: Endpoint, config?: AxiosRequestConfig) {
     try {
         const res = await axios.delete<V>(urls.API_URL + endpoint, {
@@ -39,7 +48,8 @@ async function performDeleteRequest<V>(endpoint: Endpoint, config?: AxiosRequest
 const APIClient = {
     get: performGetRequest,
     post: performPostRequest,
-    delete: performDeleteRequest
+    delete: performDeleteRequest,
+    patch: performPatchRequest
 };
 
 export default APIClient;

@@ -2,16 +2,6 @@ import APIClient from "@util/APIClient";
 import {Course} from "@util/course/api";
 import {Timestamp} from "@firebase/firestore";
 
-const enum Endpoint {
-    CREATE_QUEUE = '/queues/create',
-    EDIT_QUEUE = '/queues/edit',
-    DELETE_QUEUE = '/queues/delete',
-
-    CREATE_TICKET = '/queues/ticket/create',
-    EDIT_TICKET = '/queues/ticket/edit',
-    DELETE_TICKET = '/queues/ticket/delete',
-}
-
 export interface Queue {
     id: string;
     title: string;
@@ -49,7 +39,7 @@ export interface Ticket {
  */
 async function createQueue(title: string, description: string, courseID: string): Promise<void> {
     try {
-        await APIClient.post(Endpoint.CREATE_QUEUE, {
+        await APIClient.post(`/create/${courseID}`, {
             title, description, courseID
         });
         return;
@@ -63,7 +53,7 @@ async function createQueue(title: string, description: string, courseID: string)
  */
 async function editQueue(queueID: string, title: string, description: string, isActive: boolean): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.EDIT_QUEUE}/${queueID}`, {
+        await APIClient.post(`/queues/${queueID}/edit`, {
             title, description, isActive
         });
         return;
@@ -77,7 +67,7 @@ async function editQueue(queueID: string, title: string, description: string, is
  */
 async function deleteQueue(queueID: string): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.DELETE_QUEUE}/${queueID}`, {});
+        await APIClient.delete(`/queues/${queueID}`, {});
         return;
     } catch (e) {
         throw e;
@@ -89,7 +79,7 @@ async function deleteQueue(queueID: string): Promise<void> {
  */
 async function createTicket(queueID: string, description: string): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.CREATE_TICKET}/${queueID}`, {description});
+        await APIClient.post(`/queues/${queueID}/ticket`, {description});
         return;
     } catch (e) {
         throw e;
@@ -101,7 +91,7 @@ async function createTicket(queueID: string, description: string): Promise<void>
  */
 async function editTicket(id: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.EDIT_TICKET}/${queueID}`, {
+        await APIClient.patch(`/queues/${queueID}/ticket`, {
             id,
             status,
             description
@@ -117,7 +107,7 @@ async function editTicket(id: string, queueID: string, status: TicketStatus, des
  */
 async function deleteTicket(id: string, queueID: string): Promise<void> {
     try {
-        await APIClient.post(`${Endpoint.DELETE_TICKET}/${queueID}`, {id});
+        await APIClient.post(`/queues/${queueID}/ticket/delete`, {id});
         return;
     } catch (e) {
         throw e;
