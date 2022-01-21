@@ -17,10 +17,23 @@ export interface QueueListItemProps {
     ticket: Ticket;
 }
 
+const calculateClaimDuration = (claimedAtSeconds?: number): string => {
+    if (!claimedAtSeconds) {
+        return '';
+    }
+    const timer = Timestamp.now().seconds - claimedAtSeconds;
+    const duration = intervalToDuration({ start: 0, end: timer * 1000 });
+    const formatted = `${duration.minutes! < 10 ? '0' + duration.minutes : duration.minutes}:${
+        duration.seconds! < 10 ? '0' + duration.seconds : duration.seconds
+    }`;
+
+    return formatted;
+};
+
 const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
     const {currentUser} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
-    const [time, setTime] = useState("00:00");
+    const [time, setTime] = useState(calculateClaimDuration(ticket?.claimedAt.seconds));
 
     const isClaimed = ticket.status === TicketStatus.StatusClaimed;
     const isMissing = ticket.status === TicketStatus.StatusMissing;
@@ -30,17 +43,15 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
     const isTicketOwner = (currentUser != undefined) && (ticket.createdBy.Email === currentUser.email);
 
     useEffect(() => {
-        const intervalID = setInterval(() => {
-            if (ticket.claimedAt) {
-                const timer = Timestamp.now().seconds - ticket.claimedAt.seconds;
-                const duration = intervalToDuration({start: 0, end: timer * 1000});
-                const formatted = `${duration.minutes! < 10 ? "0" + duration.minutes : duration.minutes}:${duration.seconds! < 10 ? "0" + duration.seconds : duration.seconds}`;
-                setTime(formatted);
-            }
-        }, 1000);
-        return () => clearInterval(intervalID);
-    }, [ticket.claimedAt]);
-
+        if (ticket.claimedAt) {
+            const intervalID = setInterval(() => {
+                setTime(calculateClaimDuration(ticket.claimedAt?.seconds));
+            }, 1000);
+    
+            return () => clearInterval(intervalID);
+        }
+    }, [ticket]);
+    
     function handleClaimTicket() {
         setTime("00:00");
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)
