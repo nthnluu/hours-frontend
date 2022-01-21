@@ -1,15 +1,5 @@
 import APIClient from "@util/APIClient";
 
-// TODO: Figure out a better mechanism for prefixing, method usage
-const enum Endpoint {
-    GET_COURSE = '/',
-    DELETE_COURSE = '/',
-    CREATE_COURSE = '/create',
-    EDIT_COURSE = '/edit',
-    ADD_COURSE_PERMISSION = '/addPermission',
-    REMOVE_COURSE_PERMISSION = '/removePermission',
-}
-
 export const enum CoursePermission {
     CourseAdmin = "ADMIN",
     CourseStaff = "STAFF"
@@ -28,7 +18,7 @@ export interface Course {
  */
  async function getCourse(courseID: string): Promise<Course> {
     try {
-        return await APIClient.get(`/courses/${courseID}/${Endpoint.GET_COURSE}`, {});
+        return await APIClient.get(`/courses/${courseID}`, {});
     } catch (e) {
         throw e;
     }
@@ -39,7 +29,7 @@ export interface Course {
  */
 async function createCourse(title: string, code: string, term: string): Promise<void> {
     try {
-        await APIClient.post(`/courses/${Endpoint.CREATE_COURSE}`, {
+        await APIClient.post(`/courses/create`, {
             title, code, term
         });
         return;
@@ -64,7 +54,7 @@ async function createCourse(title: string, code: string, term: string): Promise<
  */
 async function editCourse(courseID: string, title: string, code: string, term: string): Promise<void> {
     try {
-        await APIClient.post(`/courses/${courseID}/${Endpoint.EDIT_COURSE}`, {
+        await APIClient.post(`/courses/${courseID}/edit`, {
             title, code, term
         });
         return;
@@ -78,7 +68,7 @@ async function editCourse(courseID: string, title: string, code: string, term: s
  */
 async function addCoursePermission(courseID: string, email: string, permission: string): Promise<void> {
     try {
-        await APIClient.post(`/courses/${courseID}/${Endpoint.ADD_COURSE_PERMISSION}`, {
+        await APIClient.post(`/courses/${courseID}/addPermission`, {
             email, permission
         });
         return;
@@ -92,7 +82,7 @@ async function addCoursePermission(courseID: string, email: string, permission: 
  */
 async function removeCoursePermission(courseID: string, userID: string): Promise<void> {
     try {
-        await APIClient.post(`/courses/${courseID}/${Endpoint.REMOVE_COURSE_PERMISSION}`, {
+        await APIClient.post(`/courses/${courseID}/removePermission`, {
             userID
         });
         return;
