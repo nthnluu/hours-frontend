@@ -39,7 +39,7 @@ export interface Ticket {
  */
 async function createQueue(title: string, description: string, courseID: string): Promise<void> {
     try {
-        await APIClient.post(`/create/${courseID}`, {
+        await APIClient.post(`/queues/create/${courseID}`, {
             title, description, courseID
         });
         return;
