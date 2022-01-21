@@ -32,7 +32,7 @@ export default function Settings() {
                                 <MenuItem value="na">Prefer not to say</MenuItem>
                             </Select>
                         </FormControl>
-                        {isTA && <TextField size="small" label="Zoom link"/>}
+                        {isTA && <TextField size="small" label="Meeting link"/>}
                         <Stack direction="row" justifyContent="end">
                             <Button variant="contained">
                                 Save

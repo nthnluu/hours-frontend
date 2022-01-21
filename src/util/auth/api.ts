@@ -26,8 +26,9 @@ export interface User {
     displayName: string;
     photoUrl: string;
     isAdmin: boolean;
+    pronouns?: string;
+    meetingLink?: string;
     coursePermissions: { [key: string]: CoursePermission };
-    zoomLink?: string;
 }
 
 /**
