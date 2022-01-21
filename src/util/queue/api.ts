@@ -8,7 +8,7 @@ export interface Queue {
     color: string;
     description?: string;
     course: Course;
-    isActive: boolean;
+    isCutOff: boolean;
     tickets: Ticket[];
 }
 
@@ -51,10 +51,10 @@ async function createQueue(title: string, description: string, courseID: string)
 /**
  * Creates a queue with the given title, description, and course ID.
  */
-async function editQueue(queueID: string, title: string, description: string, isActive: boolean): Promise<void> {
+async function editQueue(queueID: string, title: string, description: string, isCutOff: boolean): Promise<void> {
     try {
         await APIClient.post(`/queues/${queueID}/edit`, {
-            title, description, isActive
+            title, description, isCutOff 
         });
         return;
     } catch (e) {

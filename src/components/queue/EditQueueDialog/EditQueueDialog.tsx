@@ -19,7 +19,7 @@ type FormData = {
 const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.editQueue(queueID, data.title, data.description, queue.isActive);
+        QueueAPI.editQueue(queueID, data.title, data.description, queue.isCutOff);
         reset();
         onClose();
     });

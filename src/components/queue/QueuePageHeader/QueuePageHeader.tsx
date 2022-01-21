@@ -18,7 +18,7 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
                     <Typography variant="h4" fontWeight={600}>
                         {queue.title}
                     </Typography>
-                    {queue.isActive ? <Chip label="Open" size="medium" color="success" sx={{fontWeight: 600}}/> :
+                    {!queue.isCutOff ? <Chip label="Open" size="medium" color="success" sx={{fontWeight: 600}}/> :
                         <Chip label="Closed" size="medium" color="error" sx={{fontWeight: 600}}/>}
                 </Stack>
             </Box>

@@ -46,7 +46,7 @@ const QueueList: FC<QueueListProps> = ({queueID, queue, filterLoading}) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {queue.isActive && !inQueue && !isTA(queue.course.id) &&
+                {!queue.isCutOff && !inQueue && !isTA(queue.course.id) &&
                 <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                     Join Queue
                 </Button>}

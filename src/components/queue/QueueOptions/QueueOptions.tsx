@@ -112,11 +112,11 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, filterLoading, set
 
                             <ListItem disablePadding>
                                 <ListItemButton
-                                    onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", !queue.isActive).catch(_ => toast.error("Error closing queue."))}>
+                                    onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", queue.isCutOff).catch(_ => toast.error("Error closing queue."))}>
                                     <ListItemIcon>
-                                        {queue.isActive ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
+                                        {queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
                                     </ListItemIcon>
-                                    <ListItemText primary={queue.isActive ? "Cutoff signups" : "Reopen signups"}/>
+                                    <ListItemText primary={queue.isCutOff ? "Reopen signups" : "Cutoff signups"}/>
                                 </ListItemButton>
                             </ListItem>
 
