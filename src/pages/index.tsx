@@ -5,9 +5,9 @@ import AppLayout from "@components/shared/AppLayout";
 import QueueCard from "@components/home/QueueCard";
 import CreateQueueDialog from "@components/home/CreateQueueDialog";
 import {useAuth} from "@util/auth/hooks";
-import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 import Button from "@components/shared/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
 export default function Home() {
     const {currentUser, isAuthenticated} = useAuth();

@@ -89,6 +89,18 @@ async function deleteQueue(queueID: string): Promise<void> {
 }
 
 /**
+ * Shuffles the tickets in a queue.
+ */
+async function shuffleQueue(queueID: string): Promise<void> {
+    try {
+        await APIClient.patch(`/queues/${queueID}/shuffle`);
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
  * Creates a ticket for the given user.
  */
 async function createTicket(queueID: string, description: string): Promise<void> {
@@ -133,6 +145,7 @@ const QueueAPI = {
     editQueue,
     cutOffQueue,
     deleteQueue,
+    shuffleQueue,
     createTicket,
     editTicket,
     deleteTicket

@@ -1,8 +1,9 @@
-import {FC} from "react";
+import {FC, useEffect} from "react";
 import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI, {Queue} from "@util/queue/api";
+import {toast} from "react-hot-toast";
 
 export interface EditQueueDialogProps {
     queueID: string,
@@ -19,12 +20,24 @@ type FormData = {
 const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.editQueue(queueID, data.title, data.description, queue.isCutOff);
+        QueueAPI.editQueue(queueID, data.title, data.description, queue.isCutOff)
+            .catch(() => {
+                toast.error("Something went wrong, please try again later.");
+            });
         reset();
         onClose();
     });
 
-    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    function handleClose() {
+        reset();
+        onClose();
+    }
+
+    useEffect(() => {
+        reset();
+    }, [open]);
+
+    return <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <form onSubmit={onSubmit}>
             <DialogTitle>Edit queue</DialogTitle>
             <DialogContent>
@@ -53,7 +66,7 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={handleClose}>Cancel</Button>
                 <Button type="submit" variant="contained">Save</Button>
             </DialogActions>
         </form>

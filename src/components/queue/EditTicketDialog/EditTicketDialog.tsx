@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useEffect} from "react";
 import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
@@ -17,7 +17,7 @@ type FormData = {
 };
 
 const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onClose}) => {
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         toast.promise(QueueAPI.editTicket(ticket.id, queueID, ticket.status, data.description), {
             loading: "Updating ticket...",
@@ -29,6 +29,10 @@ const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onC
                 reset();
             });
     });
+
+    useEffect(() => {
+        reset();
+    }, [open]);
 
     return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>

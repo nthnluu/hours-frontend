@@ -1,10 +1,22 @@
 import {FC, useState, useEffect} from "react";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    TextField,
+    Select,
+    FormControl,
+    InputLabel,
+    MenuItem
+} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
 import CourseAPI, {Course} from "@util/course/api";
 import {useSession} from "@util/auth/hooks";
+import {toast} from "react-hot-toast";
 
 export interface CreateCourseDialogProps {
     open: boolean;
@@ -20,7 +32,11 @@ type FormData = {
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.createQueue(data.title, data.description, data.courseID);
+        toast.promise(QueueAPI.createQueue(data.title, data.description, data.courseID), {
+            loading: "Creating queue...",
+            success: "Queue created",
+            error: "Something went wrong, please try again later.",
+        });
         reset();
         onClose();
     });
@@ -30,8 +46,8 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     useEffect(() => {
         if (currentUser && currentUser.coursePermissions)
             Promise.all(Object.keys(currentUser.coursePermissions)
-            .map(c => CourseAPI.getCourse(c)))
-            .then(res => setCoursePerms(res));
+                .map(c => CourseAPI.getCourse(c)))
+                .then(res => setCoursePerms(res));
     }, [currentUser]);
 
     if (loading) return <></>;
@@ -51,7 +67,6 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         size="small"
                         variant="standard"
                     />
-
                     <TextField
                         {...register("description")}
                         label="Description"
@@ -60,7 +75,6 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         size="small"
                         variant="standard"
                     />
-
                     <FormControl fullWidth size="small" variant="standard">
                         <InputLabel id="course-select-label">Course</InputLabel>
                         <Select
@@ -72,7 +86,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                             id="course-select"
                             label="Course"
                             type="text"
-                        >   
+                        >
                             {coursePerms.map(x => <MenuItem key={x.id} value={x.id}>{x.title}</MenuItem>)}
                         </Select>
                     </FormControl>

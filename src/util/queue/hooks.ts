@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Queue, Ticket, TicketStatus} from "@util/queue/api";
-import {collection, doc, getFirestore, onSnapshot} from "@firebase/firestore";
+import {collection, doc, getFirestore, onSnapshot, query, where} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
     const [loading, setLoading] = useState(true);
@@ -21,10 +21,11 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [queues, setQueues] = useState<Queue[] | undefined>(undefined);
 
+
     // todo impl active only
     useEffect(() => {
         const db = getFirestore();
-
+        const q = query(collection(db, "queues"), where("endTime", "<=", Date.now()));
         onSnapshot(collection(db, "queues"), (querySnapshot) => {
             const res: Queue[] = [];
             querySnapshot.forEach((doc) => {

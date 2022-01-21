@@ -11,19 +11,20 @@ import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
 import {Queue} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
+import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
 export interface QueueListProps {
     queueID: string
     queue: Queue
-    filterLoading: boolean;
+    showCompletedTickets: boolean;
 }
 
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({queueID, queue, filterLoading}) => {
+const QueueList: FC<QueueListProps> = ({queueID, queue, showCompletedTickets}) => {
     const {currentUser, isTA} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queueID, filterLoading);
+    const [tickets, ticketsLoading] = useTickets(queueID, showCompletedTickets);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
     if (ticketsLoading) return <></>;
@@ -32,6 +33,7 @@ const QueueList: FC<QueueListProps> = ({queueID, queue, filterLoading}) => {
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
+            <BouncingCubesAnimation/>
             <Typography variant="body1">
                 Nobody is here... yet 😉.
             </Typography>

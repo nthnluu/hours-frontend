@@ -27,118 +27,117 @@ import {toast} from "react-hot-toast";
 export interface QueueOptionsProps {
     queue: Queue;
     queueID: string;
-    filterLoading: boolean;
-    setFilterLoading: (filterLoading: boolean) => void;
+    showCompletedTickets: boolean;
+    setShowCompletedTickets: (arg: boolean) => void;
 }
 
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
-const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, filterLoading, setFilterLoading}) => {
+const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTickets, setShowCompletedTickets}) => {
     const router = useRouter();
     const {isTA} = useAuth();
     const [open, setOpen] = useState(false);
 
-    return (
-        <>
-            <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
-            <Grid item xs={12} md={3}>
-                <Stack spacing={3} divider={<Divider/>}>
-                    <Box width="100%">
-                        <Typography variant="h6">
-                            About
-                        </Typography>
-                        <Typography variant="body1" style={{wordWrap: "break-word"}}>
-                            {queue.description}
-                        </Typography>
+    return <>
+        <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
+        <Grid item xs={12} md={3}>
+            <Stack spacing={3} divider={<Divider/>}>
+                <Box width="100%">
+                    <Typography variant="h6">
+                        About
+                    </Typography>
+                    <Typography variant="body1" style={{wordWrap: "break-word"}}>
+                        {queue.description}
+                    </Typography>
 
-                        <Stack spacing={1.5} mt={2}>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <LocationOnIcon/>
-                                <Typography>
-                                    SunLab
-                                </Typography>
-                            </Stack>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <AccessTimeIcon/>
-                                <Typography>
-                                    Ends at 2:00 PM
-                                </Typography>
-                            </Stack>
+                    <Stack spacing={1.5} mt={2}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <LocationOnIcon/>
+                            <Typography>
+                                SunLab
+                            </Typography>
                         </Stack>
-                    </Box>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <AccessTimeIcon/>
+                            <Typography>
+                                Ends at 2:00 PM
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Box>
 
-                    {isTA(queue.course.id) && <Box width="100%">
-                        <Typography variant="h6">
-                            Manage Queue
-                        </Typography>
+                {isTA(queue.course.id) && <Box width="100%">
+                    <Typography variant="h6">
+                        Manage Queue
+                    </Typography>
 
-                        <List>
-                            <ListItem disablePadding>
-                                <ListItemButton onClick={() => setOpen(true)}>
-                                    <ListItemIcon>
-                                        <EditIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary="Edit queue"/>
-                                </ListItemButton>
-                            </ListItem>
+                    <List>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => setOpen(true)}>
+                                <ListItemIcon>
+                                    <EditIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Edit queue"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                            <ListItem disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <CampaignIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary="Make announcement"/>
-                                </ListItemButton>
-                            </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <CampaignIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Make announcement"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                            <ListItem disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <ShuffleIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary="Shuffle tickets"/>
-                                </ListItemButton>
-                            </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => QueueAPI.shuffleQueue(queueID)}>
+                                <ListItemIcon>
+                                    <ShuffleIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Shuffle tickets"/>
+                            </ListItemButton>
+                        </ListItem>
 
-                            <ListItem disablePadding>
-                                <ListItemButton onClick={() => setFilterLoading(!filterLoading)}>
-                                    <ListItemIcon>
-                                        <CheckCircleIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary="Show completed tickets"/>
-                                </ListItemButton>
-                            </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => setShowCompletedTickets(!showCompletedTickets)}>
+                                <ListItemIcon>
+                                    <CheckCircleIcon/>
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={(showCompletedTickets ? "Show" : "Hide") + " completed tickets"}/>
+                            </ListItemButton>
+                        </ListItem>
 
-                            <ListItem disablePadding>
-                                <ListItemButton
-                                    onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", queue.isCutOff).catch(_ => toast.error("Error closing queue."))}>
-                                    <ListItemIcon>
-                                        {queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
-                                    </ListItemIcon>
-                                    <ListItemText primary={queue.isCutOff ? "Reopen signups" : "Cutoff signups"}/>
-                                </ListItemButton>
-                            </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                onClick={() => QueueAPI.editQueue(queueID, queue.title, queue.description || "", !queue.isCutOff).catch(_ => toast.error("Error closing queue."))}>
+                                <ListItemIcon>
+                                    {queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
+                                </ListItemIcon>
+                                <ListItemText primary={queue.isCutOff ? "Reopen signups" : "Cutoff signups"}/>
+                            </ListItemButton>
+                        </ListItem>
 
-                            <ListItem disablePadding>
-                                <ListItemButton onClick={() => {
-                                    QueueAPI.deleteQueue(queueID)
-                                        .then(_ => toast.success("Queue deleted."))
-                                        .catch(_ => toast.error("Error closing queue."));
-                                    router.push("/");
-                                }}>
-                                    <ListItemIcon>
-                                        <CancelIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary="Close queue"/>
-                                </ListItemButton>
-                            </ListItem>
-                        </List>
-                    </Box>}
-                </Stack>
-            </Grid>
-        </>
-    );
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => {
+                                QueueAPI.deleteQueue(queueID)
+                                    .then(() => toast.success("Queue deleted."))
+                                    .catch(() => toast.error("Error closing queue."));
+                                router.push("/");
+                            }}>
+                                <ListItemIcon>
+                                    <CancelIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Close queue"/>
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Box>}
+            </Stack>
+        </Grid>
+    </>;
 };
 
 export default QueueOptions;
