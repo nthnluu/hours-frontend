@@ -63,6 +63,20 @@ async function editQueue(queueID: string, title: string, description: string, is
 }
 
 /**
+ * Cutoff a queue, given a queueID.
+ */
+async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
+    try {
+        await APIClient.patch(`/queues/${queueID}/cutoff`, {
+            isCutOff
+        });
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
  * Creates a queue with the given title, description, and course ID.
  */
 async function deleteQueue(queueID: string): Promise<void> {
@@ -117,6 +131,7 @@ async function deleteTicket(id: string, queueID: string): Promise<void> {
 const QueueAPI = {
     createQueue,
     editQueue,
+    cutOffQueue,
     deleteQueue,
     createTicket,
     editTicket,
