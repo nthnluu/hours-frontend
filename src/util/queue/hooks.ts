@@ -9,7 +9,10 @@ export function useQueue(id: string): [Queue | undefined, boolean] {
     useEffect(() => {
         const db = getFirestore();
         onSnapshot(doc(db, "queues", id), (doc) => {
-            setQueue({id: id, ...doc.data()} as Queue);
+            if (doc.exists()) {
+                setQueue({id: id, ...doc.data()} as Queue);
+
+            }
             setLoading(false);
         });
     }, [id]);
