@@ -22,15 +22,16 @@ export function useSession(): AuthState {
 
     useAsyncEffect(async (): Promise<void> => {
         try {
-            const user = await AuthAPI.getCurrentUser();
+            const sessionUser = await AuthAPI.getCurrentUser();
             const db = getFirestore();
-            onSnapshot(doc(db, "user_profiles", user.id), (doc) => {
+            onSnapshot(doc(db, "user_profiles", sessionUser.id), (doc) => {
                 if (doc.exists()) {
+                    const user = doc.data();
                     setAuthState({
                         loading: false,
                         isAuthenticated: true,
                         currentUser: {id: user.id, ...doc.data()} as User,
-                        isTA: courseID => user.coursePermissions[courseID] != undefined
+                        isTA: courseID => (user.coursePermissions != null) && (user.coursePermissions[courseID] != undefined)
                     });
                 }
             });

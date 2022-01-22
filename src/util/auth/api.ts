@@ -54,12 +54,12 @@ async function getUserById(id: string): Promise<User> {
 }
 
 /**
- * Fetches profile information corresponding to the currently logged in user.
+ * Fetches profile information corresponding to the currently logged-in user.
  */
-async function updateUser(displayName: string, isAdmin: boolean): Promise<void> {
+async function updateUser(displayName: string, pronouns: string, meetingLink: string): Promise<void> {
     try {
         return await APIClient.post(`${Endpoint.UPDATE}`, {
-            displayName, isAdmin
+            displayName, pronouns, meetingLink
         });
     } catch (e) {
         throw e;
@@ -85,8 +85,6 @@ async function updateUserByEmail(email: string, isAdmin: boolean): Promise<void>
 async function signInWithGoogle() {
     const auth = getAuth();
 
-    // As httpOnly cookies are to be used, do not persist any state client side.
-
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({
         'hd': 'brown.edu'
@@ -96,10 +94,10 @@ async function signInWithGoogle() {
         .then((userCredential) => {
             // Signed in
             return userCredential.user.getIdToken(true)
-                .then(async (idToken) => {
+                .then((idToken) => {
                     // Session login endpoint is queried and the session cookie is set.
                     // TODO: CSRF protection should be taken into account.
-                    return await APIClient.post(Endpoint.GET_SESSION, {token: idToken.toString()});
+                    return APIClient.post(Endpoint.GET_SESSION, {token: idToken.toString()});
                 });
         })
         .catch(() => {
