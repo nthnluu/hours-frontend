@@ -26,7 +26,6 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [queues, setQueues] = useState<Queue[] | undefined>(undefined);
 
-
     // todo impl active only
     useEffect(() => {
         const db = getFirestore();
@@ -36,7 +35,9 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const res: Queue[] = [];
             querySnapshot.forEach((doc) => {
-                res.push({id: doc.id, ...doc.data()} as Queue);
+                const data = doc.data();
+                const endTime = data.endTime as Timestamp;
+                res.push({...doc.data(), id: doc.id, endTime: endTime.toDate()} as Queue);
             });
 
             setQueues(res);
