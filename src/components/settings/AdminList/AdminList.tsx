@@ -47,7 +47,7 @@ export default function AdminList() {
     });
 
     function handleDeleteAdmin(user: User) {
-        toast.promise(AuthAPI.updateUser(user.displayName, false), {
+        toast.promise(AuthAPI.updateUserByEmail(user.email, false), {
             loading: "Removing admin...",
             success: `${user.displayName} is no longer an admin.`,
             error: errors.UNKNOWN
