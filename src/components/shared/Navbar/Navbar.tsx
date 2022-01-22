@@ -64,9 +64,13 @@ const Navbar: FC<NavbarProps> = ({
                         <MenuIcon/>
                     </IconButton>}
                     <Stack sx={{flexGrow: 1}} direction="row" alignItems="center" spacing={1}>
-                        <Image src="/signmeup.svg" alt="" width={32} height={32}/>
+
                         <NextLink href="/">
-                            <Link variant="h6" component="button" color="inherit" underline="hover">
+                            <Link variant="h6" component="button" color="inherit" underline="hover"
+                                  sx={{display: "inline-flex", alignItems: "center"}}>
+                                <Box mr={1} height={32}>
+                                    <Image src="/signmeup.svg" alt="" width={32} height={32}/>
+                                </Box>
                                 SignMeUp
                             </Link>
                         </NextLink>
