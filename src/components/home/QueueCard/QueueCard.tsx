@@ -3,6 +3,7 @@ import {Box, ButtonBase, Paper, Stack, Typography} from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {useRouter} from "next/router";
 import {Queue} from "@util/queue/api";
+import {format} from "date-fns";
 
 export interface QueueCardProps {
     queue: Queue;
@@ -32,7 +33,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
                 <Stack direction="row" spacing={0.5} alignItems="center">
                     <AccessTimeIcon/>
                     <Typography variant="body2">
-                        Ends at 2:00pm
+                        {format(queue.endTime, "'Ends at' K:m a")}
                     </Typography>
                 </Stack>
             </Stack>
