@@ -16,7 +16,7 @@ type FormData = {
 };
 
 const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID}) => {
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<FormData>();
+    const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         toast.promise(QueueAPI.createTicket(queueID, data.description), {
             loading: "Creating ticket...",
@@ -43,7 +43,7 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
                 </Stack>
             </DialogContent>
