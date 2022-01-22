@@ -1,6 +1,5 @@
 import React, {FC, useState, MouseEvent} from "react";
 import {ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
-import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import IconButton from "@components/shared/IconButton";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -33,17 +32,11 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
     const handleClick = (event: MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
 
-    const handleClaimTicket = () => {
-        handleClose();
-        QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)
-            .catch(() => {
-                toast.error("Something went wrong, please try again later.");
-            });
-    };
     const handleEditTicket = () => {
         handleClose();
         setEditTicketDialog(true);
     };
+
     const handleMarkAsCompleted = () => {
         handleClose();
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusComplete, ticket.description)
@@ -51,6 +44,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                 toast.error("Something went wrong, please try again later.");
             });
     };
+
     const handleMarkAsMissing = () => {
         handleClose();
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusMissing, ticket.description)
@@ -58,6 +52,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                 toast.error("Something went wrong, please try again later.");
             });
     };
+
     const handleReturnToQueue = () => {
         handleClose();
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusWaiting, ticket.description)
@@ -65,6 +60,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                 toast.error("Something went wrong, please try again later.");
             });
     };
+
     const handleDeleteTicket = () => {
         handleClose();
         const confirmed = confirm("Are you sure you want to delete this ticket?");
@@ -77,30 +73,27 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         }
     };
 
+    const buttonID = `ticket-${ticket.id}-button`;
+    const menuID = `ticket-${ticket.id}-menu`;
+
     return <div>
         <IconButton
             label="More options"
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
+            id={buttonID}
+            aria-controls={open ? menuID : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}>
             <MoreHorizIcon/>
         </IconButton>
         <Menu
-            id="basic-menu"
+            id={menuID}
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
             MenuListProps={{
-                'aria-labelledby': 'basic-button',
+                'aria-labelledby': buttonID,
             }}>
-            {isTA && !isClaimed && <MenuItem onClick={handleClaimTicket}>
-                <ListItemIcon>
-                    <ConfirmationNumberOutlinedIcon fontSize="small"/>
-                </ListItemIcon>
-                <ListItemText>Claim Ticket</ListItemText>
-            </MenuItem>}
             {isTicketOwner && <MenuItem onClick={handleEditTicket}>
                 <ListItemIcon>
                     <EditIcon fontSize="small"/>

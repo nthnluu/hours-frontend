@@ -1,7 +1,7 @@
 import React, {FC, useState} from "react";
 import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
-import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 import QueueAPI, {Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
@@ -60,7 +60,7 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
                     <Stack direction="row" spacing={0} alignItems="center">
                         {isTA && !isClaimed && !isCompleted && <IconButton label="Claim ticket"
                                                                            onClick={handleClaimTicket}>
-                            <ConfirmationNumberOutlinedIcon/>
+                            <CheckIcon/>
                         </IconButton>}
                         {(isTA || isTicketOwner) &&
                             <QueueListItemMenu isClaimed={isClaimed} isTA={isTA} isTicketOwner={isTicketOwner}
