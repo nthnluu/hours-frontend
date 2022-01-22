@@ -51,12 +51,12 @@ async function createQueue(title: string, description: string, location: string,
 }
 
 /**
- * Creates a queue with the given title, description, and course ID.
+ * Edits a queue.
  */
-async function editQueue(queueID: string, title: string, description: string, isCutOff: boolean): Promise<void> {
+async function editQueue(queueID: string, title: string, description: string, location: string, endTime: Date, isCutOff: boolean): Promise<void> {
     try {
         await APIClient.post(`/queues/${queueID}/edit`, {
-            title, description, isCutOff
+            title, description, location, endTime, isCutOff
         });
         return;
     } catch (e) {
@@ -79,7 +79,7 @@ async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
 }
 
 /**
- * Creates a queue with the given title, description, and course ID.
+ * Deletes a queue with the given queue ID.
  */
 async function deleteQueue(queueID: string): Promise<void> {
     try {
@@ -115,7 +115,7 @@ async function createTicket(queueID: string, description: string): Promise<void>
 }
 
 /**
- * Creates a ticket for the given user.
+ * Edits a ticket.
  */
 async function editTicket(id: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
     try {
@@ -131,7 +131,7 @@ async function editTicket(id: string, queueID: string, status: TicketStatus, des
 }
 
 /**
- * Creates a ticket for the given user.
+ * Deletes a ticket with the given ID.
  */
 async function deleteTicket(id: string, queueID: string): Promise<void> {
     try {

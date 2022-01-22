@@ -1,5 +1,12 @@
 import {FC, useEffect} from "react";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    TextField
+} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI, {Queue} from "@util/queue/api";
@@ -15,12 +22,17 @@ export interface EditQueueDialogProps {
 type FormData = {
     title: string;
     description: string;
+    endTime: Date;
+    location: string;
 };
 
 const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.editQueue(queueID, data.title, data.description, queue.isCutOff)
+        // TODO(n-young): replace with the queue time once implemented
+        const placeholderEndTime = new Date();
+        placeholderEndTime.setMinutes(placeholderEndTime.getMinutes() + 30);
+        QueueAPI.editQueue(queueID, data.title, data.description, data.location, placeholderEndTime, queue.isCutOff)
             .catch(() => {
                 toast.error("Something went wrong, please try again later.");
             });
@@ -53,7 +65,16 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                         size="small"
                         variant="standard"
                     />
-
+                    <TextField
+                        {...register("location")}
+                        defaultValue={queue.location}
+                        label="Location"
+                        type="text"
+                        required
+                        fullWidth
+                        size="small"
+                        variant="standard"
+                    />
                     <TextField
                         {...register("description")}
                         defaultValue={queue.description}

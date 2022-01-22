@@ -33,6 +33,7 @@ type FormData = {
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
+        // TODO(n-young): replace with the queue time once implemented
         const placeholderEndTime = new Date();
         placeholderEndTime.setMinutes(placeholderEndTime.getMinutes() + 30);
         toast.promise(QueueAPI.createQueue(data.title, data.description, data.location, placeholderEndTime, data.courseID), {
