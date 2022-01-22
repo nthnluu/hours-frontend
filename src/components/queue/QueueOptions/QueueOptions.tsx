@@ -55,7 +55,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <LocationOnIcon/>
                             <Typography>
-                                SunLab
+                                {queue.location}
                             </Typography>
                         </Stack>
                         <Stack direction="row" alignItems="center" spacing={1}>

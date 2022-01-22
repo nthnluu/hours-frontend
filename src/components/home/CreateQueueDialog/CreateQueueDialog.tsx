@@ -26,13 +26,16 @@ export interface CreateCourseDialogProps {
 type FormData = {
     title: string;
     description: string;
+    location: string;
     courseID: string;
 };
 
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        toast.promise(QueueAPI.createQueue(data.title, data.description, data.courseID), {
+        const placeholderEndTime = new Date();
+        placeholderEndTime.setMinutes(placeholderEndTime.getMinutes() + 30);
+        toast.promise(QueueAPI.createQueue(data.title, data.description, data.location, placeholderEndTime, data.courseID), {
             loading: "Creating queue...",
             success: "Queue created",
             error: "Something went wrong, please try again later.",
@@ -62,6 +65,15 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                         required
                         autoFocus
                         label="Title"
+                        type="text"
+                        fullWidth
+                        size="small"
+                        variant="standard"
+                    />
+                    <TextField
+                        {...register("location")}
+                        required
+                        label="Location"
                         type="text"
                         fullWidth
                         size="small"
