@@ -8,7 +8,6 @@ import AppLayout from "@components/shared/AppLayout";
 import QueueOptions from "@components/queue/QueueOptions";
 import QueueList from "@components/queue/QueueList";
 
-
 export default function Queue() {
     const router = useRouter();
     const {queueID} = router.query;
@@ -25,15 +24,16 @@ export default function Queue() {
 
     return (
         <AppLayout maxWidth="lg" loading={queueLoading}>
-            {queue && (
-                <>
-                    <QueuePageHeader queue={queue}/>
-                    <Grid container spacing={4} marginTop={1}>
-                        <QueueOptions queue={queue} queueID={queueID as string} showCompletedTickets={showCompletedTickets}
-                                      setShowCompletedTickets={setShowCompletedTickets}/>
-                        <QueueList queueID={queueID as string} queue={queue} showCompletedTickets={showCompletedTickets}/>
-                    </Grid>
-                </>)}
+            {queue && !queueLoading && <>
+                <QueuePageHeader queue={queue}/>
+                <Grid container spacing={4} marginTop={1}>
+                    <QueueOptions queue={queue} queueID={queueID as string}
+                                  showCompletedTickets={showCompletedTickets}
+                                  setShowCompletedTickets={setShowCompletedTickets}/>
+                    <QueueList queueID={queueID as string} queue={queue}
+                               showCompletedTickets={showCompletedTickets}/>
+                </Grid>
+            </>}
         </AppLayout>
     );
 }
