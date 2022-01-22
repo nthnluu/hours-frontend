@@ -32,7 +32,7 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
         const db = getFirestore();
         const dateThreshold = new Date();
         dateThreshold.setMinutes(dateThreshold.getMinutes() - 5);
-        const q = query(collection(db, "queues"), where("endTime", "<=", dateThreshold));
+        const q = query(collection(db, "queues"), where("endTime", ">=", dateThreshold));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const res: Queue[] = [];
             querySnapshot.forEach((doc) => {
