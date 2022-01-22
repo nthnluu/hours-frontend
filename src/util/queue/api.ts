@@ -29,7 +29,7 @@ export interface Ticket {
         PhoneNumber: string;
         PhotoURL: string;
     };
-    claimedAt: Timestamp;
+    claimedAt?: Timestamp;
     description: string;
     status: TicketStatus;
 }

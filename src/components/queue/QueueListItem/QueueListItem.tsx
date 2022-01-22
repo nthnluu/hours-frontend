@@ -1,6 +1,4 @@
-import React, {FC, useState, useEffect} from "react";
-import {intervalToDuration} from "date-fns";
-import {Timestamp} from "@firebase/firestore";
+import React, {FC, useState} from "react";
 import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
@@ -10,6 +8,7 @@ import EditTicketDialog from "@components/queue/EditTicketDialog";
 import getInitials from "@util/shared/getInitials";
 import QueueListItemMenu from "@components/queue/QueueListItemMenu";
 import {toast} from "react-hot-toast";
+import QueueListItemTimer from "@components/queue/QueueListItemTimer";
 
 export interface QueueListItemProps {
     courseID: string;
@@ -17,23 +16,9 @@ export interface QueueListItemProps {
     ticket: Ticket;
 }
 
-const calculateClaimDuration = (claimedAtSeconds?: number): string => {
-    if (!claimedAtSeconds) {
-        return '';
-    }
-    const timer = Timestamp.now().seconds - claimedAtSeconds;
-    const duration = intervalToDuration({ start: 0, end: timer * 1000 });
-    const formatted = `${duration.minutes! < 10 ? '0' + duration.minutes : duration.minutes}:${
-        duration.seconds! < 10 ? '0' + duration.seconds : duration.seconds
-    }`;
-
-    return formatted;
-};
-
 const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
     const {currentUser} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
-    const [time, setTime] = useState(calculateClaimDuration(ticket?.claimedAt.seconds));
 
     const isClaimed = ticket.status === TicketStatus.StatusClaimed;
     const isMissing = ticket.status === TicketStatus.StatusMissing;
@@ -42,18 +27,7 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
     const isTA = (currentUser != undefined) && (currentUser.coursePermissions[courseID] != undefined);
     const isTicketOwner = (currentUser != undefined) && (ticket.createdBy.Email === currentUser.email);
 
-    useEffect(() => {
-        if (ticket.claimedAt) {
-            const intervalID = setInterval(() => {
-                setTime(calculateClaimDuration(ticket.claimedAt?.seconds));
-            }, 1000);
-    
-            return () => clearInterval(intervalID);
-        }
-    }, [ticket]);
-    
     function handleClaimTicket() {
-        setTime("00:00");
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)
             .catch(() => toast.error("Something went wrong, please try again later."));
     }
@@ -75,8 +49,7 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
                                         {ticket.createdBy.DisplayName}
                                     </Typography>
                                 </Box>
-                                {isClaimed && <Chip label={`CLAIMED - ${time}`} size="small" variant="outlined"
-                                                    style={{width: "15ch", overflow: "hidden"}}/>}
+                                {isClaimed && ticket.claimedAt && <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
                                 {isMissing && <Chip label="MISSING" size="small" color="error"/>}
                                 {isCompleted && <Chip label="COMPLETED" size="small" color="info"/>}
                             </Stack>
@@ -90,9 +63,9 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
                             <ConfirmationNumberOutlinedIcon/>
                         </IconButton>}
                         {(isTA || isTicketOwner) &&
-                        <QueueListItemMenu isClaimed={isClaimed} isTA={isTA} isTicketOwner={isTicketOwner}
-                                           queueID={queueID} ticket={ticket}
-                                           setEditTicketDialog={setEditTicketDialog}/>}
+                            <QueueListItemMenu isClaimed={isClaimed} isTA={isTA} isTicketOwner={isTicketOwner}
+                                               queueID={queueID} ticket={ticket}
+                                               setEditTicketDialog={setEditTicketDialog}/>}
                     </Stack>
                 </Stack>
             </Box>
