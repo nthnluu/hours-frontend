@@ -50,8 +50,8 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
                                     </Typography>
                                 </Box>
                                 {isClaimed && ticket.claimedAt && <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
-                                {isMissing && <Chip label="MISSING" size="small" color="error"/>}
-                                {isCompleted && <Chip label="COMPLETED" size="small" color="info"/>}
+                                {isMissing && <Chip label="Missing" size="small" color="error" sx={{fontWeight: 500}}/>}
+                                {isCompleted && <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
                             </Stack>
                             <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
                                         fontSize={14}>{ticket.description}</Typography>

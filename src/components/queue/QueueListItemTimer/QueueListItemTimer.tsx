@@ -29,8 +29,8 @@ const QueueListItemTimer: FC<QueueListItemTimerProps> = ({claimedAt}) => {
         return () => clearInterval(intervalID);
     }, [claimedAt]);
 
-    return <Chip label={`CLAIMED - ${time}`} size="small" variant="outlined"
-                 style={{width: "15ch", overflow: "hidden"}}/>;
+    return <Chip label={`Claimed - ${time}`} size="small" variant="outlined"
+                 style={{width: "15ch", overflow: "hidden", fontWeight: 500}}/>;
 };
 
 export default QueueListItemTimer;
