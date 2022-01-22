@@ -4,12 +4,13 @@ import Button from "@components/shared/Button";
 import GoogleIcon from '@mui/icons-material/Google';
 import AuthAPI from "@util/auth/api";
 import {toast} from "react-hot-toast";
+import errors from "@util/errors";
 
 export default function Home() {
     function handleSignIn() {
         AuthAPI.signInWithGoogle()
             .then(() => (window.location.href = "/"))
-            .catch(() => toast.error("Something went wrong, please try again in a bit."));
+            .catch(() => toast.error(errors.UNKNOWN));
     }
 
     return (<Container maxWidth="sm" sx={{marginTop: [8, null, 12]}}>

@@ -11,6 +11,7 @@ import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI, {Queue} from "@util/queue/api";
 import {toast} from "react-hot-toast";
+import errors from "@util/errors";
 
 export interface EditQueueDialogProps {
     queueID: string,
@@ -34,7 +35,7 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
         placeholderEndTime.setMinutes(placeholderEndTime.getMinutes() + 30);
         QueueAPI.editQueue(queueID, data.title, data.description, data.location, placeholderEndTime, queue.isCutOff)
             .catch(() => {
-                toast.error("Something went wrong, please try again later.");
+                toast.error(errors.UNKNOWN);
             });
         reset();
         onClose();

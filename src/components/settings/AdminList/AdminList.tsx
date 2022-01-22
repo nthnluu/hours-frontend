@@ -22,6 +22,7 @@ import SettingsSection from "@components/settings/SettingsSection";
 import getInitials from "@util/shared/getInitials";
 import Button from "@components/shared/Button";
 import {Add} from "@mui/icons-material";
+import errors from "@util/errors";
 
 type FormData = {
     email: string;
@@ -40,7 +41,7 @@ export default function AdminList() {
         toast.promise(AuthAPI.updateUserByEmail(data.email, true), {
             loading: "Adding admin...",
             success: `${data.email} is now an admin.`,
-            error: "Something went wrong, please try again later."
+            error: errors.UNKNOWN
         })
             .then(() => reset());
     });
@@ -49,7 +50,7 @@ export default function AdminList() {
         toast.promise(AuthAPI.updateUser(user.displayName, false), {
             loading: "Removing admin...",
             success: `${user.displayName} is no longer an admin.`,
-            error: "Something went wrong, please try again later."
+            error: errors.UNKNOWN
         });
     }
 

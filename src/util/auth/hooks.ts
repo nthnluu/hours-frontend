@@ -25,12 +25,14 @@ export function useSession(): AuthState {
             const user = await AuthAPI.getCurrentUser();
             const db = getFirestore();
             onSnapshot(doc(db, "user_profiles", user.id), (doc) => {
-                setAuthState({
-                    loading: false,
-                    isAuthenticated: true,
-                    currentUser: {id: user.id, ...doc.data()} as User,
-                    isTA: courseID => user.coursePermissions[courseID] != undefined
-                });
+                if (doc.exists()) {
+                    setAuthState({
+                        loading: false,
+                        isAuthenticated: true,
+                        currentUser: {id: user.id, ...doc.data()} as User,
+                        isTA: courseID => user.coursePermissions[courseID] != undefined
+                    });
+                }
             });
         } catch {
             setAuthState({loading: false, isAuthenticated: false, currentUser: undefined, isTA: () => false});

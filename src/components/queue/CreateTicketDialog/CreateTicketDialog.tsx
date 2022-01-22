@@ -4,6 +4,7 @@ import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
 import {toast} from "react-hot-toast";
+import errors from "@util/errors";
 
 export interface CreateTicketDialogProps {
     open: boolean;
@@ -21,7 +22,7 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
         toast.promise(QueueAPI.createTicket(queueID, data.description), {
             loading: "Creating ticket...",
             success: "Ticket created!",
-            error: "Something went wrong, please try again later."
+            error: errors.UNKNOWN
         })
             .then(() => {
                 onClose();

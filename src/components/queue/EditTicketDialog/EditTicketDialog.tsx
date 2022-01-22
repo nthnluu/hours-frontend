@@ -4,6 +4,7 @@ import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI, {Ticket} from "@util/queue/api";
 import {toast} from "react-hot-toast";
+import errors from "@util/errors";
 
 export interface EditTicketDialogProps {
     ticket: Ticket;
@@ -22,7 +23,7 @@ const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onC
         toast.promise(QueueAPI.editTicket(ticket.id, queueID, ticket.status, data.description), {
             loading: "Updating ticket...",
             success: "Ticket updated!",
-            error: "Something went wrong, please try again later."
+            error: errors.UNKNOWN
         })
             .then(() => {
                 onClose();

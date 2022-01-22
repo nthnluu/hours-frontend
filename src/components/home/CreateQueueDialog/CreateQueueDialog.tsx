@@ -17,6 +17,7 @@ import QueueAPI from "@util/queue/api";
 import CourseAPI, {Course} from "@util/course/api";
 import {useSession} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
+import errors from "@util/errors";
 
 export interface CreateCourseDialogProps {
     open: boolean;
@@ -39,7 +40,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
         toast.promise(QueueAPI.createQueue(data.title, data.description, data.location, placeholderEndTime, data.courseID), {
             loading: "Creating queue...",
             success: "Queue created",
-            error: "Something went wrong, please try again later.",
+            error: errors.UNKNOWN,
         });
         reset();
         onClose();

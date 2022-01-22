@@ -53,6 +53,7 @@ function MyApp(props: MyAppProps) {
 
     firebaseInit();
     const session = useSession();
+
     if (session.loading) return null;
 
     return (
@@ -69,7 +70,7 @@ function MyApp(props: MyAppProps) {
                             style: {
                                 padding: '10px',
                                 backgroundColor: currentThemeMode() === "dark" ? "#353535" : "#fff",
-                                color:  currentThemeMode() === "dark" ? "#fff" :  "#212121",
+                                color: currentThemeMode() === "dark" ? "#fff" : "#212121",
                                 fontWeight: 500
                             },
                         }} containerStyle={{

@@ -9,6 +9,7 @@ import getInitials from "@util/shared/getInitials";
 import QueueListItemMenu from "@components/queue/QueueListItemMenu";
 import {toast} from "react-hot-toast";
 import QueueListItemTimer from "@components/queue/QueueListItemTimer";
+import errors from "@util/errors";
 
 export interface QueueListItemProps {
     courseID: string;
@@ -29,7 +30,7 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
 
     function handleClaimTicket() {
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)
-            .catch(() => toast.error("Something went wrong, please try again later."));
+            .catch(() => toast.error(errors.UNKNOWN));
     }
 
     return (<>

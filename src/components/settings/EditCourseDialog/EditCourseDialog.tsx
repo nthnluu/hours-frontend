@@ -22,6 +22,7 @@ import {User} from "@util/auth/api";
 import {toast} from "react-hot-toast";
 import {useCourseStaff} from "@util/course/hooks";
 import TabPanel from "@components/shared/TabPanel";
+import errors from "@util/errors";
 
 export interface EditCourseDialogProps {
     course: Course;
@@ -76,7 +77,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                 setEditLoading(false);
             })
             .catch(() => {
-                toast.error("Something went wrong, please try again later.");
+                toast.error(errors.UNKNOWN);
                 setEditLoading(false);
             });
     });
@@ -122,7 +123,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                     setRevokeAccessLoading(false);
                 })
                 .catch(() => {
-                    toast.error("Something went wrong, please try again later.");
+                    toast.error(errors.UNKNOWN);
                     setRevokeAccessLoading(false);
                 });
         }

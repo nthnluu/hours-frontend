@@ -9,6 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import QueueAPI, {Ticket, TicketStatus} from "@util/queue/api";
 import {toast} from "react-hot-toast";
+import errors from "@util/errors";
 
 export interface QueueListItemMenuProps {
     isClaimed: boolean;
@@ -41,7 +42,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         handleClose();
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusComplete, ticket.description)
             .catch(() => {
-                toast.error("Something went wrong, please try again later.");
+                toast.error(errors.UNKNOWN);
             });
     };
 
@@ -49,7 +50,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         handleClose();
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusMissing, ticket.description)
             .catch(() => {
-                toast.error("Something went wrong, please try again later.");
+                toast.error(errors.UNKNOWN);
             });
     };
 
@@ -57,7 +58,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         handleClose();
         QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusWaiting, ticket.description)
             .catch(() => {
-                toast.error("Something went wrong, please try again later.");
+                toast.error(errors.UNKNOWN);
             });
     };
 
@@ -68,7 +69,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         if (confirmed) {
             QueueAPI.deleteTicket(ticket.id, queueID)
                 .catch(() => {
-                    toast.error("Something went wrong, please try again later.");
+                    toast.error(errors.UNKNOWN);
                 });
         }
     };
