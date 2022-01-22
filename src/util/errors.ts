@@ -1,5 +1,5 @@
 enum Errors {
-    UNKNOWN = "Something went wrong, please try again later."
+    UNKNOWN = "Something went wrong. Try again later."
 }
 
 export default Errors;
