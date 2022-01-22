@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Queue, Ticket, TicketStatus} from "@util/queue/api";
-import {collection, doc, getFirestore, onSnapshot, query, where} from "@firebase/firestore";
+import {collection, doc, getFirestore, onSnapshot, query, Timestamp, where} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
     const [loading, setLoading] = useState(true);
@@ -8,13 +8,15 @@ export function useQueue(id: string): [Queue | undefined, boolean] {
 
     useEffect(() => {
         const db = getFirestore();
-        onSnapshot(doc(db, "queues", id), (doc) => {
+        const unsubscribe = onSnapshot(doc(db, "queues", id), (doc) => {
             if (doc.exists()) {
-                setQueue({id: id, ...doc.data()} as Queue);
-
+                const data = doc.data();
+                const endTime = data.endTime as Timestamp;
+                setQueue({...data, id: id, endTime: endTime.toDate()} as Queue);
             }
             setLoading(false);
         });
+        return () => unsubscribe();
     }, [id]);
 
     return [queue, loading];
@@ -28,8 +30,10 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
     // todo impl active only
     useEffect(() => {
         const db = getFirestore();
-        const q = query(collection(db, "queues"), where("endTime", "<=", Date.now()));
-        onSnapshot(collection(db, "queues"), (querySnapshot) => {
+        const dateThreshold = new Date();
+        dateThreshold.setMinutes(dateThreshold.getMinutes() - 5);
+        const q = query(collection(db, "queues"), where("endTime", "<=", dateThreshold));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const res: Queue[] = [];
             querySnapshot.forEach((doc) => {
                 res.push({id: doc.id, ...doc.data()} as Queue);
@@ -38,6 +42,8 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
             setQueues(res);
             setLoading(false);
         });
+
+        return () => unsubscribe();
     }, [activeOnly]);
 
     return [queues, loading];
@@ -50,7 +56,7 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
     useEffect(() => {
         const db = getFirestore();
 
-        onSnapshot(collection(db, "queues", queueID, "tickets"), (querySnapshot) => {
+        const unsubscribe = onSnapshot(collection(db, "queues", queueID, "tickets"), (querySnapshot) => {
             let res: Ticket[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
@@ -64,6 +70,8 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
             setTickets(res);
             setLoading(false);
         });
+
+        return () => unsubscribe();
     }, [queueID, filterCompleted]);
 
     return [tickets, loading];

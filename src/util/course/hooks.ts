@@ -9,7 +9,7 @@ export function useCourses(): [Course[] | undefined, boolean] {
 
     useEffect(() => {
         const db = getFirestore();
-        onSnapshot(collection(db, "courses"), (querySnapshot) => {
+        const unsubscribe = onSnapshot(collection(db, "courses"), (querySnapshot) => {
             const res: Course[] = [];
             querySnapshot.forEach((doc) => {
                 res.push({id: doc.id, ...doc.data()} as Course);
@@ -18,6 +18,8 @@ export function useCourses(): [Course[] | undefined, boolean] {
             setCourses(res);
             setLoading(false);
         });
+
+        return () => unsubscribe();
     }, []);
 
     return [courses, loading];
@@ -30,7 +32,7 @@ export function useCourseStaff(courseID: string): [User[], boolean] {
     useEffect(() => {
         if (courseID) {
             const db = getFirestore();
-            onSnapshot(doc(db, "courses", courseID), (doc) => {
+            const unsubscribe = onSnapshot(doc(db, "courses", courseID), (doc) => {
                 const data = doc.data();
                 if (data) {
                     const staffIDs = Object.keys(data.coursePermissions);
@@ -41,6 +43,8 @@ export function useCourseStaff(courseID: string): [User[], boolean] {
                         });
                 }
             });
+
+            return () => unsubscribe();
         }
     }, [courseID]);
 

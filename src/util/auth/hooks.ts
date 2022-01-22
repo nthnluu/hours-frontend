@@ -19,12 +19,13 @@ export const AuthProvider = authContext.Provider;
 /** useSession is a hook that fetches a user session from the Acropolis API */
 export function useSession(): AuthState {
     const [authState, setAuthState] = useState(initialAuthState);
+    let unsubscribe = () => {};
 
     useAsyncEffect(async (): Promise<void> => {
         try {
             const sessionUser = await AuthAPI.getCurrentUser();
             const db = getFirestore();
-            onSnapshot(doc(db, "user_profiles", sessionUser.id), (doc) => {
+            unsubscribe = onSnapshot(doc(db, "user_profiles", sessionUser.id), (doc) => {
                 if (doc.exists()) {
                     const user = doc.data();
                     setAuthState({
@@ -38,7 +39,7 @@ export function useSession(): AuthState {
         } catch {
             setAuthState({loading: false, isAuthenticated: false, currentUser: undefined, isTA: () => false});
         }
-    }, []);
+    }, [], () => unsubscribe());
 
     return authState;
 }
@@ -56,7 +57,7 @@ export default function useAdmins(): [User[] | undefined, boolean] {
 
     useEffect(() => {
         const db = getFirestore();
-        onSnapshot(collection(db, "user_profiles"), (querySnapshot) => {
+        const unsubscribe = onSnapshot(collection(db, "user_profiles"), (querySnapshot) => {
             const res: User[] = [];
             querySnapshot.forEach((doc) => {
                 if (doc.data().isAdmin) res.push({id: doc.id, ...doc.data()} as User);
@@ -65,6 +66,8 @@ export default function useAdmins(): [User[] | undefined, boolean] {
             setUsers(res);
             setLoading(false);
         });
+
+        return () => unsubscribe();
     }, []);
 
     return [users, loading];
