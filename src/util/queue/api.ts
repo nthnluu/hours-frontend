@@ -8,15 +8,17 @@ export interface Queue {
     color: string;
     description?: string;
     course: Course;
+    location: string;
+    endTime: Date;
     isCutOff: boolean;
     tickets: Ticket[];
 }
 
 export const enum TicketStatus {
-	StatusWaiting = "WAITING",
-	StatusClaimed = "CLAIMED",
-	StatusMissing = "MISSING",
-	StatusComplete = "COMPLETE",
+    StatusWaiting = "WAITING",
+    StatusClaimed = "CLAIMED",
+    StatusMissing = "MISSING",
+    StatusComplete = "COMPLETE",
 }
 
 export interface Ticket {
@@ -37,10 +39,10 @@ export interface Ticket {
 /**
  * Creates a queue with the given title, description, and course ID.
  */
-async function createQueue(title: string, description: string, courseID: string): Promise<void> {
+async function createQueue(title: string, description: string, location: string, endTime: Date, courseID: string): Promise<void> {
     try {
         await APIClient.post(`/queues/create/${courseID}`, {
-            title, description, courseID
+            title, description, location, endTime, courseID
         });
         return;
     } catch (e) {
@@ -54,7 +56,7 @@ async function createQueue(title: string, description: string, courseID: string)
 async function editQueue(queueID: string, title: string, description: string, isCutOff: boolean): Promise<void> {
     try {
         await APIClient.post(`/queues/${queueID}/edit`, {
-            title, description, isCutOff 
+            title, description, isCutOff
         });
         return;
     } catch (e) {
