@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import CreateCourseDialog from "@components/settings/CreateCourseDialog";
-import {List} from "@mui/material";
+import {List, Typography} from "@mui/material";
 import {useCourses} from "@util/course/hooks";
 import CourseListItem from "../CourseListItem";
 import SettingsSection from "@components/settings/SettingsSection";
@@ -19,9 +19,12 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
 
     return <>
         <CreateCourseDialog open={openCreate} onClose={() => setOpenCreate(false)}/>
-        <SettingsSection adminOnly title="All courses" actionButton={{label: "New", onClick: () => setOpenCreate(true)}}>
+        <SettingsSection adminOnly title="All courses"
+                         actionButton={{label: "New", onClick: () => setOpenCreate(true)}}>
             {courses && <List>
-                {courses.map((course, index) => <CourseListItem key={course.id} course={course} isLastChild={index === (courses.length - 1)}/>)}
+                {courses.length == 0 && <Typography textAlign="center">There are no courses.</Typography>}
+                {courses.map((course, index) => <CourseListItem key={course.id} course={course}
+                                                                isLastChild={index === (courses.length - 1)}/>)}
             </List>}
         </SettingsSection>
     </>;
