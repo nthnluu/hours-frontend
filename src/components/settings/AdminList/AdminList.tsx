@@ -29,7 +29,7 @@ type FormData = {
 };
 
 /**
- * AdminList renders a list of all of the admins.
+ * AdminList renders a list of all the admins.
  */
 export default function AdminList() {
     const [currentConfirmDialog, setCurrentConfirmDialog] = useState("");
