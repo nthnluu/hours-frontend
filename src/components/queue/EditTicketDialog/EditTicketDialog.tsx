@@ -44,12 +44,11 @@ const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onC
                         multiline
                         defaultValue={ticket.description}
                         required
-                        autoFocus
                         label="Question"
                         type="text"
                         fullWidth
                         size="small"
-                        variant="outlined"
+                        variant="standard"
                     />
                 </Stack>
             </DialogContent>
