@@ -11,7 +11,7 @@ export interface Queue {
     location: string;
     endTime: Date;
     isCutOff: boolean;
-    tickets: Ticket[];
+    tickets: string[];
 }
 
 export const enum TicketStatus {

@@ -9,7 +9,7 @@ import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
-import {Queue} from "@util/queue/api";
+import {Queue, Ticket} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
@@ -31,6 +31,10 @@ const QueueList: FC<QueueListProps> = ({queueID, queue, showCompletedTickets}) =
 
     const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.Email == currentUser?.email).length > 0;
 
+    // TODO(n-young): kinda jank, please take a look.
+    // @ts-ignore
+    const sortedTickets: Ticket[] = tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
+
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
             <BouncingCubesAnimation/>
@@ -49,15 +53,16 @@ const QueueList: FC<QueueListProps> = ({queueID, queue, showCompletedTickets}) =
                     Queue
                 </Typography>
                 {!queue.isCutOff && !inQueue && !isTA(queue.course.id) &&
-                <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
-                    Join Queue
-                </Button>}
+                    <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
+                        Join Queue
+                    </Button>}
             </Stack>
             <Box mt={1}>
                 <Stack spacing={2}>
-                    {tickets && tickets.map(ticket => <QueueListItem key={ticket.id} courseID={queue.course.id}
-                                                                     queueID={queue.id}
-                                                                     ticket={ticket}/>)}
+                    {sortedTickets && sortedTickets.map(ticket => <QueueListItem key={ticket.id}
+                                                                                 courseID={queue.course.id}
+                                                                                 queueID={queue.id}
+                                                                                 ticket={ticket}/>)}
                     {tickets && tickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>
