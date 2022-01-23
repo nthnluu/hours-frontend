@@ -35,7 +35,7 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
 
     // send desktop notification to user when their ticket is claimed
     useEffect(() => {
-        if (isTicketOwner) {
+        if (isTicketOwner && isClaimed) {
             new Notification('Your ticket has been claimed!');
         }
     }, [isClaimed, isTicketOwner]);
