@@ -48,7 +48,7 @@ const ProfileInfoSection: FC<ProfileInfoSectionProps> = ({}) => {
                 <TextField size="small" label="Pronouns" {...register("pronouns")}
                            defaultValue={currentUser?.pronouns}/>
                 {isTA && <TextField size="small" label="Meeting link" {...register("meetingLink")}
-                                    defaultValue={currentUser?.meetingLink}/>}
+                                    defaultValue={currentUser?.meetingLink} type="url"/>}
                 <Stack direction="row" justifyContent="end">
                     <Button variant="contained" type="submit" loading={loading}>
                         Save
