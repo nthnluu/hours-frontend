@@ -9,11 +9,11 @@ import {
     Select,
     FormControl,
     InputLabel,
-    MenuItem
+    MenuItem, FormControlLabel, Checkbox
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
-import QueueAPI from "@util/queue/api";
+import QueueAPI, {CreateQueueRequest} from "@util/queue/api";
 import CourseAPI, {Course} from "@util/course/api";
 import {useSession} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
@@ -29,6 +29,8 @@ type FormData = {
     description: string;
     location: string;
     courseID: string;
+    allowTicketEditing: boolean;
+    showMeetingLinks: boolean;
 };
 
 const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
@@ -37,13 +39,16 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
         // TODO(n-young): replace with the queue time once implemented
         const placeholderEndTime = new Date();
         placeholderEndTime.setMinutes(placeholderEndTime.getMinutes() + 30);
-        toast.promise(QueueAPI.createQueue(data.title, data.description, data.location, placeholderEndTime, data.courseID), {
+        const req: CreateQueueRequest = {...data, endTime: placeholderEndTime};
+        toast.promise(QueueAPI.createQueue(req), {
             loading: "Creating queue...",
             success: "Queue created",
             error: errors.UNKNOWN,
-        });
-        reset();
-        onClose();
+        })
+            .then(() => {
+                reset();
+                onClose();
+            });
     });
     const {currentUser, loading} = useSession();
     const [coursePerms, setCoursePerms] = useState<Course[]>([]);
@@ -104,6 +109,10 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                             {coursePerms.map(x => <MenuItem key={x.id} value={x.id}>{x.title}</MenuItem>)}
                         </Select>
                     </FormControl>
+                    <FormControlLabel control={<Checkbox {...register("allowTicketEditing")}/>}
+                                      label="Allow students to edit tickets once created"/>
+                    <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
+                                      label="Show meeting links on claim"/>
                 </Stack>
             </DialogContent>
             <DialogActions>

@@ -11,6 +11,8 @@ export interface Queue {
     location: string;
     endTime: Date;
     isCutOff: boolean;
+    allowTicketEditing: boolean;
+    showMeetingLinks: boolean;
     tickets: string[];
     announcements: Announcement[];
 }
@@ -42,13 +44,24 @@ export interface Ticket {
 }
 
 /**
+ * CreateQueueRequest is a parameter interface to the createQueue function.
+ */
+export interface CreateQueueRequest {
+    title: string;
+    description: string;
+    location: string;
+    endTime: Date;
+    allowTicketEditing: boolean;
+    showMeetingLinks: boolean;
+    courseID: string;
+}
+
+/**
  * Creates a queue with the given title, description, and course ID.
  */
-async function createQueue(title: string, description: string, location: string, endTime: Date, courseID: string): Promise<void> {
+async function createQueue(req: CreateQueueRequest): Promise<void> {
     try {
-        await APIClient.post(`/queues/create/${courseID}`, {
-            title, description, location, endTime, courseID
-        });
+        await APIClient.post(`/queues/create/${req.courseID}`, req);
         return;
     } catch (e) {
         throw e;
