@@ -30,7 +30,7 @@ export default function Queue() {
                     <QueueOptions queue={queue} queueID={queueID as string}
                                   showCompletedTickets={showCompletedTickets}
                                   setShowCompletedTickets={setShowCompletedTickets}/>
-                    <QueueList queueID={queueID as string} queue={queue}
+                    <QueueList queue={queue}
                                showCompletedTickets={showCompletedTickets}/>
                 </Grid>
             </>}

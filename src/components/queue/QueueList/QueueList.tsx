@@ -14,7 +14,6 @@ import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
 export interface QueueListProps {
-    queueID: string
     queue: Queue
     showCompletedTickets: boolean;
 }
@@ -22,9 +21,9 @@ export interface QueueListProps {
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({queueID, queue, showCompletedTickets}) => {
+const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const {currentUser, isTA} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queueID, showCompletedTickets);
+    const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
     if (ticketsLoading) return <></>;
@@ -46,7 +45,7 @@ const QueueList: FC<QueueListProps> = ({queueID, queue, showCompletedTickets}) =
 
     return (<>
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
-                            queueID={queueID as string}/>
+                            queueID={queue.id}/>
         <Grid item xs={12} md={9}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" fontWeight={600}>
@@ -60,8 +59,7 @@ const QueueList: FC<QueueListProps> = ({queueID, queue, showCompletedTickets}) =
             <Box mt={1}>
                 <Stack spacing={2}>
                     {sortedTickets && sortedTickets.map(ticket => <QueueListItem key={ticket.id}
-                                                                                 courseID={queue.course.id}
-                                                                                 queueID={queue.id}
+                                                                                 queue={queue}
                                                                                  ticket={ticket}/>)}
                     {tickets && tickets.length == 0 && <EmptyQueue/>}
                 </Stack>

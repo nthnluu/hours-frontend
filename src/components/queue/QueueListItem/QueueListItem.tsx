@@ -2,7 +2,7 @@ import React, {FC, useEffect, useState} from "react";
 import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
-import QueueAPI, {Ticket, TicketStatus} from "@util/queue/api";
+import QueueAPI, {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
 import getInitials from "@util/shared/getInitials";
@@ -12,12 +12,11 @@ import QueueListItemTimer from "@components/queue/QueueListItemTimer";
 import errors from "@util/errors";
 
 export interface QueueListItemProps {
-    courseID: string;
-    queueID: string;
+    queue: Queue;
     ticket: Ticket;
 }
 
-const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
+const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const {currentUser} = useAuth();
     const [editTicketDialog, setEditTicketDialog] = useState(false);
 
@@ -25,11 +24,11 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
     const isMissing = ticket.status === TicketStatus.StatusMissing;
     const isCompleted = ticket.status === TicketStatus.StatusComplete;
 
-    const isTA = (currentUser != undefined) && (currentUser.coursePermissions[courseID] != undefined);
+    const isTA = (currentUser != undefined) && (currentUser.coursePermissions[queue.course.id] != undefined);
     const isTicketOwner = (currentUser != undefined) && (ticket.createdBy.Email === currentUser.email);
 
     function handleClaimTicket() {
-        QueueAPI.editTicket(ticket.id, queueID, TicketStatus.StatusClaimed, ticket.description)
+        QueueAPI.editTicket(ticket.id, queue.id, TicketStatus.StatusClaimed, ticket.description)
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
@@ -42,7 +41,7 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
 
     return (<>
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
-                          queueID={queueID as string}/>
+                          queueID={queue.id}/>
         <Paper variant="outlined">
             <Box p={2.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
@@ -74,7 +73,8 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
                         </IconButton>}
                         {(isTA || isTicketOwner) &&
                             <QueueListItemMenu isClaimed={isClaimed} isTA={isTA} isTicketOwner={isTicketOwner}
-                                               queueID={queueID} ticket={ticket}
+                                               queueID={queue.id} ticket={ticket}
+                                               allowTicketEditing={queue.allowTicketEditing}
                                                setEditTicketDialog={setEditTicketDialog}/>}
                     </Stack>
                 </Stack>

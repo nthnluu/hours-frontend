@@ -18,6 +18,7 @@ export interface QueueListItemMenuProps {
     setEditTicketDialog: (arg0: boolean) => void;
     ticket: Ticket;
     queueID: string;
+    allowTicketEditing: boolean;
 }
 
 const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
@@ -26,6 +27,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                                                            isTicketOwner,
                                                            ticket,
                                                            queueID,
+                                                           allowTicketEditing,
                                                            setEditTicketDialog
                                                        }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -95,7 +97,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
             MenuListProps={{
                 'aria-labelledby': buttonID,
             }}>
-            {isTicketOwner && <MenuItem onClick={handleEditTicket}>
+            {isTicketOwner && allowTicketEditing && <MenuItem onClick={handleEditTicket}>
                 <ListItemIcon>
                     <EditIcon fontSize="small"/>
                 </ListItemIcon>
