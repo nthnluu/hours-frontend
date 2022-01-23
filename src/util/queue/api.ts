@@ -12,6 +12,11 @@ export interface Queue {
     endTime: Date;
     isCutOff: boolean;
     tickets: string[];
+    announcements: Announcement[];
+}
+
+export interface Announcement {
+    content: string;
 }
 
 export const enum TicketStatus {
