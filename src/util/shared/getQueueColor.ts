@@ -12,7 +12,7 @@ function hashCodeFromString(str: string): number {
 
 export default function getQueueColor(queue: Queue): string {
     if (queue.endTime < new Date()) {
-        return "rgba(0,0,0,0.1)";
+        return "#1f1f1f";
     } else {
         const colors = ["#06325e", "#234806", "#0c455d", "#520c5d", "#5d150c", "#650228", "#026559", "#026519"];
         const hash = hashCodeFromString((queue.course.id + queue.course.title));
