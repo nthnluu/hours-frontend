@@ -29,6 +29,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     if (ticketsLoading) return <></>;
 
     const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.Email == currentUser?.email).length > 0;
+    const queueEnded = queue.endTime < new Date();
 
     // TODO(n-young): kinda jank, please take a look.
     // @ts-ignore
@@ -36,9 +37,9 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
-            <BouncingCubesAnimation/>
+            {!queueEnded && <BouncingCubesAnimation/>}
             <Typography variant="body1">
-                Nobody is here... yet 😉.
+                {queueEnded ? "This queue is no longer active." : "Nobody is here... yet 😉."}
             </Typography>
         </Stack>
     );
@@ -51,7 +52,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!queue.isCutOff && !inQueue && !isTA(queue.course.id) &&
+                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
                     <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                         Join Queue
                     </Button>}

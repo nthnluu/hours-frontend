@@ -97,6 +97,18 @@ async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
 }
 
 /**
+ * Ends the given queue.
+ */
+async function endQueue(queue: Queue): Promise<void> {
+    try {
+        await QueueAPI.editQueue(queue.id, queue.title, queue.description || "", queue.location, new Date(), queue.isCutOff);
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
  * Deletes a queue with the given queue ID.
  */
 async function deleteQueue(queueID: string): Promise<void> {
@@ -165,6 +177,7 @@ const QueueAPI = {
     editQueue,
     cutOffQueue,
     deleteQueue,
+    endQueue,
     shuffleQueue,
     createTicket,
     editTicket,

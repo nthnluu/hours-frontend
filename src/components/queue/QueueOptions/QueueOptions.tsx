@@ -20,7 +20,6 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueueAPI, {Queue} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
-import {useRouter} from "next/router";
 import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 import formatEndTime from "@util/shared/formatEndTime";
@@ -36,9 +35,10 @@ export interface QueueOptionsProps {
  * QueueOption contains the config necessary to modify a queue.
  */
 const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTickets, setShowCompletedTickets}) => {
-    const router = useRouter();
     const {isTA} = useAuth();
     const [open, setOpen] = useState(false);
+
+    const isEnded = queue.endTime < new Date();
 
     return <>
         <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
@@ -68,7 +68,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                     </Stack>
                 </Box>
 
-                {isTA(queue.course.id) && <Box width="100%">
+                {isTA(queue.course.id) && !isEnded && <Box width="100%">
                     <Typography variant="h6">
                         Manage Queue
                     </Typography>
@@ -123,15 +123,14 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
 
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => {
-                                QueueAPI.deleteQueue(queueID)
-                                    .then(() => toast.success("Queue deleted."))
-                                    .catch(() => toast.error("Error closing queue."));
-                                router.push("/");
+                                QueueAPI.endQueue(queue)
+                                    .then(() => toast.success("Queue ended."))
+                                    .catch(() => toast.error("Error ending queue."));
                             }}>
                                 <ListItemIcon>
                                     <CancelIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary="Close queue"/>
+                                <ListItemText primary="End queue"/>
                             </ListItemButton>
                         </ListItem>
                     </List>
