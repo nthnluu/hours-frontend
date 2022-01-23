@@ -18,7 +18,15 @@ type FormData = {
 
 const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
-    const onSubmit = handleSubmit(data => {
+    const onSubmit = handleSubmit(async data => {
+        // check for desktop notification permission
+        const currPermissionStatus = Notification.permission;
+
+        // user hasn't granted permission yet, ask...
+        if (currPermissionStatus === "default") {
+            await Notification.requestPermission();
+        }
+
         toast.promise(QueueAPI.createTicket(queueID, data.description), {
             loading: "Creating ticket...",
             success: "Ticket created!",
