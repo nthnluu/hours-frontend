@@ -1,6 +1,7 @@
 import React, {FC} from "react";
 import {Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import {Queue} from "@util/queue/api";
+import getQueueColor from "@util/shared/getQueueColor";
 
 export interface QueuePageHeaderProps {
     queue: Queue;
@@ -8,7 +9,7 @@ export interface QueuePageHeaderProps {
 
 const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
     return <Paper sx={{overflow: "hidden"}}>
-        <Box width="100%" p={3} color="#fff" position="relative" sx={{bgcolor: queue.color ?? "#172c35"}}>
+        <Box width="100%" p={3} color="#fff" position="relative" sx={{bgcolor: getQueueColor(queue)}}>
             <Box height={120}/>
             <Box>
                 <Typography variant="body1" noWrap>

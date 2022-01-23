@@ -3,7 +3,8 @@ import {Box, ButtonBase, Paper, Stack, Typography} from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {useRouter} from "next/router";
 import {Queue} from "@util/queue/api";
-import {format} from "date-fns";
+import formatEndTime from "@util/shared/formatEndTime";
+import getQueueColor from "@util/shared/getQueueColor";
 
 export interface QueueCardProps {
     queue: Queue;
@@ -19,7 +20,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
     return <Paper variant="outlined" sx={{overflow: 'hidden'}}>
         <ButtonBase onClick={() => router.push('/queue/' + queue.id)} sx={{width: "100%", textAlign: "left"}}
                     focusRipple>
-            <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: queue.color ?? "#172c35"}}>
+            <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: getQueueColor(queue)}}>
                 <Typography variant="body1" noWrap>
                     {queue.course.code}: {queue.course.title}
                 </Typography>
@@ -33,7 +34,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
                 <Stack direction="row" spacing={0.5} alignItems="center">
                     <AccessTimeIcon/>
                     <Typography variant="body2">
-                        {format(queue.endTime, "'Ends at' K:m a")}
+                        {formatEndTime(queue.endTime)}
                     </Typography>
                 </Stack>
             </Stack>

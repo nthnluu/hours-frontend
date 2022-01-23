@@ -23,6 +23,7 @@ import EditQueueDialog from "@components/queue/EditQueueDialog";
 import {useRouter} from "next/router";
 import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
+import formatEndTime from "@util/shared/formatEndTime";
 
 export interface QueueOptionsProps {
     queue: Queue;
@@ -61,7 +62,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <AccessTimeIcon/>
                             <Typography>
-                                Ends at 2:00 PM
+                                {formatEndTime(queue.endTime)}
                             </Typography>
                         </Stack>
                     </Stack>
