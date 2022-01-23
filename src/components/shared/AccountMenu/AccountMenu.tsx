@@ -65,6 +65,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
             <ButtonBase aria-label="account menu" sx={{borderRadius: '100%'}} ref={buttonRef}
                         onClick={() => setOpen(!open)} focusRipple>
                 <Avatar src={user.photoUrl}
+                        imgProps={{referrerPolicy: "no-referrer"}}
                         sx={{
                             width: 40,
                             height: 40,
@@ -86,6 +87,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                 <Stack sx={{p: 4}} alignItems="center">
                                     <Avatar
                                         src={user.photoUrl}
+                                        imgProps={{referrerPolicy: "no-referrer"}}
                                         sx={{
                                             width: 96,
                                             height: 96,

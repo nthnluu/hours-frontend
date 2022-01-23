@@ -47,7 +47,8 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
             <Box p={2.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
-                        <Avatar src={ticket.createdBy.PhotoURL} sx={{display: ["none", null, "flex"]}}>
+                        <Avatar src={ticket.createdBy.PhotoURL} imgProps={{referrerPolicy: "no-referrer"}}
+                                sx={{display: ["none", null, "flex"]}}>
                             {getInitials(ticket.createdBy.DisplayName)}
                         </Avatar>
                         <Box overflow={"hidden"}>
