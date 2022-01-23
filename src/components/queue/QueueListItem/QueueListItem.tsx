@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
@@ -33,6 +33,13 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
+    // send desktop notification to user when their ticket is claimed
+    useEffect(() => {
+        if (isTicketOwner) {
+            new Notification('Your ticket has been claimed!');
+        }
+    }, [isClaimed, isTicketOwner]);
+
     return (<>
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
                           queueID={queueID as string}/>
@@ -52,7 +59,8 @@ const QueueListItem: FC<QueueListItemProps> = ({courseID, queueID, ticket}) => {
                                 </Box>
                                 {isClaimed && ticket.claimedAt && <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
                                 {isMissing && <Chip label="Missing" size="small" color="error" sx={{fontWeight: 500}}/>}
-                                {isCompleted && <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
+                                {isCompleted &&
+                                    <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
                             </Stack>
                             <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
                                         fontSize={14}>{ticket.description}</Typography>
