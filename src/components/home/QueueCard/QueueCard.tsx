@@ -1,10 +1,12 @@
 import React, {FC} from "react";
 import {Box, ButtonBase, Paper, Stack, Typography} from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import {useRouter} from "next/router";
 import {Queue} from "@util/queue/api";
 import formatEndTime from "@util/shared/formatEndTime";
 import getQueueColor from "@util/shared/getQueueColor";
+import QueueStatusChip from "@components/queue/QueueStatusChip";
 
 export interface QueueCardProps {
     queue: Queue;
@@ -30,13 +32,22 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
             </Box>
         </ButtonBase>
         <Box width="100%" p={2} color={"#777777"}>
-            <Stack direction="row" spacing={2}>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <AccessTimeIcon/>
-                    <Typography variant="body2">
-                        {formatEndTime(queue.endTime)}
-                    </Typography>
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                        <AccessTimeIcon/>
+                        <Typography variant="body2">
+                            {formatEndTime(queue.endTime)}
+                        </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                        <LocationOnIcon/>
+                        <Typography variant="body2">
+                            {queue.location}
+                        </Typography>
+                    </Stack>
                 </Stack>
+                <QueueStatusChip queue={queue} size="small"/>
             </Stack>
         </Box>
     </Paper>;

@@ -24,11 +24,11 @@ export default function Home() {
             </Button>
         </Box>}
         {queues && queues.length > 0 &&
-        <Grid spacing={3} container direction="row" alignItems="stretch">
-            {queues.map(queue => <Grid key={queue.id} item xs={12} sm={6} lg={4} xl={3}>
-                <QueueCard queue={queue}/>
-            </Grid>)}
-        </Grid>}
+            <Grid spacing={3} container direction="row" alignItems="stretch">
+                {queues.map(queue => <Grid key={queue.id} item xs={12} md={6} lg={4} xl={3}>
+                    <QueueCard queue={queue}/>
+                </Grid>)}
+            </Grid>}
         {queues && queues.length === 0 && (
             <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
                 <BouncingCubesAnimation/>
