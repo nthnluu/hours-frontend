@@ -1,6 +1,6 @@
 import {useEffect, useState, useRef} from "react";
 import {Announcement, Queue, Ticket, TicketStatus} from "@util/queue/api";
-import {collection, doc, getFirestore, onSnapshot, query, Timestamp, where} from "@firebase/firestore";
+import {collection, doc, getFirestore, onSnapshot, orderBy, query, Timestamp, where} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
     const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export const useAnnouncements = (queue: Queue | undefined, cb: (a: Announcement)
 
     useEffect(() => {
         const announcements = queue?.announcements ?? undefined;
-        
+
         // If the queue doesn't exist yet, no need to run any logic.
         if (announcements === undefined) {
             return;
@@ -83,7 +83,7 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
         const db = getFirestore();
         const dateThreshold = new Date();
         dateThreshold.setMinutes(dateThreshold.getMinutes() - 5);
-        const q = query(collection(db, "queues"), where("endTime", ">=", dateThreshold));
+        const q = query(collection(db, "queues"), where("endTime", ">=", dateThreshold), orderBy("endTime", "desc"));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const res: Queue[] = [];
             querySnapshot.forEach((doc) => {
