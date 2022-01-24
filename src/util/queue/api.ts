@@ -14,11 +14,6 @@ export interface Queue {
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     tickets: string[];
-    announcements: Announcement[];
-}
-
-export interface Announcement {
-    content: string;
 }
 
 export const enum TicketStatus {
