@@ -1,5 +1,5 @@
-import {useEffect, useState, useRef} from "react";
-import {Announcement, Queue, Ticket, TicketStatus} from "@util/queue/api";
+import {useEffect, useState} from "react";
+import {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {collection, doc, getFirestore, onSnapshot, orderBy, query, Timestamp, where} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
@@ -21,57 +21,6 @@ export function useQueue(id: string): [Queue | undefined, boolean] {
 
     return [queue, loading];
 }
-
-// Calls the callback cb when a _new_ announcement is detected.
-// 
-// This works by keeping a ref with the previously known number of announcements. We only run the 
-// callback when the previously known number of announcements is non-null (i.e. numerically 
-// defined) and the currently known number of announcements is greater than that.
-// 
-// Most of the logic in the effect is book-keeping to make sure this little dance happens.
-export const useAnnouncements = (queue: Queue | undefined, cb: (a: Announcement) => void): void => {
-    const prevAnnouncements = useRef<number | null>(null);
-
-    useEffect(() => {
-        const announcements = queue?.announcements ?? undefined;
-
-        // If the queue doesn't exist yet, no need to run any logic.
-        if (announcements === undefined) {
-            return;
-        }
-
-        // If the prev is null, we're getting the announcements array for the first time.
-        // We won't handle notifications on the first render, since that would lead to notifying
-        // people about announcements that may have happened in the past.
-        if (prevAnnouncements.current === null) {
-            prevAnnouncements.current = announcements.length;
-            return;
-        }
-
-        // However, if previous announcements is defined and its length is less than the number of
-        // announcements we currently have, we can run the callback.
-        if (prevAnnouncements.current < announcements.length) {
-            // First, set prevAnnouncements to prevent race conditions of the effect firing multiple
-            // times, between which the following line isn't called. Thus, we run this first before
-            // calling cb.
-            // 
-            // (Consider the alternative case: we run the callbacks and then set prev.
-            // An execution could be:
-            //      1. Prev is 1
-            //      2. We get 2 more announcements #2 and #3. So we run them.
-            //      3. We get 2 _more_, #4 and #5. Step 2 hasn't set prev. So we run #2 through #5.
-            //      4. Prev is set by 2 and 3, but the damage has already happened.
-            //
-            // This would be very hard to make happen, but you don't take cs1760 for naught.)
-            prevAnnouncements.current = announcements.length;
-
-            // Run the callback for all announcements starting at prevAnnouncements.current.
-            for (let i = prevAnnouncements.current; i < announcements.length; i++) {
-                cb(announcements[i]);
-            }
-        }
-    }, [queue, cb]);
-};
 
 export function useQueues(): [Queue[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
