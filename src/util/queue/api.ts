@@ -38,6 +38,7 @@ export interface Ticket {
         IsAdmin: boolean;
         PhoneNumber: string;
         PhotoURL: string;
+        Pronouns: string;
     };
     claimedAt?: Timestamp;
     description: string;
@@ -69,14 +70,23 @@ async function createQueue(req: CreateQueueRequest): Promise<void> {
     }
 }
 
+export interface EditQueueRequest {
+    queueID: string;
+    title: string;
+    description: string;
+    location: string;
+    endTime: Date;
+    allowTicketEditing: boolean;
+    showMeetingLinks: boolean;
+    isCutOff: boolean;
+}
+
 /**
  * Edits a queue.
  */
-async function editQueue(queueID: string, title: string, description: string, location: string, endTime: Date, isCutOff: boolean): Promise<void> {
+async function editQueue(req: EditQueueRequest): Promise<void> {
     try {
-        await APIClient.post(`/queues/${queueID}/edit`, {
-            title, description, location, endTime, isCutOff
-        });
+        await APIClient.post(`/queues/${req.queueID}/edit`, req);
         return;
     } catch (e) {
         throw e;
@@ -98,7 +108,7 @@ async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
 }
 
 /**
- * Make an announcement to the users in a given queue, given a queueID. 
+ * Make an announcement to the users in a given queue, given a queueID.
  */
 async function announceToQueue(queueID: string): Promise<void> {
     try {
@@ -106,7 +116,7 @@ async function announceToQueue(queueID: string): Promise<void> {
         return;
     } catch (e) {
         throw e;
-   }
+    }
 }
 
 /**
@@ -114,7 +124,16 @@ async function announceToQueue(queueID: string): Promise<void> {
  */
 async function endQueue(queue: Queue): Promise<void> {
     try {
-        await QueueAPI.editQueue(queue.id, queue.title, queue.description || "", queue.location, new Date(), queue.isCutOff);
+        await QueueAPI.editQueue({
+            queueID: queue.id,
+            title: queue.title,
+            description: queue.description || "",
+            endTime: new Date(),
+            isCutOff: queue.isCutOff,
+            allowTicketEditing: queue.allowTicketEditing,
+            location: queue.location,
+            showMeetingLinks: queue.showMeetingLinks
+        });
         return;
     } catch (e) {
         throw e;

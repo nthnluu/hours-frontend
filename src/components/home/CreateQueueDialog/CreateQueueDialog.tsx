@@ -11,7 +11,7 @@ import {
     InputLabel,
     MenuItem,
     FormControlLabel,
-    Checkbox
+    Checkbox, FormGroup
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
@@ -41,7 +41,7 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
     const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        const req: CreateQueueRequest = { ...data, endTime: times[data.endTimeIndex].timestamp };
+        const req: CreateQueueRequest = {...data, endTime: times[data.endTimeIndex].timestamp};
         toast.promise(QueueAPI.createQueue(req), {
             loading: "Creating queue...",
             success: "Queue created",
@@ -68,50 +68,8 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
         <form onSubmit={onSubmit}>
             <DialogTitle>Create Queue</DialogTitle>
             <DialogContent>
-                <Stack spacing={2} my={1}>
-                    <TextField
-                        {...register("title")}
-                        required
-                        autoFocus
-                        label="Title"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="standard"
-                    />
-                    <FormControl fullWidth size="small" variant="standard">
-                        <InputLabel id="course-select-label" required>End time</InputLabel>
-                        <Select
-                            {...register("endTimeIndex")}
-                            required
-                            defaultValue={0}
-                            fullWidth
-                            labelId="time-select-label"
-                            id="time-select"
-                            label="End time"
-                            type="text"
-                        >
-                            {times.map((time, i) => <MenuItem key={time.time} value={i}>{time.time}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        {...register("location")}
-                        required
-                        label="Location"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="standard"
-                    />
-                    <TextField
-                        {...register("description")}
-                        label="Description"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        variant="standard"
-                    />
-                    <FormControl fullWidth size="small" variant="standard">
+                <Stack spacing={2.5} my={1}>
+                    <FormControl fullWidth size="small" variant="standard" required>
                         <InputLabel id="course-select-label">Course</InputLabel>
                         <Select
                             {...register("courseID")}
@@ -123,14 +81,61 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                             label="Course"
                             type="text"
                         >
-                            {coursePerms.map(x => <MenuItem key={x.id} value={x.id}>{x.title}</MenuItem>)}
+                            {coursePerms.map(x => <MenuItem key={x.id}
+                                                            value={x.id}>{`${x.code}: ${x.title}`}</MenuItem>)}
                         </Select>
                     </FormControl>
+                    <TextField
+                        {...register("title")}
+                        required
+                        autoFocus
+                        label="Title"
+                        type="text"
+                        fullWidth
+                        size="small"
+                        variant="standard"
+                    />
+                    <Stack direction="row" spacing={1.5}>
+                        <TextField
+                            {...register("location")}
+                            required
+                            label="Location"
+                            type="text"
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                        />
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="course-select-label" required>End time</InputLabel>
+                            <Select
+                                {...register("endTimeIndex")}
+                                required
+                                defaultValue={0}
+                                fullWidth
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="End time"
+                                type="text"
+                            >
+                                {times.map((time, i) => <MenuItem key={time.time} value={i}>{time.time}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Stack>
+                    <TextField
+                        {...register("description")}
+                        label="Description"
+                        type="text"
+                        fullWidth
+                        size="small"
+                        variant="standard"
+                    />
+                </Stack>
+                <FormGroup>
                     <FormControlLabel control={<Checkbox {...register("allowTicketEditing")}/>}
                                       label="Allow students to edit tickets once created"/>
                     <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
                                       label="Show meeting links on claim"/>
-                </Stack>
+                </FormGroup>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>

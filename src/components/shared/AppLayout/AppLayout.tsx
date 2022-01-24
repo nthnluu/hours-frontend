@@ -1,10 +1,20 @@
 import React, {FC, ReactNode, useEffect, useState} from "react";
 import Navbar from "@components/shared/Navbar";
-import {Container} from "@mui/material";
+import {
+    Box,
+    Container,
+    Drawer,
+    ListItemText,
+    Paper,
+    Stack,
+    Typography
+} from "@mui/material";
 import {Router} from "next/router";
 import AccountMenu from "@components/shared/AccountMenu";
+import CloseIcon from '@mui/icons-material/Close';
 import {useAuth} from "@util/auth/hooks";
 import Button from "@components/shared/Button";
+import IconButton from "@components/shared/IconButton";
 
 export interface AppLayoutProps {
     maxWidth: "xl" | "md" | "sm" | "xs" | "lg" | false;
@@ -19,6 +29,7 @@ export interface AppLayoutProps {
 const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, children}) => {
     const [pageLoading, setPageLoading] = useState(false);
     const {currentUser, isAuthenticated} = useAuth();
+    const [notificationMenu, setNotificationMenu] = useState(false);
 
     // Bind page load events to pageLoading state so loading bar is displayed on navigation.
     useEffect(() => {
@@ -44,6 +55,31 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
     return <div>
         <Navbar fixed loading={loading || pageLoading}
                 endItems={endItems}/>
+        <Drawer
+            anchor={"right"}
+            open={notificationMenu}
+            onClose={() => setNotificationMenu(false)}
+        >
+            <Box width={350} p={2}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Typography variant="h6">
+                        Notifications
+                    </Typography>
+                    <IconButton label="Close" onClick={() => setNotificationMenu(false)}>
+                        <CloseIcon/>
+                    </IconButton>
+                </Stack>
+                <Stack spacing={1} mt={2}>
+                    {currentUser?.notifications && currentUser.notifications.map((notification) => (
+                        <Paper key={notification.ID}>
+                            <Box py={1} px={2}>
+                                <ListItemText primary={notification.Title} secondary={notification.Body}/>
+                            </Box>
+                        </Paper>
+                    ))}
+                </Stack>
+            </Box>
+        </Drawer>
         <Container maxWidth={maxWidth} sx={{marginY: 10}}>
             {children}
         </Container>

@@ -9,11 +9,11 @@ import {
     FormControl,
     InputLabel,
     TextField,
-    MenuItem, 
+    MenuItem, FormControlLabel, Checkbox, FormGroup,
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
-import QueueAPI, {Queue} from "@util/queue/api";
+import QueueAPI, {EditQueueRequest, Queue} from "@util/queue/api";
 import {toast} from "react-hot-toast";
 import errors from "@util/errors";
 import {getNextHours} from "@util/shared/getNextHours";
@@ -30,18 +30,33 @@ type FormData = {
     description: string;
     endTimeIndex: number;
     location: string;
+    allowTicketEditing: boolean;
+    showMeetingLinks: boolean;
 };
 
-const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
+const EditQueueDialog: FC<EditQueueDialogProps> = ({queue, open, onClose}) => {
     const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        QueueAPI.editQueue(queueID, data.title, data.description, data.location, times[data.endTimeIndex].timestamp, queue.isCutOff)
-            .catch(() => {
-                toast.error(errors.UNKNOWN);
+        const req: EditQueueRequest = {
+            queueID: queue.id,
+            title: data.title,
+            description: data.description,
+            location: data.location,
+            endTime: times[data.endTimeIndex].timestamp,
+            isCutOff: queue.isCutOff,
+            allowTicketEditing: data.allowTicketEditing,
+            showMeetingLinks: data.showMeetingLinks
+        };
+        toast.promise(QueueAPI.editQueue(req), {
+            loading: "Updating queue...",
+            success: "Queue updated",
+            error: errors.UNKNOWN
+        })
+            .then(() => {
+                onClose();
+                reset();
             });
-        reset();
-        onClose();
     });
 
     function handleClose() {
@@ -57,7 +72,7 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
         <form onSubmit={onSubmit}>
             <DialogTitle>Edit Queue</DialogTitle>
             <DialogContent>
-                <Stack spacing={2} my={1}>
+                <Stack spacing={2.5} my={1}>
                     <TextField
                         {...register("title")}
                         defaultValue={queue.title}
@@ -69,31 +84,33 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                         size="small"
                         variant="standard"
                     />
-                    <FormControl fullWidth size="small" variant="standard">
-                        <InputLabel id="course-select-label" required>End time</InputLabel>
-                        <Select
-                            {...register("endTimeIndex")}
+                    <Stack direction="row" spacing={1.5}>
+                        <TextField
+                            {...register("location")}
+                            defaultValue={queue.location}
                             required
-                            defaultValue={0}
-                            fullWidth
-                            labelId="time-select-label"
-                            id="time-select"
-                            label="End time"
+                            label="Location"
                             type="text"
-                        >
-                            {times.map((time, i) => <MenuItem key={time.time} value={i}>{time.time}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        {...register("location")}
-                        defaultValue={queue.location}
-                        label="Location"
-                        type="text"
-                        required
-                        fullWidth
-                        size="small"
-                        variant="standard"
-                    />
+                            fullWidth
+                            size="small"
+                            variant="standard"
+                        />
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="course-select-label" required>End time</InputLabel>
+                            <Select
+                                {...register("endTimeIndex")}
+                                required
+                                defaultValue={Math.max(times.findIndex(time => (time.timestamp.getHours() === queue.endTime.getHours()) && (time.timestamp.getMinutes() === queue.endTime.getMinutes())), 0)}
+                                fullWidth
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="End time"
+                                type="text"
+                            >
+                                {times.map((time, i) => <MenuItem key={time.time} value={i}>{time.time}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Stack>
                     <TextField
                         {...register("description")}
                         defaultValue={queue.description}
@@ -104,6 +121,15 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                         variant="standard"
                     />
                 </Stack>
+                <FormGroup>
+                    <FormControlLabel
+                        control={<Checkbox
+                            defaultChecked={queue.allowTicketEditing} {...register("allowTicketEditing")}/>}
+                        label="Allow students to edit tickets once created"/>
+                    <FormControlLabel
+                        control={<Checkbox defaultChecked={queue.showMeetingLinks} {...register("showMeetingLinks")}/>}
+                        label="Show meeting links on claim"/>
+                </FormGroup>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>

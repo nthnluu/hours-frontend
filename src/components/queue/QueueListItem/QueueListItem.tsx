@@ -10,6 +10,7 @@ import QueueListItemMenu from "@components/queue/QueueListItemMenu";
 import {toast} from "react-hot-toast";
 import QueueListItemTimer from "@components/queue/QueueListItemTimer";
 import errors from "@util/errors";
+import Button from "@components/shared/Button";
 
 export interface QueueListItemProps {
     queue: Queue;
@@ -23,12 +24,18 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const isClaimed = ticket.status === TicketStatus.StatusClaimed;
     const isMissing = ticket.status === TicketStatus.StatusMissing;
     const isCompleted = ticket.status === TicketStatus.StatusComplete;
+    const isReturned = ticket.status === TicketStatus.StatusReturned;
 
     const isTA = (currentUser != undefined) && (currentUser.coursePermissions[queue.course.id] != undefined);
     const isTicketOwner = (currentUser != undefined) && (ticket.createdBy.Email === currentUser.email);
 
     function handleClaimTicket() {
         QueueAPI.editTicket(ticket.id, queue.id, TicketStatus.StatusClaimed, ticket.description)
+            .catch(() => toast.error(errors.UNKNOWN));
+    }
+
+    function handleMarkReturned() {
+        QueueAPI.editTicket(ticket.id, queue.id, TicketStatus.StatusReturned, ticket.description)
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
@@ -51,26 +58,34 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                             {getInitials(ticket.createdBy.DisplayName)}
                         </Avatar>
                         <Box overflow={"hidden"}>
-                            <Stack direction="row" spacing={1}>
-                                <Box>
-                                    <Typography fontSize={16} fontWeight={600}>
-                                        {ticket.createdBy.DisplayName}
-                                    </Typography>
-                                </Box>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Typography fontSize={16} fontWeight={600}>
+                                    {ticket.createdBy.DisplayName}
+                                </Typography>
+                                <Typography fontSize={16} sx={{opacity: 0.65}}>
+                                    {ticket.createdBy.Pronouns && `(${ticket.createdBy.Pronouns})`}
+                                </Typography>
                                 {isClaimed && ticket.claimedAt && <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
                                 {isMissing && <Chip label="Missing" size="small" color="error" sx={{fontWeight: 500}}/>}
+                                {isReturned &&
+                                    <Chip label="Returned" size="small" color="warning" sx={{fontWeight: 500}}/>}
                                 {isCompleted &&
                                     <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
                             </Stack>
-                            <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
-                                        fontSize={14}>{ticket.description}</Typography>
+                            {(isTA || isTicketOwner) &&
+                                <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
+                                            fontSize={14}>{ticket.description}</Typography>}
                         </Box>
                     </Stack>
-                    <Stack direction="row" spacing={0} alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center" flexShrink={0}>
                         {isTA && !isClaimed && !isCompleted && <IconButton label="Claim ticket"
                                                                            onClick={handleClaimTicket}>
                             <CheckIcon/>
                         </IconButton>}
+                        {isMissing && isTicketOwner && <Button color="inherit"
+                                                               onClick={handleMarkReturned}>
+                            I&apos;m back
+                        </Button>}
                         {(isTA || isTicketOwner) && !isCompleted &&
                             <QueueListItemMenu isClaimed={isClaimed} isTA={isTA} isTicketOwner={isTicketOwner}
                                                queueID={queue.id} ticket={ticket}
