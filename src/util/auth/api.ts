@@ -29,6 +29,14 @@ export interface User {
     pronouns?: string;
     meetingLink?: string;
     coursePermissions: { [key: string]: CoursePermission };
+    notifications: Notification[]
+}
+
+export interface Notification {
+    id: string
+    title: string
+    body: string
+    timestamp: Date
 }
 
 /**
