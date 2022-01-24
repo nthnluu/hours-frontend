@@ -9,7 +9,7 @@ import {
     Select,
     FormControl,
     InputLabel,
-    MenuItem, FormControlLabel, Checkbox
+    MenuItem, FormControlLabel, Checkbox, FormGroup
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
@@ -104,15 +104,16 @@ const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
                             labelId="course-select-label"
                             id="course-select"
                             label="Course"
-                            type="text"
-                        >
+                            type="text">
                             {coursePerms.map(x => <MenuItem key={x.id} value={x.id}>{x.title}</MenuItem>)}
                         </Select>
                     </FormControl>
-                    <FormControlLabel control={<Checkbox {...register("allowTicketEditing")}/>}
-                                      label="Allow students to edit tickets once created"/>
-                    <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
-                                      label="Show meeting links on claim"/>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox defaultChecked {...register("allowTicketEditing")}/>}
+                                          label="Allow students to edit their ticket"/>
+                        <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
+                                          label="Provide Zoom link to students"/>
+                    </FormGroup>
                 </Stack>
             </DialogContent>
             <DialogActions>

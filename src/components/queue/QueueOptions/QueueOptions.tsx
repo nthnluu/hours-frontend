@@ -115,7 +115,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                             <ListItemButton
                                 onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff).catch(() => toast.error("Error closing queue."))}>
                                 <ListItemIcon>
-                                    {queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
+                                    {!queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
                                 </ListItemIcon>
                                 <ListItemText primary={queue.isCutOff ? "Reopen signups" : "Cutoff signups"}/>
                             </ListItemButton>
