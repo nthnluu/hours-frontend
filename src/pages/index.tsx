@@ -11,7 +11,7 @@ import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimatio
 
 export default function Home() {
     const {currentUser, isAuthenticated} = useAuth();
-    const [queues, loading] = useQueues(true);
+    const [queues, loading] = useQueues();
     const [createQueueDialog, setCreateQueueDialog] = useState(false);
 
     const isTA = isAuthenticated && currentUser && currentUser.coursePermissions && (Object.keys(currentUser.coursePermissions).length > 0);

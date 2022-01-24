@@ -5,13 +5,18 @@ import {
     DialogContent,
     DialogTitle,
     Stack,
-    TextField
+    Select,
+    FormControl,
+    InputLabel,
+    TextField,
+    MenuItem, 
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI, {Queue} from "@util/queue/api";
 import {toast} from "react-hot-toast";
 import errors from "@util/errors";
+import {getNextHours} from "@util/shared/getNextHours";
 
 export interface EditQueueDialogProps {
     queueID: string,
@@ -23,17 +28,15 @@ export interface EditQueueDialogProps {
 type FormData = {
     title: string;
     description: string;
-    endTime: Date;
+    endTimeIndex: number;
     location: string;
 };
 
 const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
+    const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        // TODO(n-young): replace with the queue time once implemented
-        const placeholderEndTime = new Date();
-        placeholderEndTime.setMinutes(placeholderEndTime.getMinutes() + 30);
-        QueueAPI.editQueue(queueID, data.title, data.description, data.location, placeholderEndTime, queue.isCutOff)
+        QueueAPI.editQueue(queueID, data.title, data.description, data.location, times[data.endTimeIndex].timestamp, queue.isCutOff)
             .catch(() => {
                 toast.error(errors.UNKNOWN);
             });
@@ -48,11 +51,11 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
 
     useEffect(() => {
         reset();
-    }, [open]);
+    }, [reset, open]);
 
     return <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <form onSubmit={onSubmit}>
-            <DialogTitle>Edit queue</DialogTitle>
+            <DialogTitle>Edit Queue</DialogTitle>
             <DialogContent>
                 <Stack spacing={2} my={1}>
                     <TextField
@@ -66,6 +69,21 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                         size="small"
                         variant="standard"
                     />
+                    <FormControl fullWidth size="small" variant="standard">
+                        <InputLabel id="course-select-label" required>End time</InputLabel>
+                        <Select
+                            {...register("endTimeIndex")}
+                            required
+                            defaultValue={0}
+                            fullWidth
+                            labelId="time-select-label"
+                            id="time-select"
+                            label="End time"
+                            type="text"
+                        >
+                            {times.map((time, i) => <MenuItem key={time.time} value={i}>{time.time}</MenuItem>)}
+                        </Select>
+                    </FormControl>
                     <TextField
                         {...register("location")}
                         defaultValue={queue.location}

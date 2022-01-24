@@ -73,7 +73,7 @@ export const useAnnouncements = (queue: Queue | undefined, cb: (a: Announcement)
     }, [queue, cb]);
 };
 
-export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
+export function useQueues(): [Queue[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [queues, setQueues] = useState<Queue[] | undefined>(undefined);
 
@@ -97,7 +97,7 @@ export function useQueues(activeOnly: boolean): [Queue[] | undefined, boolean] {
         });
 
         return () => unsubscribe();
-    }, [activeOnly]);
+    }, []);
 
     return [queues, loading];
 }
