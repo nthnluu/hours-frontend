@@ -31,9 +31,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
 
-    // TODO(n-young): kinda jank, please take a look.
-    // @ts-ignore
-    const sortedTickets: Ticket[] = tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
+    const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
@@ -59,9 +57,9 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
             </Stack>
             <Box mt={1}>
                 <Stack spacing={2}>
-                    {sortedTickets && sortedTickets.map(ticket => <QueueListItem key={ticket.id}
+                    {sortedTickets && sortedTickets.map(ticket => <QueueListItem key={ticket!.id}
                                                                                  queue={queue}
-                                                                                 ticket={ticket}/>)}
+                                                                                 ticket={ticket!}/>)}
                     {tickets && tickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>

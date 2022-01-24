@@ -50,7 +50,7 @@ export function useAuth(): AuthState {
 }
 
 /** useAdmins is a hook that fetches all admins. */
-// TODO: should use a query.
+// TODO(n-young): should use a query.
 export default function useAdmins(): [User[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<User[] | undefined>(undefined);
