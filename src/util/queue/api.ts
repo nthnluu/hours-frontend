@@ -98,6 +98,18 @@ async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
 }
 
 /**
+ * Make an announcement to the users in a given queue, given a queueID. 
+ */
+async function announceToQueue(queueID: string): Promise<void> {
+    try {
+        await APIClient.post(`/queues/${queueID}/announce`, {});
+        return;
+    } catch (e) {
+        throw e;
+   }
+}
+
+/**
  * Ends the given queue.
  */
 async function endQueue(queue: Queue): Promise<void> {
@@ -176,6 +188,7 @@ async function deleteTicket(id: string, queueID: string): Promise<void> {
 const QueueAPI = {
     createQueue,
     editQueue,
+    announceToQueue,
     cutOffQueue,
     deleteQueue,
     endQueue,
