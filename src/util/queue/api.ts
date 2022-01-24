@@ -26,6 +26,7 @@ export const enum TicketStatus {
     StatusClaimed = "CLAIMED",
     StatusMissing = "MISSING",
     StatusComplete = "COMPLETE",
+    StatusReturned = "RETURNED",
 }
 
 export interface Ticket {
