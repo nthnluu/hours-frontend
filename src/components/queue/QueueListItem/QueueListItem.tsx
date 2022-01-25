@@ -108,7 +108,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                                     <Typography fontSize={14}>
                                         Claimed by {claimedUser?.displayName}
                                     </Typography>
-                                    {queue.showMeetingLinks && claimedUser.meetingLink && (<Typography fontSize={14} sx={{opacity: 0.65}}>
+                                    {queue.showMeetingLinks && claimedUser.meetingLink && (isTicketOwner || isTA || currentUser?.isAdmin) && (<Typography fontSize={14} sx={{opacity: 0.65}}>
                                         <Link color="inherit" underline="hover"
                                             sx={{display: "inline-flex", alignItems: "center"}}
                                             href={claimedUser?.meetingLink}>
