@@ -22,7 +22,7 @@ import {toast} from "react-hot-toast";
 import errors from "@util/errors";
 import {getNextHours} from "@util/shared/getNextHours";
 
-export interface CreateCourseDialogProps {
+export interface CreateQueueDialogProps {
     open: boolean;
     onClose: () => void;
 }
@@ -37,7 +37,7 @@ type FormData = {
     showMeetingLinks: boolean;
 };
 
-const CreateQueueDialog: FC<CreateCourseDialogProps> = ({open, onClose}) => {
+const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
     const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {

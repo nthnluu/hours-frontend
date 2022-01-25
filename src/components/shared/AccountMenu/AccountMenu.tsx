@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import AuthAPI, {User} from "@util/auth/api";
 import FocusTrap from "focus-trap-react";
-import {Feedback, Logout, Settings, WbSunny} from "@mui/icons-material";
+import {Feedback, Logout, Settings, WbSunny, Info} from "@mui/icons-material";
 import useThemeMode from "@util/mui/useThemeMode";
 import getInitials from "@util/shared/getInitials";
 import {useRouter} from "next/router";
+import AboutDialog from "../AboutDialog";
 
 export interface AccountMenuProps {
     /** The current user. */
@@ -29,6 +30,7 @@ function capitalizeFirstLetter(str: string) {
  */
 const AccountMenu: FC<AccountMenuProps> = ({user}) => {
     const [open, setOpen] = useState(false);
+    const [openAbout, setOpenAbout] = useState(false);
     const [themeMode, setThemeMode, prefersDarkMode] = useThemeMode();
     const router = useRouter();
 
@@ -60,6 +62,8 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
     }
 
     return (<>
+        {/* About dialog */}
+        <AboutDialog open={openAbout} onClose={() => setOpenAbout(false)}/>
         {/*Avatar button*/}
         <Tooltip title={`Signed in as ${user.displayName}`}>
             <ButtonBase aria-label="account menu" sx={{borderRadius: '100%'}} ref={buttonRef}
@@ -126,6 +130,17 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                                 <Settings/>
                                             </ListItemIcon>
                                             <ListItemText primary="Settings"/>
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton onClick={() => {
+                                            setOpenAbout(true);
+                                            setOpen(false);
+                                        }}>
+                                            <ListItemIcon>
+                                                <Info/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="About"/>
                                         </ListItemButton>
                                     </ListItem>
                                     <ListItem disablePadding>
