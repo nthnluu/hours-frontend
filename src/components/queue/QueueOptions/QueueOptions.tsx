@@ -33,6 +33,7 @@ export interface QueueOptionsProps {
     setShowCompletedTickets: (arg: boolean) => void;
 }
 
+
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
