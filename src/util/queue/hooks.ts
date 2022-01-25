@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {getUserById} from "@util/auth/api";
+import AuthAPI from "@util/auth/api";
 import {Queue, SparseTicket, Ticket, TicketStatus} from "@util/queue/api";
 import {collection, doc, getFirestore, onSnapshot, orderBy, query, Timestamp, where} from "@firebase/firestore";
 
@@ -70,7 +70,7 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
             }
 
         
-            Promise.all(res.map(ticket => getUserById(ticket.userID)))
+            Promise.all(res.map(ticket => AuthAPI.getUserById(ticket.userID)))
                 .then(users => {
                     return users.map((user, i) => {
                         return {...res[i], createdBy: user};

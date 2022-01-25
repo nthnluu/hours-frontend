@@ -12,6 +12,7 @@ import {
 import {Router} from "next/router";
 import AccountMenu from "@components/shared/AccountMenu";
 import CloseIcon from '@mui/icons-material/Close';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import {useAuth} from "@util/auth/hooks";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
@@ -44,11 +45,12 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
         return <></>;
     }
 
-    const endItems = [<AccountMenu key="account" user={currentUser!}/>];
+    const endItems = [<IconButton key="notifications" label="Notifications" onClick={() => setNotificationMenu(true)}><NotificationsIcon/></IconButton>, <AccountMenu key="account" user={currentUser!}/>];
     if (actionButton) {
         endItems.push(<Button variant="contained" key="action-button"
                               startIcon={actionButton.icon}
                               onClick={actionButton.onClick}>{actionButton.label}</Button>);
+                            
         endItems.reverse();
     }
 

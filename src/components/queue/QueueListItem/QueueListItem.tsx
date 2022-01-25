@@ -32,12 +32,12 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const isTicketOwner = (currentUser != undefined) && (ticket.createdBy.email === currentUser.email);
 
     function handleClaimTicket() {
-        QueueAPI.editTicket(ticket.id, queue.id, TicketStatus.StatusClaimed, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queue.id, TicketStatus.StatusClaimed, ticket.description)
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
     function handleMarkReturned() {
-        QueueAPI.editTicket(ticket.id, queue.id, TicketStatus.StatusReturned, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queue.id, TicketStatus.StatusReturned, ticket.description)
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
@@ -98,7 +98,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                     </Stack>
                 </Stack>
             </Box>
-            {claimedUser && (<>
+            {ticket.status === TicketStatus.StatusClaimed && claimedUser && (<>
             <Divider/>
                 <Box px={2.5} py={1}>
                     <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>

@@ -12,6 +12,7 @@ const enum Endpoint {
     UPDATE_BY_EMAIL = '/users/updateByEmail',
     GET_SESSION = '/users/session',
     SIGN_OUT = '/users/signout',
+    CLEAR_NOTIFICATION = '/users/clearNotification',
 }
 
 export const enum CoursePermission {
@@ -32,11 +33,17 @@ export interface User {
     notifications: Notification[]
 }
 
+export const enum NotificationType {
+    NotificationClaimed = "CLAIMED",
+    NotificationAnnouncement = "ANNOUNCEMENT"
+}
+
 export interface Notification {
     ID: string;
     Title: string;
     Body: string;
     Timestamp: Date;
+    Type: NotificationType;
 }
 
 /**
@@ -53,7 +60,7 @@ async function getCurrentUser(): Promise<User> {
 /**
  * Fetches profile information corresponding to the currently logged in user.
  */
-export async function getUserById(id: string): Promise<User> {
+async function getUserById(id: string): Promise<User> {
     try {
         return await APIClient.get(`${Endpoint.USER}/${id}`);
     } catch (e) {
@@ -127,13 +134,25 @@ async function signOut(): Promise<void> {
     }
 }
 
+/**
+ * Clears the given notification.
+ */
+async function clearNotification(notification: Notification): Promise<void> {
+    try {
+        return await APIClient.post(Endpoint.CLEAR_NOTIFICATION, {notification});
+    } catch (e) {
+        throw e;
+    }
+}
+
 const AuthAPI = {
     getCurrentUser,
     getUserById,
     updateUser,
     updateUserByEmail,
     signInWithGoogle,
-    signOut
+    signOut,
+    clearNotification
 };
 
 

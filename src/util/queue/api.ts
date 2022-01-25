@@ -180,10 +180,11 @@ async function createTicket(queueID: string, description: string, anonymize: boo
 /**
  * Edits a ticket.
  */
-async function editTicket(id: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
+async function editTicket(id: string, ownerID: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
     try {
         await APIClient.patch(`/queues/${queueID}/ticket`, {
             id,
+            ownerID,
             status,
             description
         });
