@@ -1,6 +1,7 @@
 import React, {FC, ReactNode, useEffect, useState} from "react";
 import Navbar from "@components/shared/Navbar";
 import {
+    Badge, 
     Box,
     Container,
     Drawer,
@@ -50,7 +51,9 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
         return <></>;
     }
 
-    const endItems = [<IconButton key="notifications" label="Notifications" onClick={() => setNotificationMenu(true)}><NotificationsIcon/></IconButton>, <AccountMenu key="account" user={currentUser!}/>];
+    const badgednotificationicon: JSX.Element = currentUser?.notifications.length === 0 ? <NotificationsIcon/> : <Badge badgeContent={currentUser?.notifications.length} color="primary"><NotificationsIcon/></Badge>;
+
+    const endItems = [<IconButton key="notifications" label="Notifications" onClick={() => setNotificationMenu(true)}>{badgednotificationicon}</IconButton>, <AccountMenu key="account" user={currentUser!}/>];
     if (actionButton) {
         endItems.push(<Button variant="contained" key="action-button"
                               startIcon={actionButton.icon}
