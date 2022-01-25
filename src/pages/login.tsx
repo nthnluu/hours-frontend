@@ -17,7 +17,7 @@ export default function Home() {
         <Paper variant="outlined">
             <Box p={4} textAlign="center">
                 <Typography variant="h4" fontWeight={500}>
-                    Welcome to SignMeUp!
+                    Welcome to Hours!
                 </Typography>
                 <Typography variant="h6">
                     Use your Brown email to continue.

@@ -71,7 +71,7 @@ const Navbar: FC<NavbarProps> = ({
                                 <Box mr={1} height={32}>
                                     <Image src="/signmeup.svg" alt="" width={32} height={32}/>
                                 </Box>
-                                SignMeUp
+                                Hours
                             </Link>
                         </NextLink>
                         {startItems}
