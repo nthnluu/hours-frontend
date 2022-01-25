@@ -5,6 +5,7 @@ import {
     Box,
     Container,
     Drawer,
+    Paper,
     Stack,
     Typography
 } from "@mui/material";
@@ -12,7 +13,7 @@ import {Router} from "next/router";
 import AccountMenu from "@components/shared/AccountMenu";
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import {Notification} from "@util/auth/api";
+import AuthAPI, {Notification} from "@util/auth/api";
 import {useAuth, useNotifications} from "@util/auth/hooks";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
@@ -70,8 +71,8 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
             open={notificationMenu}
             onClose={() => setNotificationMenu(false)}
         >
-            <Box width={350} p={2}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Box height="100%" width={350} position="relative">
+                <Stack p={2} direction="row" alignItems="center" justifyContent="space-between">
                     <Typography variant="h6">
                         Notifications
                     </Typography>
@@ -79,11 +80,22 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
                         <CloseIcon/>
                     </IconButton>
                 </Stack>
-                <Stack spacing={1} mt={2}>
-                    {currentUser?.notifications && currentUser.notifications.map((notification) => (
-                        <NotificationItem key={notification.ID} notification={notification} />
-                    ))}
-                </Stack>
+                <Box height="100%" overflow="auto">
+                    <Stack p={2} spacing={1} mt={2} >
+                        {currentUser?.notifications && currentUser.notifications.map((notification) => (
+                            <NotificationItem key={notification.ID} notification={notification} />
+                        ))}
+                    </Stack>
+                </Box>
+                <Box position="absolute" width="100%" bottom={0}>
+                        <Paper>
+                            <Stack p={2} alignSelf="end" alignItems="center" justifyContent="center">
+                                <Button variant="outlined" onClick={() => AuthAPI.clearAllNotifications()}>
+                                    Clear all
+                                </Button>
+                            </Stack>
+                        </Paper>
+                </Box>
             </Box>
         </Drawer>
         <Container maxWidth={maxWidth} sx={{marginY: 10}}>

@@ -13,6 +13,7 @@ const enum Endpoint {
     GET_SESSION = '/users/session',
     SIGN_OUT = '/users/signout',
     CLEAR_NOTIFICATION = '/users/clearNotification',
+    CLEAR_ALL_NOTIFICATIONS = '/users/clearAllNotifications',
 }
 
 export const enum CoursePermission {
@@ -145,6 +146,17 @@ async function clearNotification(notification: Notification): Promise<void> {
     }
 }
 
+/**
+ * Clears the given notification.
+ */
+async function clearAllNotifications(): Promise<void> {
+    try {
+        return await APIClient.post(Endpoint.CLEAR_ALL_NOTIFICATIONS, {});
+    } catch (e) {
+        throw e;
+    }
+}
+
 const AuthAPI = {
     getCurrentUser,
     getUserById,
@@ -152,7 +164,8 @@ const AuthAPI = {
     updateUserByEmail,
     signInWithGoogle,
     signOut,
-    clearNotification
+    clearNotification,
+    clearAllNotifications
 };
 
 
