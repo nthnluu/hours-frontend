@@ -25,25 +25,23 @@ export const enum TicketStatus {
     StatusReturned = "RETURNED",
 }
 
-export interface SparseTicket {
-    id: string;
-    createdAt: Timestamp;
-    userID: string;
-    claimedAt?: Timestamp;
-    description: string;
-    anonymize: boolean;
-    status: TicketStatus;
+export interface TicketUserdata {
+    UserID: string;
+    Email: string;
+    PhotoURL: string;
+    DisplayName: string;
+    Pronouns: string;
 }
 
 export interface Ticket {
     id: string;
+    user: TicketUserdata;
     createdAt: Timestamp;
-    createdBy: User;
-    claimedBy?: string;
     claimedAt?: Timestamp;
+    claimedBy?: string;
+    status: TicketStatus;
     description: string;
     anonymize: boolean;
-    status: TicketStatus;
 }
 
 /**

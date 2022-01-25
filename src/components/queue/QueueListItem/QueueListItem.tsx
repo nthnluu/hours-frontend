@@ -29,15 +29,15 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const isReturned = ticket.status === TicketStatus.StatusReturned;
 
     const isTA = (currentUser != undefined) && (currentUser.coursePermissions[queue.course.id] != undefined);
-    const isTicketOwner = (currentUser != undefined) && (ticket.createdBy.email === currentUser.email);
+    const isTicketOwner = (currentUser != undefined) && (ticket.user.Email === currentUser.email);
 
     function handleClaimTicket() {
-        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queue.id, TicketStatus.StatusClaimed, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.user.UserID, queue.id, TicketStatus.StatusClaimed, ticket.description)
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
     function handleMarkReturned() {
-        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queue.id, TicketStatus.StatusReturned, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.user.UserID, queue.id, TicketStatus.StatusReturned, ticket.description)
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
@@ -55,17 +55,17 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
             <Box p={2.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
-                        <Avatar src={ticket.createdBy.photoUrl} imgProps={{referrerPolicy: "no-referrer"}}
+                        <Avatar src={ticket.user.PhotoURL} imgProps={{referrerPolicy: "no-referrer"}}
                                 sx={{display: ["none", null, "flex"]}}>
-                            {getInitials(ticket.createdBy.displayName)}
+                            {getInitials(ticket.user.DisplayName)}
                         </Avatar>
                         <Box overflow={"hidden"}>
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <Typography fontSize={16} fontWeight={600}>
-                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? "Anonymous" : ticket.createdBy.displayName}
+                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? "Anonymous" : ticket.user.DisplayName}
                                 </Typography>
                                 <Typography fontSize={16} sx={{opacity: 0.65}}>
-                                    {ticket.createdBy.pronouns && `(${ticket.createdBy.pronouns})`}
+                                    {ticket.user.Pronouns && `(${ticket.user.Pronouns})`}
                                 </Typography>
                                 {isClaimed && ticket.claimedAt && <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
                                 {isMissing && <Chip label="Missing" size="small" color="error" sx={{fontWeight: 500}}/>}

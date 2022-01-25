@@ -20,7 +20,7 @@ type FormData = {
 const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onClose}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
-        toast.promise(QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queueID, ticket.status, data.description), {
+        toast.promise(QueueAPI.editTicket(ticket.id, ticket.user.UserID, queueID, ticket.status, data.description), {
             loading: "Updating ticket...",
             success: "Ticket updated!",
             error: errors.UNKNOWN

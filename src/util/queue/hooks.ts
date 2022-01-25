@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
-import AuthAPI from "@util/auth/api";
-import {Queue, SparseTicket, Ticket, TicketStatus} from "@util/queue/api";
+import {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {collection, doc, getFirestore, onSnapshot, orderBy, query, Timestamp, where} from "@firebase/firestore";
 
 export function useQueue(id: string): [Queue | undefined, boolean] {
@@ -59,26 +58,18 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
         const db = getFirestore();
 
         const unsubscribe = onSnapshot(collection(db, "queues", queueID, "tickets"), (querySnapshot) => {
-            let res: SparseTicket[] = [];
+            let res: Ticket[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                res.push({id: doc.id, ...data} as SparseTicket);
+                res.push({id: doc.id, ...data} as Ticket);
             });
 
             if (filterCompleted) {
                 res = res.filter(x => x.status != TicketStatus.StatusComplete);
             }
 
-        
-            Promise.all(res.map(ticket => AuthAPI.getUserById(ticket.userID)))
-                .then(users => {
-                    return users.map((user, i) => {
-                        return {...res[i], createdBy: user};
-                    });
-                }).then(res => {
-                    setTickets(res as Ticket[]);
-                    setLoading(false);
-                });
+            setTickets(res);
+            setLoading(false);
         });
 
         return () => unsubscribe();

@@ -27,7 +27,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
-    const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.email == currentUser?.email).length > 0;
+    const inQueue = tickets && tickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
 
     const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
@@ -49,7 +49,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
+                {!queue.isCutOff && !queueEnded && !inQueue && //!isTA(queue.course.id) &&
                     <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                         Join Queue
                     </Button>}

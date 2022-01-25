@@ -42,7 +42,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
 
     const handleMarkAsCompleted = () => {
         handleClose();
-        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queueID, TicketStatus.StatusComplete, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.user.UserID, queueID, TicketStatus.StatusComplete, ticket.description)
             .catch(() => {
                 toast.error(errors.UNKNOWN);
             });
@@ -50,7 +50,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
 
     const handleMarkAsMissing = () => {
         handleClose();
-        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queueID, TicketStatus.StatusMissing, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.user.UserID, queueID, TicketStatus.StatusMissing, ticket.description)
             .catch(() => {
                 toast.error(errors.UNKNOWN);
             });
@@ -58,7 +58,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
 
     const handleReturnToQueue = () => {
         handleClose();
-        QueueAPI.editTicket(ticket.id, ticket.createdBy.id, queueID, TicketStatus.StatusWaiting, ticket.description)
+        QueueAPI.editTicket(ticket.id, ticket.user.UserID, queueID, TicketStatus.StatusWaiting, ticket.description)
             .catch(() => {
                 toast.error(errors.UNKNOWN);
             });

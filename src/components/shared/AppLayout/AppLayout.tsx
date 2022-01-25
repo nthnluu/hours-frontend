@@ -88,7 +88,7 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
                     </Stack>
                 </Box>
                 <Box position="absolute" width="100%" bottom={0}>
-                        <Paper>
+                        <Paper square>
                             <Stack p={2} alignSelf="end" alignItems="center" justifyContent="center">
                                 <Button variant="outlined" onClick={() => AuthAPI.clearAllNotifications()}>
                                     Clear all
