@@ -139,7 +139,7 @@ async function signOut(): Promise<void> {
  */
 async function clearNotification(notification: Notification): Promise<void> {
     try {
-        return await APIClient.post(Endpoint.CLEAR_NOTIFICATION, {notification});
+        return await APIClient.post(Endpoint.CLEAR_NOTIFICATION, {notificationId: notification.ID});
     } catch (e) {
         throw e;
     }

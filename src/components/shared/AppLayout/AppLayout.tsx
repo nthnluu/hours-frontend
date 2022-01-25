@@ -4,8 +4,6 @@ import {
     Box,
     Container,
     Drawer,
-    ListItemText,
-    Paper,
     Stack,
     Typography
 } from "@mui/material";
@@ -16,6 +14,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import {useAuth} from "@util/auth/hooks";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
+import NotificationItem from "../NotificationItem";
 
 export interface AppLayoutProps {
     maxWidth: "xl" | "md" | "sm" | "xs" | "lg" | false;
@@ -73,11 +72,7 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
                 </Stack>
                 <Stack spacing={1} mt={2}>
                     {currentUser?.notifications && currentUser.notifications.map((notification) => (
-                        <Paper key={notification.ID}>
-                            <Box py={1} px={2}>
-                                <ListItemText primary={notification.Title} secondary={notification.Body}/>
-                            </Box>
-                        </Paper>
+                        <NotificationItem key={notification.ID} notification={notification} />
                     ))}
                 </Stack>
             </Box>
