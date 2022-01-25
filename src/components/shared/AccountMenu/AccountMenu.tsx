@@ -86,7 +86,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                             <div>
                                 <Stack sx={{p: 4}} alignItems="center">
                                     <Avatar
-                                        src={user.photoURL}
+                                        src={user.photoUrl}
                                         imgProps={{referrerPolicy: "no-referrer"}}
                                         sx={{
                                             width: 96,
