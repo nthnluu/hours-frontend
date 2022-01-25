@@ -28,7 +28,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
 
     if (ticketsLoading) return <></>;
 
-    const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.Email == currentUser?.email).length > 0;
+    const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
 
     const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];

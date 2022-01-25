@@ -53,7 +53,7 @@ async function getCurrentUser(): Promise<User> {
 /**
  * Fetches profile information corresponding to the currently logged in user.
  */
-async function getUserById(id: string): Promise<User> {
+export async function getUserById(id: string): Promise<User> {
     try {
         return await APIClient.get(`${Endpoint.USER}/${id}`);
     } catch (e) {

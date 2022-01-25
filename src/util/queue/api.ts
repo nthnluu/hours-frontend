@@ -1,4 +1,5 @@
 import APIClient from "@util/APIClient";
+import {User} from "@util/auth/api";
 import {Course} from "@util/course/api";
 import {Timestamp} from "@firebase/firestore";
 
@@ -24,17 +25,19 @@ export const enum TicketStatus {
     StatusReturned = "RETURNED",
 }
 
+export interface SparseTicket {
+    id: string;
+    createdAt: Timestamp;
+    userID: string;
+    claimedAt?: Timestamp;
+    description: string;
+    status: TicketStatus;
+}
+
 export interface Ticket {
     id: string;
     createdAt: Timestamp;
-    createdBy: {
-        DisplayName: string;
-        Email: string;
-        IsAdmin: boolean;
-        PhoneNumber: string;
-        PhotoURL: string;
-        Pronouns: string;
-    };
+    createdBy: User;
     claimedAt?: Timestamp;
     description: string;
     status: TicketStatus;
