@@ -33,10 +33,10 @@ export interface User {
 }
 
 export interface Notification {
-    ID: string
-    Title: string
-    Body: string
-    Timestamp: Date
+    ID: string;
+    Title: string;
+    Body: string;
+    Timestamp: Date;
 }
 
 /**

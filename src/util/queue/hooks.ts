@@ -69,13 +69,14 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
                 res = res.filter(x => x.status != TicketStatus.StatusComplete);
             }
 
+        
             Promise.all(res.map(ticket => getUserById(ticket.userID)))
                 .then(users => {
                     return users.map((user, i) => {
                         return {...res[i], createdBy: user};
                     });
-                }).then(tickets => {
-                    setTickets(tickets);
+                }).then(res => {
+                    setTickets(res);
                     setLoading(false);
                 });
         });
