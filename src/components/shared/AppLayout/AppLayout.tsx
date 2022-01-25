@@ -11,10 +11,12 @@ import {Router} from "next/router";
 import AccountMenu from "@components/shared/AccountMenu";
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import {useAuth} from "@util/auth/hooks";
+import {Notification} from "@util/auth/api";
+import {useAuth, useNotifications} from "@util/auth/hooks";
 import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
 import NotificationItem from "../NotificationItem";
+import toast from "react-hot-toast";
 
 export interface AppLayoutProps {
     maxWidth: "xl" | "md" | "sm" | "xs" | "lg" | false;
@@ -30,6 +32,10 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
     const [pageLoading, setPageLoading] = useState(false);
     const {currentUser, isAuthenticated} = useAuth();
     const [notificationMenu, setNotificationMenu] = useState(false);
+
+    useNotifications(currentUser, (a: Notification) => {
+        toast.success(a.Title, {duration: 10000});
+    });
 
     // Bind page load events to pageLoading state so loading bar is displayed on navigation.
     useEffect(() => {
