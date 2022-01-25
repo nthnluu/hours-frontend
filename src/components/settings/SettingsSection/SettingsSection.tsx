@@ -2,6 +2,7 @@ import React, {FC} from "react";
 import {Box, CircularProgress, Paper, Stack, Typography} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useAuth} from "@util/auth/hooks";
+import {CourseAdmin} from "@util/auth/api";
 import IconButton from "@components/shared/IconButton";
 import GppGoodIcon from '@mui/icons-material/GppGood';
 
@@ -27,7 +28,7 @@ const SettingsSection: FC<SettingsSectionProps> = ({
                                                        children
                                                    }) => {
     const {currentUser} = useAuth();
-    const isTA = currentUser && Object.keys(currentUser.coursePermissions).length > 0;
+    const isTA = currentUser && Object.keys(currentUser.coursePermissions).filter(perm => perm === CourseAdmin).length > 0;
     const display = ((adminOnly && currentUser?.isAdmin) || !adminOnly) && (!taOnly || (taOnly && isTA));
 
     return display ? <Paper variant="outlined">

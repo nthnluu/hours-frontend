@@ -19,7 +19,7 @@ const AllCoursesSection: FC<AllCoursesSectionProps> = ({}) => {
 
     return <>
         <CreateCourseDialog open={openCreate} onClose={() => setOpenCreate(false)}/>
-        <SettingsSection adminOnly title="All courses"
+        <SettingsSection adminOnly title="Manage all courses"
                          actionButton={{label: "New", onClick: () => setOpenCreate(true)}}>
             {courses && <List>
                 {courses.length == 0 && <Typography textAlign="center">There are no courses.</Typography>}

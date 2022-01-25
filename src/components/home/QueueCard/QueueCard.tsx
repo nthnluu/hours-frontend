@@ -36,13 +36,13 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <Stack direction="row" spacing={0.5} alignItems="center">
                         <AccessTimeIcon/>
-                        <Typography variant="body2">
+                        <Typography variant="body2" noWrap>
                             {formatEndTime(queue.endTime)}
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={0.5} alignItems="center">
                         <LocationOnIcon/>
-                        <Typography variant="body2">
+                        <Typography variant="body2" noWrap style={{overflow: "hidden", textOverflow: "ellipsis", width: '8rem'}}>
                             {queue.location}
                         </Typography>
                     </Stack>

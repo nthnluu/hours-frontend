@@ -74,7 +74,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
                         <Select
                             {...register("courseID")}
                             required
-                            defaultValue={coursePerms.length > 0 ? coursePerms[0].id : ""}
+                            defaultValue={coursePerms.length > 3 ? coursePerms[3].id : ""}
                             fullWidth
                             labelId="course-select-label"
                             id="course-select"
@@ -131,7 +131,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
                     />
                 </Stack>
                 <FormGroup>
-                    <FormControlLabel control={<Checkbox {...register("allowTicketEditing")}/>}
+                    <FormControlLabel control={<Checkbox defaultChecked {...register("allowTicketEditing")}/>}
                                       label="Allow students to edit tickets once created"/>
                     <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
                                       label="Show meeting links on claim"/>

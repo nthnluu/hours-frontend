@@ -9,7 +9,7 @@ export function getNextHours(): { timestamp: Date, time: string }[] {
     const endTime = add(new Date(), { hours: numhours });
     const timeStops = [];
 
-    let thisTime = add(new Date(), { minutes: hoursplitsminutes - (getMinutes(new Date) % hoursplitsminutes) });
+    let thisTime = add(new Date(), { minutes: 2 * hoursplitsminutes - (getMinutes(new Date) % hoursplitsminutes) });
     while (thisTime <= endTime) {
         // Only works if numhours <= 24
         const isToday = getHours(thisTime) >= getHours(new Date());
