@@ -103,13 +103,13 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                 </ListItemIcon>
                 <ListItemText>Edit Ticket</ListItemText>
             </MenuItem>}
-            {isTA && isClaimed && <MenuItem onClick={handleMarkAsCompleted}>
+            {isTA && <MenuItem onClick={handleMarkAsCompleted}>
                 <ListItemIcon>
                     <CheckIcon fontSize="small"/>
                 </ListItemIcon>
                 <ListItemText>Mark as completed</ListItemText>
             </MenuItem>}
-            {isTA && isClaimed && <MenuItem onClick={handleMarkAsMissing}>
+            {isTA && <MenuItem onClick={handleMarkAsMissing}>
                 <ListItemIcon>
                     <QuestionMarkIcon fontSize="small"/>
                 </ListItemIcon>
