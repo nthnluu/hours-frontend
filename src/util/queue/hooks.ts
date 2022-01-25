@@ -76,7 +76,7 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
                         return {...res[i], createdBy: user};
                     });
                 }).then(res => {
-                    setTickets(res);
+                    setTickets(res as Ticket[]);
                     setLoading(false);
                 });
         });

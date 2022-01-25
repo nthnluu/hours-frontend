@@ -51,7 +51,7 @@ export function useAuth(): AuthState {
 
 
 /** useUser is a hook that fetches a user session from the Acropolis API */
-export function useUser(userID: string | undefind): [User | undefined, boolean] {
+export function useUser(userID: string | undefined): [User | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User | undefined>(undefined);
 

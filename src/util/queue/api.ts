@@ -31,6 +31,7 @@ export interface SparseTicket {
     userID: string;
     claimedAt?: Timestamp;
     description: string;
+    anonymize: boolean;
     status: TicketStatus;
 }
 
