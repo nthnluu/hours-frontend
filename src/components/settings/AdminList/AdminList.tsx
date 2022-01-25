@@ -38,6 +38,10 @@ export default function AdminList() {
 
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
+        if (admins && admins.some(admin => admin.email === data.email)) {
+            toast.error("Cannot add a duplicate admin.");
+            return
+        }
         toast.promise(AuthAPI.updateUserByEmail(data.email, true), {
             loading: "Adding admin...",
             success: `${data.email} is now an admin.`,
