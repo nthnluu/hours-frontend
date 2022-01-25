@@ -41,6 +41,7 @@ export interface Ticket {
     claimedBy?: string;
     claimedAt?: Timestamp;
     description: string;
+    anonymize: boolean;
     status: TicketStatus;
 }
 
@@ -166,9 +167,9 @@ async function shuffleQueue(queueID: string): Promise<void> {
 /**
  * Creates a ticket for the given user.
  */
-async function createTicket(queueID: string, description: string): Promise<void> {
+async function createTicket(queueID: string, description: string, anonymize: boolean): Promise<void> {
     try {
-        await APIClient.post(`/queues/${queueID}/ticket`, {description});
+        await APIClient.post(`/queues/${queueID}/ticket`, {description, anonymize});
         return;
     } catch (e) {
         throw e;

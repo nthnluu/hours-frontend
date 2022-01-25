@@ -62,7 +62,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                         <Box overflow={"hidden"}>
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <Typography fontSize={16} fontWeight={600}>
-                                    {ticket.createdBy.displayName}
+                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? "Anonymous" : ticket.createdBy.displayName}
                                 </Typography>
                                 <Typography fontSize={16} sx={{opacity: 0.65}}>
                                     {ticket.createdBy.pronouns && `(${ticket.createdBy.pronouns})`}
@@ -106,7 +106,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                                     <Typography fontSize={14}>
                                         Claimed by {claimedUser?.displayName}
                                     </Typography>
-                                    {claimedUser.meetingLink && (<Typography fontSize={14} sx={{opacity: 0.65}}>
+                                    {queue.showMeetingLinks && claimedUser.meetingLink && (<Typography fontSize={14} sx={{opacity: 0.65}}>
                                         <Link color="inherit" underline="hover"
                                             sx={{display: "inline-flex", alignItems: "center"}}
                                             href={claimedUser?.meetingLink}>

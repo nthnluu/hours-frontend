@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
+import {Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, FormControlLabel, Checkbox} from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
 import QueueAPI from "@util/queue/api";
@@ -14,6 +14,7 @@ export interface CreateTicketDialogProps {
 
 type FormData = {
     description: string;
+    anonymize: boolean;
 };
 
 const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID}) => {
@@ -27,7 +28,7 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
             await Notification.requestPermission();
         }
 
-        toast.promise(QueueAPI.createTicket(queueID, data.description), {
+        toast.promise(QueueAPI.createTicket(queueID, data.description, data.anonymize), {
             loading: "Creating ticket...",
             success: "Ticket created!",
             error: errors.UNKNOWN
@@ -55,6 +56,8 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
                         variant="standard"
                     />
                 </Stack>
+                <FormControlLabel control={<Checkbox {...register("anonymize")}/>}
+                                label="Hide your name from other students in the queue"/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
