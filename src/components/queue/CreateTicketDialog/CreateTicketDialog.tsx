@@ -36,6 +36,10 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
             .then(() => {
                 onClose();
                 reset();
+            })
+            .catch(() => {
+                onClose();
+                reset();
             });
     });
 
