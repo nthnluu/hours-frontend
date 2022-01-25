@@ -15,7 +15,7 @@ import IconButton from "@components/shared/IconButton";
 import ConfirmButton from "@components/shared/ConfirmButton";
 import CloseIcon from '@mui/icons-material/Close';
 import AuthAPI, {User} from "@util/auth/api";
-import useAdmins, {useAuth} from "@util/auth/hooks";
+import {useAuth, useAdmins} from "@util/auth/hooks";
 import {useForm} from "react-hook-form";
 import {toast} from "react-hot-toast";
 import SettingsSection from "@components/settings/SettingsSection";
