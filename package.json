@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "add-component": "hygen components new"
+    "add-component": "hygen components new",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@emotion/cache": "^11.6.0",
