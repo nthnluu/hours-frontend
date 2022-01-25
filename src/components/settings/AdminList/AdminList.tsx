@@ -40,7 +40,7 @@ export default function AdminList() {
     const onSubmit = handleSubmit(data => {
         if (admins && admins.some(admin => admin.email === data.email)) {
             toast.error("Cannot add a duplicate admin.");
-            return
+            return;
         }
         toast.promise(AuthAPI.updateUserByEmail(data.email, true), {
             loading: "Adding admin...",

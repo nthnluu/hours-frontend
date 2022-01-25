@@ -49,7 +49,7 @@ function MyApp(props: MyAppProps) {
         } else {
             return responsiveFontSizes(createTheme(theme("light")));
         }
-    }, [themeMode, prefersDarkMode]);
+    }, [themeMode]);
 
     firebaseInit();
     const session = useSession();

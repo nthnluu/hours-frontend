@@ -111,7 +111,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
         if (open) {
             resetEdit();
         }
-    }, [open]);
+    }, [open, resetEdit]);
 
     function handleRevokeAccess(user: User) {
         const confirmed = confirm(`Are you sure you want to revoke ${user.displayName}'s (${user.email}) permissions?`);

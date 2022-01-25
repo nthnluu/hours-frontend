@@ -33,7 +33,7 @@ const EditTicketDialog: FC<EditTicketDialogProps> = ({ticket, queueID, open, onC
 
     useEffect(() => {
         reset();
-    }, [open]);
+    }, [open, reset]);
 
     return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>
