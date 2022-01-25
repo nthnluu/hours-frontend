@@ -38,6 +38,7 @@ export interface Ticket {
     id: string;
     createdAt: Timestamp;
     createdBy: User;
+    claimedBy?: string;
     claimedAt?: Timestamp;
     description: string;
     status: TicketStatus;

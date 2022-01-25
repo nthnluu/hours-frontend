@@ -1,9 +1,10 @@
 import React, {FC, useEffect, useState} from "react";
-import {Avatar, Box, Chip, Paper, Stack, Typography} from "@mui/material";
+import {Avatar, Box, Chip, Paper, Link, Stack, Typography, Divider} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
+import VideocamIcon from '@mui/icons-material/Videocam';
 import QueueAPI, {Queue, Ticket, TicketStatus} from "@util/queue/api";
-import {useAuth} from "@util/auth/hooks";
+import {useAuth, useUser} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
 import getInitials from "@util/shared/getInitials";
 import QueueListItemMenu from "@components/queue/QueueListItemMenu";
@@ -19,6 +20,7 @@ export interface QueueListItemProps {
 
 const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const {currentUser} = useAuth();
+    const [claimedUser, loading] = useUser(ticket.claimedBy);
     const [editTicketDialog, setEditTicketDialog] = useState(false);
 
     const isClaimed = ticket.status === TicketStatus.StatusClaimed;
@@ -94,6 +96,31 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                     </Stack>
                 </Stack>
             </Box>
+            {claimedUser && (<>
+            <Divider/>
+                <Box px={2.5} py={1}>
+                    <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
+                        <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
+                            <Box overflow={"hidden"}>
+                                <Stack direction="row" spacing={2} alignItems="center">
+                                    <Typography fontSize={14}>
+                                        Claimed by {claimedUser?.displayName}
+                                    </Typography>
+                                    {claimedUser.meetingLink && (<Typography fontSize={14} sx={{opacity: 0.65}}>
+                                        <Link color="inherit" underline="hover"
+                                            sx={{display: "inline-flex", alignItems: "center"}}
+                                            href={claimedUser?.meetingLink}>
+                                                <Button variant="text" color="inherit" size="small" startIcon={<VideocamIcon/>}>
+                                                    Join Meeting
+                                                </Button>
+                                        </Link>
+                                    </Typography>)}
+                                </Stack>
+                            </Box>
+                        </Stack>
+                    </Stack>
+                </Box>
+            </>)}
         </Paper>
     </>);
 };

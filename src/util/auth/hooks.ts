@@ -49,22 +49,27 @@ export function useAuth(): AuthState {
     return useContext(authContext);
 }
 
-/** useUser is a hook that fetches a user session from the Acropolis API */
-export function useUser(userID: string): User | undefined {
-    const [user, setUser] = useState<User>();
-    let unsubscribe = () => {};
 
-    useAsyncEffect(async (): Promise<void> => {
+/** useUser is a hook that fetches a user session from the Acropolis API */
+export function useUser(userID: string | undefind): [User | undefined, boolean] {
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | undefined>(undefined);
+
+    useEffect(() => {
+        if (userID) {
             const db = getFirestore();
-            unsubscribe = onSnapshot(doc(db, "user_profiles", userID), (doc) => {
+            const unsubscribe = onSnapshot(doc(db, "user_profiles", userID), (doc) => {
                 if (doc.exists()) {
                     const user = doc.data();
                     setUser({id: user.id, ...doc.data()} as User);
+                    setLoading(false);
                 }
             });
-    }, [], () => unsubscribe());
+            return () => unsubscribe();
+        }
+    }, [userID]);
 
-    return user;
+    return [user, loading];
 }
 
 /** useAdmins is a hook that fetches all admins. */
