@@ -59,7 +59,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                     <Stack spacing={1.5} mt={2}>
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <LocationOnIcon/>
-                            <Typography>
+                            <Typography style={{overflow: "hidden", textOverflow: "ellipsis", width: '10rem'}}>
                                 {queue.location}
                             </Typography>
                         </Stack>
