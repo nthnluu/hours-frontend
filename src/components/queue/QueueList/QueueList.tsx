@@ -1,6 +1,7 @@
 import React, {FC, useState} from "react";
 import {
     Box,
+    CircularProgress,
     Grid,
     Stack,
     Typography,
@@ -25,8 +26,6 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const {currentUser, isTA} = useAuth();
     const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
-
-    if (ticketsLoading) return <></>;
 
     const inQueue = tickets && tickets.filter(ticket => ticket.createdBy.email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
@@ -56,6 +55,9 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                     </Button>}
             </Stack>
             <Box mt={1}>
+               {ticketsLoading && <Stack height={200} width={"100%"} justifyContent="center" alignItems="center">
+                    <CircularProgress />
+                </Stack>}
                 <Stack spacing={2}>
                     {sortedTickets && sortedTickets.map(ticket => <QueueListItem key={ticket!.id}
                                                                                  queue={queue}
