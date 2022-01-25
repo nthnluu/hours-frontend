@@ -206,6 +206,18 @@ async function deleteTicket(id: string, queueID: string): Promise<void> {
     }
 }
 
+/**
+ * Deletes a ticket with the given ID.
+ */
+async function makeAnnouncement(queueID: string, announcement: string): Promise<void> {
+    try {
+        await APIClient.post(`/queues/${queueID}/announce`, {announcement});
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
 const QueueAPI = {
     createQueue,
     editQueue,
@@ -216,7 +228,8 @@ const QueueAPI = {
     shuffleQueue,
     createTicket,
     editTicket,
-    deleteTicket
+    deleteTicket,
+    makeAnnouncement
 };
 
 

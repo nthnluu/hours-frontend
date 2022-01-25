@@ -20,9 +20,11 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueueAPI, {Queue} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
+import MakeAnnouncementDialog from "@components/queue/MakeAnnouncementDialog";
 import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 import formatEndTime from "@util/shared/formatEndTime";
+import {add} from "date-fns";
 
 export interface QueueOptionsProps {
     queue: Queue;
@@ -36,12 +38,14 @@ export interface QueueOptionsProps {
  */
 const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTickets, setShowCompletedTickets}) => {
     const {isTA} = useAuth();
-    const [open, setOpen] = useState(false);
+    const [openEditDialog, setOpenEditDialog] = useState(false);
+    const [openAnnounceDialog, setOpenAnnounceDialog] = useState(false);
 
-    const isEnded = queue.endTime < new Date();
+    const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
 
     return <>
-        <EditQueueDialog queueID={queueID} queue={queue} open={open} onClose={() => setOpen(false)}/>
+        <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog} onClose={() => setOpenEditDialog(false)}/>
+        <MakeAnnouncementDialog queueID={queueID} open={openAnnounceDialog} onClose={() => setOpenAnnounceDialog(false)}/>
         <Grid item xs={12} md={3}>
             <Stack spacing={3} divider={<Divider/>}>
                 <Box width="100%">
@@ -68,14 +72,14 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                     </Stack>
                 </Box>
 
-                {isTA(queue.course.id) && !isEnded && <Box width="100%">
+                {isTA(queue.course.id) && !isLongEnded && <Box width="100%">
                     <Typography variant="h6">
                         Manage Queue
                     </Typography>
 
                     <List>
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => setOpen(true)}>
+                            <ListItemButton onClick={() => setOpenEditDialog(true)}>
                                 <ListItemIcon>
                                     <EditIcon/>
                                 </ListItemIcon>
@@ -84,7 +88,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={() => setOpenAnnounceDialog(true)}>
                                 <ListItemIcon>
                                     <CampaignIcon/>
                                 </ListItemIcon>

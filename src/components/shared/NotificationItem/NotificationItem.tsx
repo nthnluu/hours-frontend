@@ -14,6 +14,7 @@ export interface NotificationItemProps {
     notification: Notification
 }
 
+// TODO: make the clear notification button hide this notification.
 const NotificationItem: FC<NotificationItemProps> = ({ notification }) => {
     return <Paper>
         <Box>
