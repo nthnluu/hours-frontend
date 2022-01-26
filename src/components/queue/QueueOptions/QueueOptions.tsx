@@ -24,7 +24,6 @@ import MakeAnnouncementDialog from "@components/queue/MakeAnnouncementDialog";
 import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 import formatEndTime from "@util/shared/formatEndTime";
-import {add} from "date-fns";
 
 export interface QueueOptionsProps {
     queue: Queue;
@@ -42,11 +41,14 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openAnnounceDialog, setOpenAnnounceDialog] = useState(false);
 
-    const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
+    // const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
+    const isLongEnded = queue.endTime < new Date();
 
     return <>
-        <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog} onClose={() => setOpenEditDialog(false)}/>
-        <MakeAnnouncementDialog queueID={queueID} open={openAnnounceDialog} onClose={() => setOpenAnnounceDialog(false)}/>
+        <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog}
+                         onClose={() => setOpenEditDialog(false)}/>
+        <MakeAnnouncementDialog queueID={queueID} open={openAnnounceDialog}
+                                onClose={() => setOpenAnnounceDialog(false)}/>
         <Grid item xs={12} md={3}>
             <Stack spacing={3} divider={<Divider/>}>
                 <Box width="100%">
