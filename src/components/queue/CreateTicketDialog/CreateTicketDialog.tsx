@@ -33,7 +33,7 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
         const currPermissionStatus = Notification.permission;
 
         // user hasn't granted permission yet, ask...
-        if (currPermissionStatus === "default") {
+        if (currPermissionStatus !== "denied" && currPermissionStatus === "default") {
             await Notification.requestPermission();
         }
 
