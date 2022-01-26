@@ -1,7 +1,7 @@
 import React, {FC, ReactNode, useEffect, useState} from "react";
 import Navbar from "@components/shared/Navbar";
 import {
-    Badge, 
+    Badge,
     Box,
     Container,
     Drawer,
@@ -19,6 +19,7 @@ import Button from "@components/shared/Button";
 import IconButton from "@components/shared/IconButton";
 import NotificationItem from "../NotificationItem";
 import toast from "react-hot-toast";
+import BellAnimation from "@components/animations/BellAnimation";
 
 export interface AppLayoutProps {
     maxWidth: "xl" | "md" | "sm" | "xs" | "lg" | false;
@@ -52,16 +53,21 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
         return <></>;
     }
 
-    const badgednotificationicon: JSX.Element = currentUser?.notifications.length === 0 ? <NotificationsIcon/> : <Badge badgeContent={currentUser?.notifications.length} color="primary"><NotificationsIcon/></Badge>;
+    const badgednotificationicon: JSX.Element = currentUser?.notifications.length === 0 ? <NotificationsIcon/> :
+        <Badge badgeContent={currentUser?.notifications.length} color="primary"><NotificationsIcon/></Badge>;
 
-    const endItems = [<IconButton key="notifications" label="Notifications" onClick={() => setNotificationMenu(true)}>{badgednotificationicon}</IconButton>, <AccountMenu key="account" user={currentUser!}/>];
+    const endItems = [<IconButton key="notifications" label="Notifications"
+                                  onClick={() => setNotificationMenu(true)}>{badgednotificationicon}</IconButton>,
+        <AccountMenu key="account" user={currentUser!}/>];
     if (actionButton) {
         endItems.push(<Button variant="contained" key="action-button"
                               startIcon={actionButton.icon}
                               onClick={actionButton.onClick}>{actionButton.label}</Button>);
-                            
+
         endItems.reverse();
     }
+
+    const hasNotifications = currentUser?.notifications && currentUser.notifications.length > 0;
 
     return <div>
         <Navbar fixed loading={loading || pageLoading}
@@ -81,21 +87,26 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
                     </IconButton>
                 </Stack>
                 <Box height="100%" overflow="auto">
-                    <Stack p={2} spacing={1} mt={2} >
+                    {hasNotifications ? <Stack p={2} spacing={1} mt={2}>
                         {currentUser?.notifications && currentUser.notifications.map((notification) => (
-                            <NotificationItem key={notification.ID} notification={notification} />
+                            <NotificationItem key={notification.ID} notification={notification}/>
                         ))}
-                    </Stack>
+                    </Stack> : <div>
+                        <BellAnimation/>
+                        <Typography textAlign="center">
+                            No notifications to display
+                        </Typography>
+                    </div>}
                 </Box>
-                <Box position="absolute" width="100%" bottom={0}>
-                        <Paper square>
-                            <Stack p={2} alignSelf="end" alignItems="center" justifyContent="center">
-                                <Button variant="outlined" onClick={() => AuthAPI.clearAllNotifications()}>
-                                    Clear all
-                                </Button>
-                            </Stack>
-                        </Paper>
-                </Box>
+                {hasNotifications && <Box position="absolute" width="100%" bottom={0}>
+                    <Paper square>
+                        <Stack p={2} alignSelf="end" alignItems="center" justifyContent="center">
+                            <Button variant="outlined" onClick={() => AuthAPI.clearAllNotifications()}>
+                                Clear all
+                            </Button>
+                        </Stack>
+                    </Paper>
+                </Box>}
             </Box>
         </Drawer>
         <Container maxWidth={maxWidth} sx={{marginY: 10}}>
