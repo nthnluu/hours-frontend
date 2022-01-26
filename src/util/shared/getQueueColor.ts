@@ -14,7 +14,7 @@ export default function getQueueColor(queue: Queue): string {
     if (queue.endTime < new Date()) {
         return "#1f1f1f";
     } else {
-        const colors = ["#3d5afe", "#00e5ff", "#d81b60", "#8e24aa", "#f44336", "#0097a7", "#ff9100", "#00c853"];
+        const colors = ["#304ffe", "#ad1457", "#00c853", "#0288d1", "#f50057", "#0097a7", "#aa00ff", "#0288d1"];
         const hash = hashCodeFromString((queue.course.id + queue.course.title + queue.title));
         const colorIndex = Math.abs(hash % (colors.length - 1));
         return colors[colorIndex];
