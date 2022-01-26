@@ -91,6 +91,18 @@ async function removeCoursePermission(courseID: string, userID: string): Promise
     }
 }
 
+/**
+ * 
+ */
+async function bulkUpload(term: string, data: string): Promise<void> {
+    try {
+        await APIClient.post(`/courses/bulkUpload`, {term, data});
+        return;
+    } catch (e) {
+        throw e;
+    }
+}
+
 const CourseAPI = {
     getCourse,
     createCourse,
@@ -98,6 +110,7 @@ const CourseAPI = {
     editCourse,
     addCoursePermission,
     removeCoursePermission,
+    bulkUpload,
 };
 
 

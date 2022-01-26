@@ -12,10 +12,14 @@ export interface SettingsSectionProps {
     loading?: boolean;
     adminOnly?: boolean;
     taOnly?: boolean;
-    actionButton?: {
+    primaryActionButton?: {
         label: string;
         onClick: () => void;
-    }
+    };
+    secondaryActionButton?: {
+        label: string;
+        onClick: () => void;
+    };
 }
 
 const SettingsSection: FC<SettingsSectionProps> = ({
@@ -24,7 +28,8 @@ const SettingsSection: FC<SettingsSectionProps> = ({
                                                        loading,
                                                        adminOnly,
                                                        taOnly,
-                                                       actionButton,
+                                                       primaryActionButton,
+                                                       secondaryActionButton,
                                                        children
                                                    }) => {
     const {currentUser} = useAuth();
@@ -47,10 +52,14 @@ const SettingsSection: FC<SettingsSectionProps> = ({
                         {subtitle}
                     </Typography>
                 </Stack>
-
-                {actionButton && <Button size="small" variant="contained" onClick={actionButton.onClick}>
-                    {actionButton.label}
+                <Stack direction="row" spacing={2}>
+                {secondaryActionButton && <Button size="small" variant="contained" onClick={secondaryActionButton.onClick}>
+                    {secondaryActionButton.label}
                 </Button>}
+                {primaryActionButton && <Button size="small" variant="contained" onClick={primaryActionButton.onClick}>
+                    {primaryActionButton.label}
+                </Button>}
+                </Stack>
             </Stack>
             {loading ? <Box textAlign="center" py={2}>
                 <CircularProgress/>
