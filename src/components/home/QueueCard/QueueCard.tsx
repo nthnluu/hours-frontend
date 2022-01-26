@@ -42,7 +42,8 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
                     </Stack>
                     <Stack direction="row" spacing={0.5} alignItems="center">
                         <LocationOnIcon/>
-                        <Typography variant="body2" noWrap style={{overflow: "hidden", textOverflow: "ellipsis", width: '8rem'}}>
+                        <Typography variant="body2" noWrap
+                                    style={{overflow: "hidden", textOverflow: "ellipsis", maxWidth: '8rem'}}>
                             {queue.location}
                         </Typography>
                     </Stack>
