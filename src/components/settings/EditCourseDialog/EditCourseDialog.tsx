@@ -17,6 +17,7 @@ import IconButton from "@components/shared/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import {useForm} from "react-hook-form";
 import CourseAPI, {Course} from "@util/course/api";
+import {useInvitations} from "@util/course/hooks";
 import {CoursePermission} from "@util/auth/api";
 import {User} from "@util/auth/api";
 import {toast} from "react-hot-toast";
@@ -59,6 +60,7 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
     const [editLoading, setEditLoading] = useState(false);
     const [addMemberLoading, setAddMemberLoading] = useState(false);
     const [revokeAccessLoading, setRevokeAccessLoading] = useState(false);
+    const [invites, loadingInvites] = useInvitations(course.id);
 
     // Edit form
     const {
@@ -186,32 +188,35 @@ const EditCourseDialog: FC<EditCourseDialogProps> = ({course, open, onClose}) =>
                 </form>
             </TabPanel>
             <TabPanel value={currentTab} index={1}>
-                {staff.length > 0 && <>
-                    <Paper variant="outlined" sx={{bgcolor: 'error'}}>
-                        <Box maxHeight={300} overflow="auto">
-                            <List dense>
-                                {staff.map(user => (
-                                    <ListItem
-                                        key={user.id}
-                                        secondaryAction={
-                                            <IconButton label="Revoke access" edge="end" aria-label="delete"
-                                                        disabled={revokeAccessLoading}
-                                                        onClick={() => handleRevokeAccess(user)}>
-                                                <CloseIcon/>
-                                            </IconButton>
-                                        }>
-                                        <ListItemText
-                                            primary={`${user.displayName} (${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "Admin" : "Staff"})`}
-                                            secondary={user.email}
-                                        />
-                                    </ListItem>))}
-                            </List>
-                        </Box>
-                    </Paper>
-                    <Box my={2}>
-                        <Divider/>
+                <Paper variant="outlined" sx={{bgcolor: 'error'}}>
+                    <Box maxHeight={300} overflow="auto">
+                        <List dense>
+                            {staff.map(user => (
+                                <ListItem
+                                    key={user.id}
+                                    secondaryAction={
+                                        <IconButton label="Revoke access" edge="end" aria-label="delete"
+                                                    disabled={revokeAccessLoading}
+                                                    onClick={() => handleRevokeAccess(user)}>
+                                            <CloseIcon/>
+                                        </IconButton>
+                                    }>
+                                    <ListItemText
+                                        primary={`${user.displayName} (${user.coursePermissions[course.id] === CoursePermission.CourseAdmin ? "Admin" : "Staff"})`}
+                                        secondary={user.email}
+                                    />
+                                </ListItem>))}
+                            {invites.map(email => (
+                                <ListItem key={email}>
+                                    <ListItemText primary={"(pending)"} secondary={email}/>
+                                </ListItem>
+                            ))}
+                        </List>
                     </Box>
-                </>}
+                </Paper>
+                <Box my={2}>
+                    <Divider/>
+                </Box>
                 <Typography variant="h6" mb={2}>Add member</Typography>
                 <form onSubmit={onAddPermissionSubmit}>
                     <Stack spacing={2}>
