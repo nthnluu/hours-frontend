@@ -9,27 +9,28 @@ import IconButton from "@components/shared/IconButton";
 import ClearIcon from '@mui/icons-material/Clear';
 import {toast} from "react-hot-toast";
 import AuthAPI, {Notification} from "@util/auth/api";
+import {formatDistance} from "date-fns";
 
 export interface NotificationItemProps {
     notification: Notification
 }
 
-// TODO: make the clear notification button hide this notification.
-const NotificationItem: FC<NotificationItemProps> = ({ notification }) => {
-    return <Paper>
+const NotificationItem: FC<NotificationItemProps> = ({notification}) => {
+    return <Paper variant="elevation" elevation={3}>
         <Box>
-                <ListItem
-                  secondaryAction={
+            <ListItem
+                secondaryAction={
                     <IconButton edge="end" label="Clear notification" onClick={() => {
                         AuthAPI.clearNotification(notification)
                             .catch(() => toast.error("Error clearing notification."));
                     }}>
-                      <ClearIcon />
+                        <ClearIcon/>
                     </IconButton>
-                  }
-                >
-                <ListItemText primary={notification.Title} secondary={notification.Body}/>
-                </ListItem>
+                }
+            >
+                <ListItemText primary={notification.Title}
+                              secondary={`${notification.Body} (${formatDistance(notification.Timestamp.toDate(), new Date(), {addSuffix: true})})`}/>
+            </ListItem>
         </Box>
     </Paper>;
 };

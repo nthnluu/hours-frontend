@@ -28,6 +28,20 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
             await Notification.requestPermission();
         }
 
+        toast.promise(QueueAPI.createTicket("queueID", data.description, data.anonymize), {
+            loading: "Creating ticket...",
+            success: "Ticket created!",
+            error: errors.UNKNOWN
+        })
+            .then(() => {
+                onClose();
+                reset();
+            })
+            .catch(() => {
+                onClose();
+                reset();
+            });
+
         toast.promise(QueueAPI.createTicket(queueID, data.description, data.anonymize), {
             loading: "Creating ticket...",
             success: "Ticket created!",

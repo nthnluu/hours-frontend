@@ -19,7 +19,8 @@ export const AuthProvider = authContext.Provider;
 /** useSession is a hook that fetches a user session from the Acropolis API */
 export function useSession(): AuthState {
     const [authState, setAuthState] = useState(initialAuthState);
-    let unsubscribe = () => {};
+    let unsubscribe = () => {
+    };
 
     useAsyncEffect(async (): Promise<void> => {
         try {
@@ -27,11 +28,11 @@ export function useSession(): AuthState {
             const db = getFirestore();
             unsubscribe = onSnapshot(doc(db, "user_profiles", sessionUser.id), (doc) => {
                 if (doc.exists()) {
-                    const user = doc.data();
+                    const user = doc.data() as User;
                     setAuthState({
                         loading: false,
                         isAuthenticated: true,
-                        currentUser: {id: user.id, ...doc.data()} as User,
+                        currentUser: {...user, notifications: user.notifications.reverse()},
                         isTA: courseID => (user.coursePermissions != null) && (user.coursePermissions[courseID] != undefined)
                     });
                 }
@@ -101,7 +102,7 @@ export function useNotifications(user: User | undefined, cb: (a: Notification) =
 
     useEffect(() => {
         const notifications = user?.notifications ?? undefined;
-        
+
         // If the queue doesn't exist yet, no need to run any logic.
         if (notifications === undefined) {
             return;

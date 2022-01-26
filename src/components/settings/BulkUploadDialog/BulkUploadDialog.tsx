@@ -33,6 +33,9 @@ const BulkUploadDialog: FC<BulkUploadDialogProps> = ({open, onClose}) => {
         <form onSubmit={onSubmit}>
             <DialogTitle>Bulk Upload</DialogTitle>
             <DialogContent>
+                <Typography>
+                    This is a dangerous operation. Only proceed if you know what you&apos;re doing.
+                </Typography>
                 {rows.map((row: string) => <Typography style={{display: "inline-block", marginBottom: "10px"}} key={row}>{row}</Typography>)}
                 <Stack spacing={2} my={1}>
                     <TextField
@@ -52,7 +55,7 @@ const BulkUploadDialog: FC<BulkUploadDialogProps> = ({open, onClose}) => {
                         type="textarea"
                         fullWidth
                         multiline
-                        rows={15}
+                        rows={8}
                         size="small"
                         variant="outlined"
                     />

@@ -4,6 +4,7 @@ import {
     signInWithPopup,
 } from "firebase/auth";
 import APIClient from "@util/APIClient";
+import {Timestamp} from "@firebase/firestore";
 
 const enum Endpoint {
     ME = '/users/me',
@@ -43,7 +44,7 @@ export interface Notification {
     ID: string;
     Title: string;
     Body: string;
-    Timestamp: Date;
+    Timestamp: Timestamp;
     Type: NotificationType;
 }
 

@@ -87,21 +87,21 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
                     </IconButton>
                 </Stack>
                 <Box height="100%" overflow="auto">
-                    {hasNotifications ? <Stack p={2} spacing={1} mt={2}>
+                    {hasNotifications ? <Stack p={2} spacing={2}>
                         {currentUser?.notifications && currentUser.notifications.map((notification) => (
                             <NotificationItem key={notification.ID} notification={notification}/>
                         ))}
                     </Stack> : <div>
                         <BellAnimation/>
-                        <Typography textAlign="center">
-                            No notifications to display
+                        <Typography textAlign="center" maxWidth={250} mx="auto">
+                            Notifications and announcements will appear here!
                         </Typography>
                     </div>}
                 </Box>
                 {hasNotifications && <Box position="absolute" width="100%" bottom={0}>
                     <Paper square>
                         <Stack p={2} alignSelf="end" alignItems="center" justifyContent="center">
-                            <Button variant="outlined" onClick={() => AuthAPI.clearAllNotifications()}>
+                            <Button variant="contained" onClick={() => AuthAPI.clearAllNotifications()}>
                                 Clear all
                             </Button>
                         </Stack>
