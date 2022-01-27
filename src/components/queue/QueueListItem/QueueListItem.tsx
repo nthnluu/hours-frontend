@@ -20,7 +20,7 @@ export interface QueueListItemProps {
 
 const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const {currentUser} = useAuth();
-    const [claimedUser, loading] = useUser(ticket.claimedBy);
+    const [claimedUser] = useUser(ticket.claimedBy);
     const [editTicketDialog, setEditTicketDialog] = useState(false);
 
     const isClaimed = ticket.status === TicketStatus.StatusClaimed;
@@ -44,7 +44,9 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     // send desktop notification to user when their ticket is claimed
     useEffect(() => {
         if (isTicketOwner && isClaimed) {
-            new Notification('Your ticket has been claimed!');
+            if ("Notification" in window) {
+                new Notification('Your ticket has been claimed!');
+            }
         }
     }, [isClaimed, isTicketOwner]);
 
@@ -99,7 +101,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                 </Stack>
             </Box>
             {ticket.status === TicketStatus.StatusClaimed && claimedUser && (<>
-            <Divider/>
+                <Divider/>
                 <Box px={2.5} py={1}>
                     <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                         <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
@@ -108,15 +110,17 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                                     <Typography fontSize={14}>
                                         Claimed by {claimedUser?.displayName}
                                     </Typography>
-                                    {queue.showMeetingLinks && claimedUser.meetingLink && (isTicketOwner || isTA || currentUser?.isAdmin) && (<Typography fontSize={14} sx={{opacity: 0.65}}>
-                                        <Link color="inherit" underline="hover"
-                                            sx={{display: "inline-flex", alignItems: "center"}}
-                                            href={claimedUser?.meetingLink}>
-                                                <Button variant="text" color="inherit" size="small" startIcon={<VideocamIcon/>}>
+                                    {queue.showMeetingLinks && claimedUser.meetingLink && (isTicketOwner || isTA || currentUser?.isAdmin) && (
+                                        <Typography fontSize={14} sx={{opacity: 0.65}}>
+                                            <Link color="inherit" underline="hover"
+                                                  sx={{display: "inline-flex", alignItems: "center"}}
+                                                  href={claimedUser?.meetingLink}>
+                                                <Button variant="text" color="inherit" size="small"
+                                                        startIcon={<VideocamIcon/>}>
                                                     Join Meeting
                                                 </Button>
-                                        </Link>
-                                    </Typography>)}
+                                            </Link>
+                                        </Typography>)}
                                 </Stack>
                             </Box>
                         </Stack>
