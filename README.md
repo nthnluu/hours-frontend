@@ -66,10 +66,10 @@ yarn add-component SampleComponent
 This will generate a new component directory into `src/components`. You can move it into any directory
 within `src/components` as you see fit.
 
-
 ## 🛠 Contributing
 
-Want to help make Hours even better? Awesome! Get started by reading our contributor guide.
+Want to help make Hours even better? Awesome! Get started by reading
+our [contributor guide](https://github.com/nthnluu/hours-frontend/wiki/Contributing).
 
 ## License
 
