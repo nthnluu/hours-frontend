@@ -34,12 +34,12 @@ type FormData = {
     showMeetingLinks: boolean;
 };
 
-const EditQueueDialog: FC<EditQueueDialogProps> = ({queue, open, onClose}) => {
+const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
     const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
         const req: EditQueueRequest = {
-            queueID: queue.id,
+            queueID: queueID,
             title: data.title,
             description: data.description,
             location: data.location,

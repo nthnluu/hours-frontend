@@ -14,16 +14,19 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueueAPI, {Queue} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
+import ReopenQueueDialog from "@components/queue/ReopenQueueDialog";
 import MakeAnnouncementDialog from "@components/queue/MakeAnnouncementDialog";
 import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 import formatEndTime from "@util/shared/formatEndTime";
+import {add} from "date-fns";
 
 export interface QueueOptionsProps {
     queue: Queue;
@@ -39,14 +42,18 @@ export interface QueueOptionsProps {
 const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTickets, setShowCompletedTickets}) => {
     const {isTA} = useAuth();
     const [openEditDialog, setOpenEditDialog] = useState(false);
+    const [openReopenDialog, setOpenReopenDialog] = useState(false);
     const [openAnnounceDialog, setOpenAnnounceDialog] = useState(false);
 
-    // const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
-    const isLongEnded = queue.endTime < new Date();
+    const isEnded = queue.endTime < new Date();
+    const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
+    // const isLongEnded = queue.endTime < new Date();
 
     return <>
         <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog}
-                         onClose={() => setOpenEditDialog(false)}/>
+                        onClose={() => setOpenEditDialog(false)}/>
+        <ReopenQueueDialog queueID={queueID} queue={queue} open={openReopenDialog}
+                        onClose={() => setOpenReopenDialog(false)}/>
         <MakeAnnouncementDialog queueID={queueID} open={openAnnounceDialog}
                                 onClose={() => setOpenAnnounceDialog(false)}/>
         <Grid item xs={12} md={3}>
@@ -128,18 +135,29 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                             </ListItemButton>
                         </ListItem>
 
-                        <ListItem disablePadding>
+                        {isEnded ? <ListItem disablePadding>
+                            <ListItemButton onClick={() => setOpenReopenDialog(true)}>
+                                <ListItemIcon>
+                                    <RestartAltIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Reopen queue"/>
+                            </ListItemButton>
+                        </ListItem> : <ListItem disablePadding>
                             <ListItemButton onClick={() => {
-                                QueueAPI.endQueue(queue)
-                                    .then(() => toast.success("Queue ended."))
-                                    .catch(() => toast.error("Error ending queue."));
+                                const confirmed = confirm("Are you sure you want to end this queue?");
+
+                                if (confirmed) {
+                                    QueueAPI.endQueue(queue)
+                                        .then(() => toast.success("Queue ended."))
+                                        .catch(() => toast.error("Error ending queue."));
+                                }
                             }}>
                                 <ListItemIcon>
                                     <CancelIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary="End queue"/>
                             </ListItemButton>
-                        </ListItem>
+                        </ListItem>}
                     </List>
                 </Box>}
             </Stack>
