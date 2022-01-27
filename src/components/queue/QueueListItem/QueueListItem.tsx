@@ -81,8 +81,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                                 </Typography>
                             </Stack>
                             {(isTA || isTicketOwner) &&
-                                <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
-                                            fontSize={14}>
+                                <Typography fontSize={14}>
                                     {(isTicketOwner || isTA || currentUser?.isAdmin) && ticket.description}
                                 </Typography>}
                         </Box>
