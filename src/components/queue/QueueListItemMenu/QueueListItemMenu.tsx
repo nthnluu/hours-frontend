@@ -97,7 +97,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
             MenuListProps={{
                 'aria-labelledby': buttonID,
             }}>
-            {isTicketOwner && allowTicketEditing && <MenuItem onClick={handleEditTicket}>
+            {isTicketOwner && allowTicketEditing && !isClaimed && <MenuItem onClick={handleEditTicket}>
                 <ListItemIcon>
                     <EditIcon fontSize="small"/>
                 </ListItemIcon>
