@@ -3,10 +3,10 @@ import Navbar from "@components/shared/Navbar";
 import {
     Badge,
     Box,
-    Container,
+    Container, Divider,
     Drawer,
     Paper,
-    Stack,
+    Stack, Toolbar,
     Typography
 } from "@mui/material";
 import {Router} from "next/router";
@@ -77,16 +77,19 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
             open={notificationMenu}
             onClose={() => setNotificationMenu(false)}
         >
-            <Box height="100%" width={350} position="relative">
-                <Stack p={2} direction="row" alignItems="center" justifyContent="space-between">
-                    <Typography variant="h6">
-                        Notifications
-                    </Typography>
-                    <IconButton label="Close" onClick={() => setNotificationMenu(false)}>
-                        <CloseIcon/>
-                    </IconButton>
-                </Stack>
-                <Box height="100%" overflow="auto">
+            <Box height="100%" overflow="hidden" width={350} position="relative">
+                <Toolbar>
+                    <Stack width="100%" direction="row" alignItems="center" justifyContent="space-between">
+                        <Typography variant="h6">
+                            Notifications
+                        </Typography>
+                        <IconButton label="Close" onClick={() => setNotificationMenu(false)}>
+                            <CloseIcon/>
+                        </IconButton>
+                    </Stack>
+                </Toolbar>
+                <Divider/>
+                <Box maxHeight="100%" overflow="auto" pb={16}>
                     {hasNotifications ? <Stack p={2} spacing={2}>
                         {currentUser?.notifications && currentUser.notifications.map((notification) => (
                             <NotificationItem key={notification.ID} notification={notification}/>
