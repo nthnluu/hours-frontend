@@ -15,7 +15,7 @@ const lottieOptions = {
 };
 
 const BouncingCubesAnimation: FC<BouncingCubesAnimationProps> = ({}) => {
-    return <Lottie options={lottieOptions} height={250} width={200}/>;
+    return <Lottie isClickToPauseDisabled={true} options={lottieOptions} height={250} width={200}/>;
 };
 
 export default BouncingCubesAnimation;

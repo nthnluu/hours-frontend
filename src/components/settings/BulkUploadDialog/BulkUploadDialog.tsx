@@ -23,6 +23,7 @@ const BulkUploadDialog: FC<BulkUploadDialogProps> = ({open, onClose}) => {
     });
 
     const rows = [
+        "This is a dangerous operation. Only proceed if you know what you're doing.",
         "Paste comma-separated values in the data field with the following schema: (email, [UTA/HTA], course_code, course_name).",
         "Rows with invalid emails or any staff option that isn't 'UTA' or 'HTA' will be dropped. If a course_code maps to multiple different non-empty course_names, an arbitrary one will be chosen.",
         "If you use a previously used term name, unexpected behaviour may ensue.",
@@ -33,10 +34,8 @@ const BulkUploadDialog: FC<BulkUploadDialogProps> = ({open, onClose}) => {
         <form onSubmit={onSubmit}>
             <DialogTitle>Bulk Upload</DialogTitle>
             <DialogContent>
-                <Typography>
-                    This is a dangerous operation. Only proceed if you know what you&apos;re doing.
-                </Typography>
-                {rows.map((row: string) => <Typography style={{display: "inline-block", marginBottom: "10px"}} key={row}>{row}</Typography>)}
+                {rows.map((row: string) => <Typography style={{display: "inline-block", marginBottom: "10px"}}
+                                                       key={row}>{row}</Typography>)}
                 <Stack spacing={2} my={1}>
                     <TextField
                         {...register("term")}

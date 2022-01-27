@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from "react";
-import {Avatar, Box, Chip, Paper, Link, Stack, Typography, Divider} from "@mui/material";
+import {Avatar, Box, Chip, Divider, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
 import VideocamIcon from '@mui/icons-material/Videocam';
@@ -12,16 +12,22 @@ import {toast} from "react-hot-toast";
 import QueueListItemTimer from "@components/queue/QueueListItemTimer";
 import errors from "@util/errors";
 import Button from "@components/shared/Button";
+import {formatDistance} from "date-fns";
 
 export interface QueueListItemProps {
     queue: Queue;
     ticket: Ticket;
 }
 
+function formatElapsedTime(ticket: Ticket): string {
+    return formatDistance(ticket.createdAt.toDate(), new Date(), {addSuffix: true});
+}
+
 const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
     const {currentUser} = useAuth();
     const [claimedUser] = useUser(ticket.claimedBy);
     const [editTicketDialog, setEditTicketDialog] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState(formatElapsedTime(ticket));
 
     const isClaimed = ticket.status === TicketStatus.StatusClaimed;
     const isMissing = ticket.status === TicketStatus.StatusMissing;
@@ -50,31 +56,29 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
         }
     }, [isClaimed, isTicketOwner]);
 
+    useEffect(() => {
+        setInterval(() => setElapsedTime(formatElapsedTime(ticket)), 5000);
+    });
+
     return (<>
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
                           queueID={queue.id}/>
         <Paper variant={isClaimed ? "elevation" : "outlined"} elevation={4}>
             <Box p={2.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
-                    <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
+                    <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
                         <Avatar src={ticket.user.PhotoURL} imgProps={{referrerPolicy: "no-referrer"}}
                                 sx={{display: ["none", null, "flex"]}}>
                             {getInitials(ticket.user.DisplayName)}
                         </Avatar>
                         <Box overflow={"hidden"}>
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack direction="row" spacing={1}>
                                 <Typography fontSize={16} fontWeight={600}>
                                     {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? "Anonymous" : ticket.user.DisplayName}
                                 </Typography>
                                 <Typography fontSize={16} sx={{opacity: 0.65}}>
                                     {ticket.user.Pronouns && `(${ticket.user.Pronouns})`}
                                 </Typography>
-                                {isClaimed && ticket.claimedAt && <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
-                                {isMissing && <Chip label="Missing" size="small" color="error" sx={{fontWeight: 500}}/>}
-                                {isReturned &&
-                                    <Chip label="Returned" size="small" color="warning" sx={{fontWeight: 500}}/>}
-                                {isCompleted &&
-                                    <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
                             </Stack>
                             {(isTA || isTicketOwner) &&
                                 <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
@@ -100,33 +104,43 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                     </Stack>
                 </Stack>
             </Box>
-            {ticket.status === TicketStatus.StatusClaimed && claimedUser && (<>
-                <Divider/>
-                <Box px={2.5} py={1}>
-                    <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
-                        <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
-                            <Box overflow={"hidden"}>
-                                <Stack direction="row" spacing={2} alignItems="center">
-                                    <Typography fontSize={14}>
-                                        Claimed by {claimedUser?.displayName}
-                                    </Typography>
-                                    {queue.showMeetingLinks && claimedUser.meetingLink && (isTicketOwner || isTA || currentUser?.isAdmin) && (
-                                        <Typography fontSize={14} sx={{opacity: 0.65}}>
-                                            <Link color="inherit" underline="hover"
-                                                  sx={{display: "inline-flex", alignItems: "center"}}
-                                                  href={claimedUser?.meetingLink}>
-                                                <Button variant="text" color="inherit" size="small"
-                                                        startIcon={<VideocamIcon/>}>
-                                                    Join Meeting
-                                                </Button>
-                                            </Link>
-                                        </Typography>)}
-                                </Stack>
-                            </Box>
-                        </Stack>
-                    </Stack>
-                </Box>
-            </>)}
+            <Divider/>
+            <Box px={2.5} py={1}>
+                <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
+                    <Box>
+                        {(ticket.status == TicketStatus.StatusClaimed) ? (claimedUser &&
+                            <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
+                                <Box overflow={"hidden"}>
+                                    <Stack direction={["column", null, "row"]}
+                                           alignItems={["start", null, "center"]}>
+                                        <Typography fontSize={14} mr={[null, null, 2]}>
+                                            Claimed by {claimedUser?.displayName}
+                                        </Typography>
+                                        {queue.showMeetingLinks && claimedUser.meetingLink && (isTicketOwner || isTA || currentUser?.isAdmin) && (
+                                            <Button sx={{display: "inline-flex", alignItems: "center"}}
+                                                    href={claimedUser?.meetingLink} variant="text" color="inherit"
+                                                    size="small"
+                                                    startIcon={<VideocamIcon/>}>
+                                                Join Meeting
+                                            </Button>)}
+                                    </Stack>
+                                </Box>
+                            </Stack>) : <Typography fontSize={14} mr={[null, null, 2]}>
+                            Joined {elapsedTime}
+                        </Typography>}
+                    </Box>
+                    <Box>
+                        {isClaimed && ticket.claimedAt &&
+                            <QueueListItemTimer claimedAt={ticket.claimedAt}/>}
+                        {isMissing &&
+                            <Chip label="Missing" size="small" color="error" sx={{fontWeight: 500}}/>}
+                        {isReturned &&
+                            <Chip label="Returned" size="small" color="warning" sx={{fontWeight: 500}}/>}
+                        {isCompleted &&
+                            <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
+                    </Box>
+                </Stack>
+            </Box>
         </Paper>
     </>);
 };

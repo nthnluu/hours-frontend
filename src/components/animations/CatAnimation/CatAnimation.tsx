@@ -15,7 +15,7 @@ const lottieOptions = {
 };
 
 const CatAnimation: FC<CatAnimationProps> = ({}) => {
-    return <Lottie options={lottieOptions} height={400} width={400}/>;
+    return <Lottie isClickToPauseDisabled={true} options={lottieOptions} height={400} width={400}/>;
 };
 
 export default CatAnimation;
