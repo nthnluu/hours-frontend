@@ -51,7 +51,7 @@ const SettingsSection: FC<SettingsSectionProps> = ({
                         {subtitle}
                     </Typography>
                 </Stack>
-                <Stack direction={["row-reverse", null, "row"]} spacing={2} mt={[1, null, 0]}>
+                <Stack direction={["row-reverse", null, "row"]} mt={[1, null, 0]}>
                     {secondaryActionButton && <Button size="small" onClick={secondaryActionButton.onClick}>
                         {secondaryActionButton.label}
                     </Button>}
