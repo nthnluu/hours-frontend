@@ -59,10 +59,10 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                     <CircularProgress/>
                 </Stack>}
                 <Stack spacing={1}>
-                    {sortedTickets && sortedTickets.map((ticket, place) => <QueueListItem key={ticket!.id}
+                    {sortedTickets && sortedTickets.map((ticket, index) => <QueueListItem key={ticket!.id}
                                                                                  queue={queue}
                                                                                  ticket={ticket!}
-                                                                                 place={place + 1}/>)}
+                                                                                 position={index + 1}/>)}
                     {tickets && tickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>

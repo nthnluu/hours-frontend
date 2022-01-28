@@ -18,14 +18,14 @@ import {formatDistance} from "date-fns";
 export interface QueueListItemProps {
     queue: Queue;
     ticket: Ticket;
-    place: number;
+    position: number;
 }
 
 function formatElapsedTime(ticket: Ticket): string {
     return formatDistance(ticket.createdAt.toDate(), new Date(), {addSuffix: true});
 }
 
-const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, place}) => {
+const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
     const {currentUser} = useAuth();
     const [claimedUser] = useUser(ticket.claimedBy);
     const [editTicketDialog, setEditTicketDialog] = useState(false);
@@ -71,7 +71,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, place}) => {
                     <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
                         <Avatar sx={{display: ["none", null, "flex"], width: 36, height: 36}}>
                             <Typography fontSize={14}>
-                                    {place}
+                                    {position}
                             </Typography>
                         </Avatar>
                         <Divider orientation="vertical" flexItem/>
