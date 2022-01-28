@@ -3,7 +3,7 @@ import NextLink from "next/link";
 import {AppBar, Box, Divider, LinearProgress, Link, Stack, Toolbar} from "@mui/material";
 import IconButton from "../IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Image from "next/image";
+import Logo from "@components/shared/Logo";
 
 export interface NavbarProps {
     /** Displays a menu button on the leading edge of the navbar. */
@@ -64,12 +64,11 @@ const Navbar: FC<NavbarProps> = ({
                         <MenuIcon/>
                     </IconButton>}
                     <Stack sx={{flexGrow: 1}} direction="row" alignItems="center" spacing={1}>
-
                         <NextLink href="/">
                             <Link variant="h6" component="button" color="inherit" underline="hover"
                                   sx={{display: "inline-flex", alignItems: "center"}}>
-                                <Box mr={1} height={32}>
-                                    <Image src="/signmeup.svg" alt="" width={32} height={32}/>
+                                <Box mr={1} width={32} height={32}>
+                                    <Logo/>
                                 </Box>
                                 Hours
                             </Link>
@@ -83,7 +82,6 @@ const Navbar: FC<NavbarProps> = ({
                 <Divider/>
             </Box>
         </AppBar>
-
     </Box>;
 };
 
