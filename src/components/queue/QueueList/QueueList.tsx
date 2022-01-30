@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {
     Box,
     CircularProgress,
@@ -31,6 +31,20 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const queueEnded = queue.endTime < new Date();
 
     const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
+
+    const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
+    useEffect(() => {
+        if ((queue.tickets.length > prevTicketsLength) && isTA(queue.course.id)) {
+            const audio = new Audio("/doorbell.mp3");
+            audio.play();
+
+            if ("Notification" in window) {
+                new Notification("A student has joined your queue.");
+            }
+        }
+
+        setPrevTicketsLength(queue.tickets.length);
+    }, [queue, prevTicketsLength]);
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
