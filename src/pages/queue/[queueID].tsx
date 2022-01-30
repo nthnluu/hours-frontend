@@ -23,7 +23,7 @@ export default function Queue() {
     }, [router, queue, queueLoading]);
 
     return (
-        <AppLayout maxWidth="lg" loading={queueLoading}>
+        <AppLayout title={queue?.title} maxWidth="lg" loading={queueLoading}>
             {queue && !queueLoading && <>
                 <QueuePageHeader queue={queue}/>
                 <Grid container spacing={4} marginTop={1}>

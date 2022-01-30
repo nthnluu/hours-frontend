@@ -11,8 +11,13 @@ export function useQueue(id: string): [Queue | undefined, boolean] {
         const unsubscribe = onSnapshot(doc(db, "queues", id), (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
-                const endTime = data.endTime as Timestamp;
-                setQueue({...data, id: id, endTime: endTime.toDate()} as Queue);
+                const endTime = (data.endTime as Timestamp).toDate();
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                if (endTime > yesterday) {
+                    setQueue({...data, id: id, endTime: endTime} as Queue);
+                }
             }
             setLoading(false);
         });
