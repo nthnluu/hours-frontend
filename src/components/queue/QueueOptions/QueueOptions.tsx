@@ -115,7 +115,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                             </ListItemButton>
                         </ListItem>
 
-                        <ListItem disablePadding>
+                        {/* <ListItem disablePadding>
                             <ListItemButton onClick={() => setShowCompletedTickets(!showCompletedTickets)}>
                                 <ListItemIcon>
                                     <CheckCircleIcon/>
@@ -123,7 +123,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                                 <ListItemText
                                     primary={(showCompletedTickets ? "Show" : "Hide") + " completed tickets"}/>
                             </ListItemButton>
-                        </ListItem>
+                        </ListItem> */}
 
                         <ListItem disablePadding>
                             <ListItemButton

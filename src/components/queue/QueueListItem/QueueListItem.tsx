@@ -2,7 +2,9 @@ import React, {FC, useEffect, useState} from "react";
 import {Avatar, Box, Chip, Divider, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
+import PersonIcon from '@mui/icons-material/Person';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import QueueAPI, {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth, useUser} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
@@ -17,13 +19,14 @@ import {formatDistance} from "date-fns";
 export interface QueueListItemProps {
     queue: Queue;
     ticket: Ticket;
+    position: number;
 }
 
 function formatElapsedTime(ticket: Ticket): string {
     return formatDistance(ticket.createdAt.toDate(), new Date(), {addSuffix: true});
 }
 
-const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
+const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
     const {currentUser} = useAuth();
     const [claimedUser] = useUser(ticket.claimedBy);
     const [editTicketDialog, setEditTicketDialog] = useState(false);
@@ -64,20 +67,21 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
                           queueID={queue.id}/>
         <Paper variant={isClaimed ? "elevation" : "outlined"} elevation={4}>
-            <Box p={2.5}>
+            <Box p={1.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
-                        <Avatar src={ticket.user.PhotoURL} imgProps={{referrerPolicy: "no-referrer"}}
+                        <Avatar src={ticket.anonymize ? "" : ticket.user.PhotoURL}
+                                imgProps={{referrerPolicy: "no-referrer"}}
                                 sx={{display: ["none", null, "flex"]}}>
-                            {getInitials(ticket.user.DisplayName)}
+                            {ticket.anonymize ? <PersonIcon/> : getInitials(ticket.user.DisplayName)}
                         </Avatar>
                         <Box overflow={"hidden"}>
                             <Stack direction="row" spacing={1}>
                                 <Typography fontSize={16} fontWeight={600}>
-                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? "Anonymous" : ticket.user.DisplayName}
+                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? `${position}. Anonymous` : `${position}. ${ticket.user.DisplayName}`}
                                 </Typography>
                                 <Typography fontSize={16} sx={{opacity: 0.65}}>
-                                    {ticket.user.Pronouns && `(${ticket.user.Pronouns})`}
+                                    {!ticket.anonymize && ticket.user.Pronouns && `(${ticket.user.Pronouns})`}
                                 </Typography>
                             </Stack>
                             {(isTA || isTicketOwner) &&
@@ -104,8 +108,8 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
                 </Stack>
             </Box>
             <Divider/>
-            <Box px={2.5} py={1}>
-                <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
+            <Box px={1.5} py={1}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" overflow={"hidden"}>
                     <Box>
                         {(ticket.status == TicketStatus.StatusClaimed) ? (claimedUser &&
                             <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>

@@ -20,8 +20,10 @@ import IconButton from "@components/shared/IconButton";
 import NotificationItem from "../NotificationItem";
 import toast from "react-hot-toast";
 import BellAnimation from "@components/animations/BellAnimation";
+import Head from "next/head";
 
 export interface AppLayoutProps {
+    title?: string;
     maxWidth: "xl" | "md" | "sm" | "xs" | "lg" | false;
     loading?: boolean;
     actionButton?: {
@@ -31,7 +33,7 @@ export interface AppLayoutProps {
     }
 }
 
-const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, children}) => {
+const AppLayout: FC<AppLayoutProps> = ({title, maxWidth, loading, actionButton, children}) => {
     const [pageLoading, setPageLoading] = useState(false);
     const {currentUser, isAuthenticated} = useAuth();
     const [notificationMenu, setNotificationMenu] = useState(false);
@@ -70,6 +72,9 @@ const AppLayout: FC<AppLayoutProps> = ({maxWidth, loading, actionButton, childre
     const hasNotifications = currentUser?.notifications && currentUser.notifications.length > 0;
 
     return <div>
+        <Head>
+            <title>{title ? `${title} | Hours` : "Hours"}</title>
+        </Head>
         <Navbar fixed loading={loading || pageLoading}
                 endItems={endItems}/>
         <Drawer

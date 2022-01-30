@@ -1,5 +1,4 @@
 import APIClient from "@util/APIClient";
-import {User} from "@util/auth/api";
 import {Course} from "@util/course/api";
 import {Timestamp} from "@firebase/firestore";
 
