@@ -69,12 +69,6 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
             <Box p={1.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
-                        <Avatar sx={{display: ["none", null, "flex"], width: 36, height: 36}}>
-                            <Typography fontSize={14}>
-                                    {position}
-                            </Typography>
-                        </Avatar>
-                        <Divider orientation="vertical" flexItem/>
                         <Avatar src={ticket.anonymize ? "" : ticket.user.PhotoURL} imgProps={{referrerPolicy: "no-referrer"}}
                                 sx={{display: ["none", null, "flex"]}}>
                             {ticket.anonymize ? <VisibilityOffIcon/> : getInitials(ticket.user.DisplayName)}
@@ -82,7 +76,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
                         <Box overflow={"hidden"}>
                             <Stack direction="row" spacing={1}>
                                 <Typography fontSize={16} fontWeight={600}>
-                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? "Anonymous" : ticket.user.DisplayName}
+                                    {ticket.anonymize && !isTicketOwner && !isTA && !currentUser?.isAdmin ? `${position}. Anonymous` : `${position}. ${ticket.user.DisplayName}`}
                                 </Typography>
                                 <Typography fontSize={16} sx={{opacity: 0.65}}>
                                     {!ticket.anonymize && ticket.user.Pronouns && `(${ticket.user.Pronouns})`}
