@@ -46,7 +46,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
     }, [user]);
 
     function handleCloseZoomLinkCallout() {
-        window.localStorage.setItem("zoom-callout", "true");
+        window.localStorage.setItem("zoom-callout", "1");
         setZoomLinkCallout(false);
     }
 
@@ -81,7 +81,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
         {/* About dialog */}
         <AboutDialog open={openAbout} onClose={() => setOpenAbout(false)}/>
         <Callout isOpen={zoomLinkCallout} title="Add a Zoom link to your profile"
-                 body="By adding your Zoom link to your profile, we can automatically provide it to students when you claim their ticket. No more putting Zoom links in the queue title!"
+                 body="By adding your Zoom link to your profile, we can automatically provide it to students when you claim them. No more putting Zoom links in the queue title!"
                  anchorComponent={buttonRef.current}
                  onContinue={() => router.push("/settings")} onClose={handleCloseZoomLinkCallout}
                  continueButtonLabel="Add Zoom link"/>

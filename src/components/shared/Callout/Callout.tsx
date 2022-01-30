@@ -30,24 +30,24 @@ const Callout: FC<CalloutProps> = ({
         open={isOpen}
         anchorEl={anchorComponent}
         onClose={onClose}
-        PaperProps={{sx: {bgcolor: "#1056dc"}}}
+        PaperProps={{sx: {bgcolor: "#1459e1"}}}
         anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
         }}
     >
-        <Box sx={{p: 2.5}} width={350}>
+        <Box sx={{p: 2.5, color: "white"}} width={350}>
             <Typography variant="h6" sx={{lineHeight: 1.5}}>
                 {title}
             </Typography>
-            <Typography my={1}>
+            <Typography my={1} variant="body2">
                 {body}
             </Typography>
             <Stack direction="row" spacing={1} justifyContent="end" mt={2}>
                 <Button color="inherit" onClick={onClose}>
                     Do it later
                 </Button>
-                <Button color="inherit" variant="contained" sx={{color: "#1056dc"}} onClick={handleContinue}>
+                <Button color="inherit" variant="contained" sx={{color: "#1459e1"}} onClick={handleContinue}>
                     {continueButtonLabel}
                 </Button>
             </Stack>
