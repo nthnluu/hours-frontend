@@ -1,4 +1,4 @@
-import React, {FC, useRef, useState} from "react";
+import React, {FC, useEffect, useRef, useState} from "react";
 import {
     Avatar,
     ButtonBase,
@@ -15,6 +15,7 @@ import useThemeMode from "@util/mui/useThemeMode";
 import getInitials from "@util/shared/getInitials";
 import {useRouter} from "next/router";
 import AboutDialog from "../AboutDialog";
+import Callout from "@components/shared/Callout";
 
 export interface AccountMenuProps {
     /** The current user. */
@@ -33,6 +34,21 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
     const [openAbout, setOpenAbout] = useState(false);
     const [themeMode, setThemeMode, prefersDarkMode] = useThemeMode();
     const router = useRouter();
+
+    const [zoomLinkCallout, setZoomLinkCallout] = useState(false);
+    useEffect(() => {
+        if (user) {
+            const zoomCallout = window.localStorage.getItem("zoom-callout");
+            if (zoomCallout === null && Object.keys(user.coursePermissions).length > 0 && user.meetingLink?.length === 0) {
+                setZoomLinkCallout(true);
+            }
+        }
+    }, [user]);
+
+    function handleCloseZoomLinkCallout() {
+        window.localStorage.setItem("zoom-callout", "true");
+        setZoomLinkCallout(false);
+    }
 
     const id = open ? 'simple-popper' : undefined;
     const buttonRef = useRef(null);
@@ -64,6 +80,11 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
     return (<>
         {/* About dialog */}
         <AboutDialog open={openAbout} onClose={() => setOpenAbout(false)}/>
+        <Callout isOpen={zoomLinkCallout} title="Add a Zoom link to your profile"
+                 body="By adding your Zoom link to your profile, we can automatically provide it to students when you claim their ticket. No more putting Zoom links in the queue title!"
+                 anchorComponent={buttonRef.current}
+                 onContinue={() => router.push("/settings")} onClose={handleCloseZoomLinkCallout}
+                 continueButtonLabel="Add Zoom link"/>
         {/*Avatar button*/}
         <Tooltip title={`Signed in as ${user.displayName}`}>
             <ButtonBase aria-label="account menu" sx={{borderRadius: '100%'}} ref={buttonRef}
