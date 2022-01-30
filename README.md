@@ -69,7 +69,7 @@ within `src/components` as you see fit.
 ## 🛠 Contributing
 
 Want to help make Hours even better? Awesome! Get started by reading
-our [contributor guide](https://github.com/nthnluu/hours-frontend/wiki/Contributing).
+our [contributor guide](https://github.com/nthnluu/hours-frontend/blob/main/CONTRIBUTING.md).
 
 ## License
 
