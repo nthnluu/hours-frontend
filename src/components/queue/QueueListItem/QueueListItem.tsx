@@ -2,6 +2,7 @@ import React, {FC, useEffect, useState} from "react";
 import {Avatar, Box, Chip, Divider, Paper, Stack, Typography} from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
+import PersonIcon from '@mui/icons-material/Person';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import QueueAPI, {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth, useUser} from "@util/auth/hooks";
@@ -67,9 +68,10 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
             <Box p={2.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
-                        <Avatar src={ticket.user.PhotoURL} imgProps={{referrerPolicy: "no-referrer"}}
+                        <Avatar src={ticket.anonymize ? "" : ticket.user.PhotoURL}
+                                imgProps={{referrerPolicy: "no-referrer"}}
                                 sx={{display: ["none", null, "flex"]}}>
-                            {getInitials(ticket.user.DisplayName)}
+                            {ticket.anonymize ? <PersonIcon/> : getInitials(ticket.user.DisplayName)}
                         </Avatar>
                         <Box overflow={"hidden"}>
                             <Stack direction="row" spacing={1}>
@@ -105,7 +107,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket}) => {
             </Box>
             <Divider/>
             <Box px={2.5} py={1}>
-                <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" overflow={"hidden"}>
                     <Box>
                         {(ticket.status == TicketStatus.StatusClaimed) ? (claimedUser &&
                             <Stack direction="row" spacing={2} alignItems="center" overflow={"hidden"}>
