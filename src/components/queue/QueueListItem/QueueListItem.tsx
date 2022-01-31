@@ -4,7 +4,6 @@ import IconButton from "@components/shared/IconButton";
 import CheckIcon from '@mui/icons-material/Check';
 import PersonIcon from '@mui/icons-material/Person';
 import VideocamIcon from '@mui/icons-material/Videocam';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import QueueAPI, {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth, useUser} from "@util/auth/hooks";
 import EditTicketDialog from "@components/queue/EditTicketDialog";
@@ -67,7 +66,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
                           queueID={queue.id}/>
         <Paper variant={isClaimed ? "elevation" : "outlined"} elevation={4}>
-            <Box p={1.5}>
+            <Box p={2.5}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
                         <Avatar src={ticket.anonymize ? "" : ticket.user.PhotoURL}
@@ -108,7 +107,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
                 </Stack>
             </Box>
             <Divider/>
-            <Box px={1.5} py={1}>
+            <Box px={2.5} py={1}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" overflow={"hidden"}>
                     <Box>
                         {(ticket.status == TicketStatus.StatusClaimed) ? (claimedUser &&
