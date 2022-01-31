@@ -25,15 +25,15 @@ const AboutDialog: FC<AboutDialogProps> = ({open, onClose}) => {
         <DialogContent>
             <Stack spacing={2.5} my={1}>
                 <Typography>
-                    Hours was created by Nathan Luu, Nick Young, and Neil Ramaswamy at Brown University to facilitate
-                    office hours for courses in the CS Department and beyond.
+                    {"Hours was created by Nathan Luu, Nick Young, and Neil Ramaswamy at Brown University to facilitate " +
+                    "office hours for courses in the CS Department and beyond."}
                 </Typography>
                 <Button startIcon={<GitHubIcon/>} color="inherit" variant="outlined" onClick={() => handleExternalClick("https://github.com/nthnluu/hours-frontend/wiki/Contributing")}>
                    Contribute
                 </Button>
                 <Divider/>
                 <Typography>
-                    In loving memory of Will Povell '20. We'll miss you.
+                    {"In loving memory of Will Povell '20. We'll miss you."}
                 </Typography>
             </Stack>
         </DialogContent>
