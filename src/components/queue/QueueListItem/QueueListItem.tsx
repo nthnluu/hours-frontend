@@ -120,7 +120,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
                                         </Typography>
                                         {queue.showMeetingLinks && claimedUser.meetingLink && (isTicketOwner || isTA || currentUser?.isAdmin) && (
                                             <Button sx={{display: "inline-flex", alignItems: "center"}}
-                                                    onClick={() => window.open(claimedUser?.meetingLink)} variant="text" color="inherit"
+                                                    href={claimedUser?.meetingLink} variant="text" color="inherit"
                                                     size="small"
                                                     startIcon={<VideocamIcon/>}>
                                                 Join Meeting
