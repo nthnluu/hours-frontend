@@ -77,6 +77,11 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
         router.push(href);
     }
 
+    function handleExternalClick(href: string) {
+        setOpen(false);
+        window.open(href);
+    }
+
     return (<>
         {/* About dialog */}
         <AboutDialog open={openAbout} onClose={() => setOpenAbout(false)}/>
@@ -138,7 +143,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                     </ListItem>
                                     <ListItem disablePadding>
                                         <ListItemButton
-                                            onClick={() => handleClick("https://forms.gle/Ue9wQDXDuczLk7b56")}>
+                                            onClick={() => handleExternalClick("https://forms.gle/Ue9wQDXDuczLk7b56")}>
                                             <ListItemIcon>
                                                 <Feedback/>
                                             </ListItemIcon>

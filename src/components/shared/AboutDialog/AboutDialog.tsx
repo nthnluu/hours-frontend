@@ -1,11 +1,13 @@
 import {FC} from "react";
 import {
+    Button,
     Dialog,
     DialogTitle,
     DialogContent,
     Stack,
     Typography
 } from "@mui/material";
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 export interface AboutDialogProps {
     open: boolean;
@@ -13,6 +15,10 @@ export interface AboutDialogProps {
 }
 
 const AboutDialog: FC<AboutDialogProps> = ({open, onClose}) => {
+    function handleExternalClick(href: string) {
+        window.open(href);
+    }
+
     return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <DialogTitle>About Hours</DialogTitle>
         <DialogContent>
@@ -21,10 +27,9 @@ const AboutDialog: FC<AboutDialogProps> = ({open, onClose}) => {
                     Hours was created by Nathan Luu, Nick Young, and Neil Ramaswamy at Brown University to facilitate
                     office hours for courses in the CS Department and beyond.
                 </Typography>
-                {/*<Button startIcon={<GitHubIcon/>} color="inherit" variant="outlined"*/}
-                {/*        href="https://github.com/nthnluu/hours-frontend/wiki/Contributing">*/}
-                {/*    Contribute*/}
-                {/*</Button>*/}
+                <Button startIcon={<GitHubIcon/>} color="inherit" variant="outlined" onClick={() => handleExternalClick("https://github.com/nthnluu/hours-frontend/wiki/Contributing")}>
+                   Contribute
+                </Button>
             </Stack>
         </DialogContent>
     </Dialog>;
