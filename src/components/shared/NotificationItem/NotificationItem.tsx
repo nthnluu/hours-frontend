@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useState, useEffect} from "react";
 import {
     Box,
     ListItem,
@@ -7,8 +7,9 @@ import {
 } from "@mui/material";
 import IconButton from "@components/shared/IconButton";
 import ClearIcon from '@mui/icons-material/Clear';
+import AuthAPI, {Notification, NotificationType} from "@util/auth/api";
 import {toast} from "react-hot-toast";
-import AuthAPI, {Notification} from "@util/auth/api";
+import {useRouter} from "next/router";
 import {formatDistance} from "date-fns";
 
 export interface NotificationItemProps {
@@ -16,9 +17,17 @@ export interface NotificationItemProps {
 }
 
 const NotificationItem: FC<NotificationItemProps> = ({notification}) => {
+    const router = useRouter();
+
     return <Paper variant="elevation" elevation={3}>
         <Box>
             <ListItem
+                button
+                onClick={() => {
+                    if (notification.Type === NotificationType.NotificationAnnouncement || notification.Type === NotificationType.NotificationClaimed) {
+                        router.push(`/queue/${notification.Data}`);
+                    }
+                }}
                 secondaryAction={
                     <IconButton edge="end" label="Clear notification" onClick={() => {
                         AuthAPI.clearNotification(notification)
