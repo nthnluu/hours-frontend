@@ -4,6 +4,7 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
+    Divider,
     Stack,
     Typography
 } from "@mui/material";
@@ -30,6 +31,10 @@ const AboutDialog: FC<AboutDialogProps> = ({open, onClose}) => {
                 <Button startIcon={<GitHubIcon/>} color="inherit" variant="outlined" onClick={() => handleExternalClick("https://github.com/nthnluu/hours-frontend/wiki/Contributing")}>
                    Contribute
                 </Button>
+                <Divider/>
+                <Typography>
+                    In loving memory of Will Povell '20. We'll miss you.
+                </Typography>
             </Stack>
         </DialogContent>
     </Dialog>;
