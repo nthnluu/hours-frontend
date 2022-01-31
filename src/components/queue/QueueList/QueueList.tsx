@@ -9,22 +9,21 @@ import {
 import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
-import {useTickets} from "@util/queue/hooks";
 import {Queue, Ticket} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 
 export interface QueueListProps {
-    queue: Queue
-    showCompletedTickets: boolean;
+    queue: Queue;
+    tickets: Ticket[] | undefined;
+    ticketsLoading: boolean;
 }
 
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
+const QueueList: FC<QueueListProps> = ({queue, tickets, ticketsLoading}) => {
     const {currentUser, isTA} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
     const inQueue = tickets && tickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
@@ -63,7 +62,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
+                {!queue.isCutOff && !queueEnded && !inQueue && //!isTA(queue.course.id) &&
                     <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                         Join Queue
                     </Button>}
