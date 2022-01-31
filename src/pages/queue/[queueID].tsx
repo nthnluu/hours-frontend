@@ -13,7 +13,7 @@ export default function Queue() {
     const router = useRouter();
     const {queueID} = router.query;
     const [queue, queueLoading] = useQueue(queueID as string);
-    const [showCompletedTickets, setShowCompletedTickets] = useState(true);
+    const [showCompletedTickets, setShowCompletedTickets] = useState(false);
     const [tickets, ticketsLoading] = useTickets(queueID as string, showCompletedTickets);
 
     // Redirect user back to home page if no queue with given ID is found
