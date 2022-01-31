@@ -66,7 +66,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
         <EditTicketDialog open={editTicketDialog} onClose={() => setEditTicketDialog(false)} ticket={ticket}
                           queueID={queue.id}/>
         <Paper variant={isClaimed ? "elevation" : "outlined"} elevation={4}>
-            <Box p={2.5}>
+            <Box px={2.5} py={2}>
                 <Stack direction="row" justifyContent="space-between" overflow={"hidden"}>
                     <Stack direction="row" spacing={[0, null, 2]} alignItems="center" overflow={"hidden"}>
                         <Avatar src={ticket.anonymize ? "" : ticket.user.PhotoURL}

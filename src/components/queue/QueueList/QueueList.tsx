@@ -35,8 +35,8 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
     useEffect(() => {
         if ((queue.tickets.length > prevTicketsLength) && isTA(queue.course.id)) {
-            const audio = new Audio("/doorbell.mp3");
-            audio.play();
+            // const audio = new Audio("/doorbell.mp3");
+            // audio.play();
 
             if ("Notification" in window) {
                 new Notification("A student has joined your queue.");
@@ -74,10 +74,10 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                 </Stack>}
                 <Stack spacing={1}>
                     {sortedTickets && sortedTickets.map((ticket, index) => <QueueListItem key={ticket!.id}
-                                                                                 queue={queue}
-                                                                                 ticket={ticket!}
-                                                                                 position={index + 1}/>)}
-                    {tickets && tickets.length == 0 && <EmptyQueue/>}
+                                                                                          queue={queue}
+                                                                                          ticket={ticket!}
+                                                                                          position={index + 1}/>)}
+                    {sortedTickets && sortedTickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>
         </Grid>
