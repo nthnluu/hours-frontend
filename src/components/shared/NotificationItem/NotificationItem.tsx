@@ -1,4 +1,4 @@
-import {FC, useState, useEffect} from "react";
+import {FC} from "react";
 import {
     Box,
     ListItem,
@@ -24,7 +24,7 @@ const NotificationItem: FC<NotificationItemProps> = ({notification}) => {
             <ListItem
                 button
                 onClick={() => {
-                    if (notification.Type === NotificationType.NotificationAnnouncement || notification.Type === NotificationType.NotificationClaimed) {
+                    if (notification.Data && (notification.Type === NotificationType.NotificationAnnouncement || notification.Type === NotificationType.NotificationClaimed)) {
                         router.push(`/queue/${notification.Data}`);
                     }
                 }}
