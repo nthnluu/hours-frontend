@@ -116,13 +116,15 @@ export function useNotifications(user: User | undefined, cb: (a: Notification) =
             return;
         }
 
+        if (notifications.length === 0 && prevNotifications.current > 0) {
+            prevNotifications.current = 0;
+        }
+
         // However, if previous Notifications is defined and its length is less than the number of
         // Notifications we currently have, we can run the callback.
         if (prevNotifications.current < notifications.length) {
             // Run the callback for all Notifications starting at prevNotifications.current.
-            for (let i = prevNotifications.current; i < notifications.length; i++) {
-                cb(notifications[i]);
-            }
+            cb(notifications[0]);
 
             // First, set prevNotifications to prevent race conditions of the effect firing multiple
             // times, between which the following line isn't called. Thus, we run this first before
@@ -139,4 +141,4 @@ export function useNotifications(user: User | undefined, cb: (a: Notification) =
             prevNotifications.current = notifications.length;
         }
     }, [user, cb]);
-};
+}

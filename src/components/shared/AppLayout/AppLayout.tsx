@@ -21,6 +21,7 @@ import NotificationItem from "../NotificationItem";
 import toast from "react-hot-toast";
 import BellAnimation from "@components/animations/BellAnimation";
 import Head from "next/head";
+import sendDesktopNotification from "@util/shared/sendDesktopNotification";
 
 export interface AppLayoutProps {
     title?: string;
@@ -39,7 +40,8 @@ const AppLayout: FC<AppLayoutProps> = ({title, maxWidth, loading, actionButton, 
     const [notificationMenu, setNotificationMenu] = useState(false);
 
     useNotifications(currentUser, (a: Notification) => {
-        toast.success(a.Title, {duration: 5000});
+        toast(a.Title, {duration: 5000});
+        sendDesktopNotification(a.Title, a.Body);
     });
 
     // Bind page load events to pageLoading state so loading bar is displayed on navigation.

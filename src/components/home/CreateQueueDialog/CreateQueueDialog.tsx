@@ -21,6 +21,7 @@ import {useSession} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 import errors from "@util/errors";
 import {getNextHours} from "@util/shared/getNextHours";
+import requestNotificationPermission from "@util/shared/requestNotificationPermission";
 
 export interface CreateQueueDialogProps {
     open: boolean;
@@ -41,6 +42,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
     const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
     const onSubmit = handleSubmit(data => {
+        requestNotificationPermission();
         const req: CreateQueueRequest = {...data, endTime: times[data.endTimeIndex].timestamp};
         toast.promise(QueueAPI.createQueue(req), {
             loading: "Creating queue...",

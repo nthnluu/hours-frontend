@@ -49,15 +49,6 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
             .catch(() => toast.error(errors.UNKNOWN));
     }
 
-    // send desktop notification to user when their ticket is claimed
-    useEffect(() => {
-        if (isTicketOwner && isClaimed) {
-            if ("Notification" in window) {
-                new Notification('Your ticket has been claimed!');
-            }
-        }
-    }, [isClaimed, isTicketOwner]);
-
     useEffect(() => {
         setInterval(() => setElapsedTime(formatElapsedTime(ticket)), 5000);
     });
