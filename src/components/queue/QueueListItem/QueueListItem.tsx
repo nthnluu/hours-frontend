@@ -98,7 +98,7 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
                                                                onClick={handleMarkReturned}>
                             I&apos;m back
                         </Button>}
-                        {(isTA || isTicketOwner) && !isCompleted && (isTA || isTicketOwner) && 
+                        {(isTA || isTicketOwner) && !isCompleted &&
                             <QueueListItemMenu isClaimed={isClaimed} isTA={isTA} isTicketOwner={isTicketOwner}
                                                queueID={queue.id} ticket={ticket}
                                                allowTicketEditing={queue.allowTicketEditing}
