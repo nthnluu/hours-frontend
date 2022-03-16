@@ -7,12 +7,14 @@ import {toast} from "react-hot-toast";
 import AppLayout from "@components/shared/AppLayout";
 import QueueOptions from "@components/queue/QueueOptions";
 import QueueList from "@components/queue/QueueList";
+import {useTickets} from "@util/queue/hooks";
 
 export default function Queue() {
     const router = useRouter();
     const {queueID} = router.query;
     const [queue, queueLoading] = useQueue(queueID as string);
-    const [showCompletedTickets, setShowCompletedTickets] = useState(true);
+    const [showCompletedTickets, setShowCompletedTickets] = useState(false);
+    const [tickets, ticketsLoading] = useTickets(queueID as string, showCompletedTickets);
 
     // Redirect user back to home page if no queue with given ID is found
     useEffect(() => {
@@ -29,9 +31,10 @@ export default function Queue() {
                 <Grid container spacing={4} marginTop={1}>
                     <QueueOptions queue={queue} queueID={queueID as string}
                                   showCompletedTickets={showCompletedTickets}
-                                  setShowCompletedTickets={setShowCompletedTickets}/>
-                    <QueueList queue={queue}
-                               showCompletedTickets={showCompletedTickets}/>
+                                  setShowCompletedTickets={setShowCompletedTickets}
+                                  tickets={tickets}
+                                  ticketsLoading={ticketsLoading}/>
+                    <QueueList queue={queue} tickets={tickets} ticketsLoading={ticketsLoading}/>
                 </Grid>
             </>}
         </AppLayout>
