@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import CreateCourseDialog from "@components/settings/CreateCourseDialog";
-import {List, Typography} from "@mui/material";
+import {List, Stack, Typography, TextField} from "@mui/material";
 import {useCourses} from "@util/course/hooks";
 import CourseListItem from "../CourseListItem";
 import SettingsSection from "@components/settings/SettingsSection";
