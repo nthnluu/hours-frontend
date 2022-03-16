@@ -119,7 +119,15 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, tickets, ticketsLo
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => QueueAPI.shuffleQueue(queueID)}>
+                            <ListItemButton onClick={() => {
+                                const confirmed = confirm("Are you sure you want to shuffle the queue?");
+
+                                if (confirmed) {
+                                    QueueAPI.shuffleQueue(queueID)
+                                    .then(() => toast.success("Queue shuffled."))
+                                    .catch(() => toast.error("Error shuffling queue."));
+                                }
+                            }}>
                                 <ListItemIcon>
                                     <ShuffleIcon/>
                                 </ListItemIcon>
