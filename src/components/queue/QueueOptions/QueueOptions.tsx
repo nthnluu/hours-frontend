@@ -119,7 +119,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, tickets, ticketsLo
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => {
+                            <ListItemButton onClick={async () => {
                                 const confirmed = confirm("Are you sure you want to shuffle the queue?");
 
                                 if (confirmed) {
