@@ -137,8 +137,7 @@ const AccountMenu: FC<AccountMenuProps> = ({user}) => {
                                         </ListItemButton>
                                     </ListItem>
                                     <ListItem disablePadding>
-                                        <ListItemButton
-                                            onClick={() => handleClick("https://forms.gle/Ue9wQDXDuczLk7b56")}>
+                                        <ListItemButton onClick={() => handleClick("https://forms.gle/Ue9wQDXDuczLk7b56")}>
                                             <ListItemIcon>
                                                 <Feedback/>
                                             </ListItemIcon>
