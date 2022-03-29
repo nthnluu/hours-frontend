@@ -140,10 +140,8 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
                             <Chip label="Returned" size="small" color="warning" sx={{fontWeight: 500}}/>}
                         {isCompleted &&
                             <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
-                        {ticket.beforeCutoff &&
-                            <Chip label="Before Cutoff" size="small" color="success" sx={{fontWeight: 500}}/>}
                         {!ticket.beforeCutoff &&
-                            <Chip label="After Cutoff" size="small" color="error" sx={{fontWeight: 500}}/>}
+                            <Chip label="After Cutoff" size="small" color="warning" sx={{fontWeight: 500}}/>}
                     </Box>
                 </Stack>
             </Box>

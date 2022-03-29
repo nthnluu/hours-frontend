@@ -1,7 +1,9 @@
 import React, {FC, useEffect, useState} from "react";
 import {
     Box,
+    Chip,
     CircularProgress,
+    Divider,
     Grid,
     Stack,
     Typography,
@@ -55,6 +57,10 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         </Stack>
     );
 
+    // Split sortedTickets into beforeCutoff and afterCutoff arrays
+    const beforeCutoff = sortedTickets.filter(ticket => ticket?.beforeCutoff);
+    const afterCutoff = sortedTickets.filter(ticket => !ticket?.beforeCutoff);
+
     return (<>
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
                             queueID={queue.id}/>
@@ -73,10 +79,23 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                     <CircularProgress/>
                 </Stack>}
                 <Stack spacing={1}>
-                    {sortedTickets && sortedTickets.map((ticket, index) => <QueueListItem key={ticket!.id}
+                    {beforeCutoff && beforeCutoff.map((ticket, index) => <QueueListItem key={ticket!.id}
                                                                                           queue={queue}
                                                                                           ticket={ticket!}
                                                                                           position={index + 1}/>)}
+                    {queue.isCutOff &&  <>
+                                            <Divider>
+                                                <Chip label="Cutoff" color="warning"/>
+                                            </Divider>
+                                            <Typography variant="body2" color="textSecondary" align="center">
+                                                You can still sign up, but you might not get seen.
+                                            </Typography>
+                                            <Divider style={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+                                        </>}
+                    {afterCutoff && afterCutoff.map((ticket, index) => <QueueListItem key={ticket!.id}
+                                                                                        queue={queue}
+                                                                                        ticket={ticket!}
+                                                                                        position={index + 1 + beforeCutoff.length}/>)}
                     {sortedTickets && sortedTickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>
