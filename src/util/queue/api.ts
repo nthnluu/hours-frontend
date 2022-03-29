@@ -41,6 +41,7 @@ export interface Ticket {
     status: TicketStatus;
     description: string;
     anonymize: boolean;
+    beforeCutoff: boolean;
 }
 
 /**
