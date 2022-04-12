@@ -1,5 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
+import {
+    Box,
+    Chip,
+    CircularProgress,
+    Divider,
+    Grid,
+    Stack,
+    Typography,
+} from "@mui/material";
 import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
@@ -61,6 +69,22 @@ const QueueList: FC<QueueListProps> = ({ queue, showCompletedTickets }) => {
     </Stack>
   );
 
+  // Split sortedTickets into ticketsBeforeCutoff and ticketsAfterCutoff arrays
+  const ticketsBeforeCutoff: Ticket[] = [];
+  const ticketsAfterCutoff: Ticket[] = [];
+  let pastCutoff = false;
+  for (const ticket of sortedTickets) {
+    if (!ticket) continue;
+    if (ticket.id === queue.cutoffTicketID) {
+      pastCutoff = true;
+    }
+    if (pastCutoff) {
+      ticketsAfterCutoff.push(ticket);
+    } else {
+      ticketsBeforeCutoff.push(ticket);
+    }
+  }
+
   return (
     <>
       <CreateTicketDialog
@@ -98,15 +122,40 @@ const QueueList: FC<QueueListProps> = ({ queue, showCompletedTickets }) => {
             </Stack>
           )}
           <Stack spacing={1}>
-            {sortedTickets &&
-              sortedTickets.map((ticket, index) => (
+            {ticketsBeforeCutoff &&
+              ticketsBeforeCutoff.map((ticket, index) => (
                 <QueueListItem
                   key={ticket!.id}
                   queue={queue}
                   ticket={ticket!}
                   position={index + 1}
+                  beforeCutoff={true}
                 />
               ))}
+
+            {queue.isCutOff &&  
+              <>
+                <Divider>
+                    <Chip label="Cutoff" color="warning"/>
+                </Divider>
+                <Typography variant="body2" color="textSecondary" align="center">
+                    You can still sign up, but you might not get seen.
+                </Typography>
+                <Divider style={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+              </>
+            }
+
+            {ticketsAfterCutoff &&
+              ticketsAfterCutoff.map((ticket, index) => (
+                <QueueListItem
+                  key={ticket!.id}
+                  queue={queue}
+                  ticket={ticket!}
+                  position={index + 1}
+                  beforeCutoff={false}
+                />
+              ))}
+                
             {sortedTickets && sortedTickets.length == 0 && <EmptyQueue />}
           </Stack>
         </Box>
