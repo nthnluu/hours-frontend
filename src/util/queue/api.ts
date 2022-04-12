@@ -11,6 +11,7 @@ export interface Queue {
     location: string;
     endTime: Date;
     isCutOff: boolean;
+    cutoffTicketID: string;
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     tickets: string[];
@@ -94,10 +95,10 @@ async function editQueue(req: EditQueueRequest): Promise<void> {
 /**
  * Cutoff a queue, given a queueID.
  */
-async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
+async function cutOffQueue(queueID: string, isCutOff: boolean, cutoffTicketID: string): Promise<void> {
     try {
         await APIClient.patch(`/queues/${queueID}/cutoff`, {
-            isCutOff
+            isCutOff, cutoffTicketID
         });
         return;
     } catch (e) {
