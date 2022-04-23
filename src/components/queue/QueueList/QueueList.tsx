@@ -72,7 +72,7 @@ const QueueList: FC<QueueListProps> = ({ queue, showCompletedTickets }) => {
   // Split sortedTickets into ticketsBeforeCutoff and ticketsAfterCutoff arrays
   const ticketsBeforeCutoff: Ticket[] = [];
   const ticketsAfterCutoff: Ticket[] = [];
-  let pastCutoff = !queue.cutoffTicketID;
+  let pastCutoff = !queue.cutoffTicketID && queue.isCutOff;
   for (const ticket of sortedTickets) {
     if (!ticket) continue;
     if (pastCutoff) {
@@ -80,7 +80,7 @@ const QueueList: FC<QueueListProps> = ({ queue, showCompletedTickets }) => {
     } else {
       ticketsBeforeCutoff.push(ticket);
     }
-    if (ticket.id === queue.cutoffTicketID) {
+    if (ticket.id === queue.cutoffTicketID && queue.isCutOff) {
       pastCutoff = true;
     }
   }
