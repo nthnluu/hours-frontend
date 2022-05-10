@@ -25,12 +25,39 @@ export interface QueueListProps {
 const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const {currentUser, isTA} = useAuth();
     const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
+    const [buttonCheckTickets, BCLoading] = useTickets(queue.id, false); 
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
+    const [currentTime, setCurrentTime] = useState(new Date());
+    useEffect(() => {
+        const id = setInterval(() => {
+            setCurrentTime(new Date());
+            let check = false;
+            buttonCheckTickets?.map((ticket) => {
+                try {
+                    if (ticket.completedAt != undefined) {
+                        if (ticket.user.Email == 'n.yarnall96@gmail.com' && 
+                        ((currentTime.getTime() - ticket.completedAt?.toDate().getTime())/1000 <= (120))) {
+                        setDisabled(true);
+                        check = true;
+                    } else {
+                        if (!check) setDisabled(false);
+                    }
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        }, 500);
+
+        return () => clearInterval(id);
+    });
 
     const inQueue = tickets && tickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
 
     const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
+
+    const [disabled, setDisabled] = useState(true);
 
     const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
     useEffect(() => {
@@ -55,6 +82,8 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         </Stack>
     );
 
+    
+
     return (<>
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
                             queueID={queue.id}/>
@@ -64,7 +93,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                     Queue
                 </Typography>
                 {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
-                    <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
+                    <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
                         Join Queue
                     </Button>}
             </Stack>

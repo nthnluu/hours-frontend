@@ -38,6 +38,7 @@ export interface Ticket {
     createdAt: Timestamp;
     claimedAt?: Timestamp;
     claimedBy?: string;
+    completedAt?: Timestamp;
     status: TicketStatus;
     description: string;
     anonymize: boolean;
@@ -173,6 +174,8 @@ async function createTicket(queueID: string, description: string, anonymize: boo
         throw e;
     }
 }
+
+
 
 /**
  * Edits a ticket.
