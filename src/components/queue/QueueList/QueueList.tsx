@@ -28,29 +28,32 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const [buttonCheckTickets, BCLoading] = useTickets(queue.id, false); 
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
+
     useEffect(() => {
         const id = setInterval(() => {
             setCurrentTime(new Date());
-            let check = false;
-            buttonCheckTickets?.map((ticket) => {
-                try {
-                    if (ticket.completedAt != undefined) {
-                        if (ticket.user.Email == 'n.yarnall96@gmail.com' && 
-                        ((currentTime.getTime() - ticket.completedAt?.toDate().getTime())/1000 <= (120))) {
-                        setDisabled(true);
-                        check = true;
-                    } else {
-                        if (!check) setDisabled(false);
-                    }
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            });
-        }, 500);
-
+        }, 1000);
         return () => clearInterval(id);
     });
+
+    useEffect(() => {
+        let check = false;
+        buttonCheckTickets?.map((ticket) => {
+            try {
+                if (ticket.completedAt != undefined) {
+                    if (ticket.user.Email == currentUser?.email && 
+                    ((currentTime.getTime() - ticket.completedAt?.toDate().getTime())/1000 <= (900))) {
+                    setDisabled(true);
+                    check = true;
+                } else {
+                    if (!check) setDisabled(false);
+                }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        });
+    }, [buttonCheckTickets, currentTime, currentUser?.email]);
 
     const inQueue = tickets && tickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
@@ -71,7 +74,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         }
 
         setPrevTicketsLength(queue.tickets.length);
-    }, [queue, prevTicketsLength]);
+    }, [queue, prevTicketsLength, isTA]);
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
