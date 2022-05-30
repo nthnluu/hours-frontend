@@ -125,9 +125,9 @@ const QueueList: FC<QueueListProps> = ({ queue, showCompletedTickets }) => {
             {ticketsBeforeCutoff &&
               ticketsBeforeCutoff.map((ticket, index) => (
                 <QueueListItem
-                  key={ticket!.id}
+                  key={ticket.id}
                   queue={queue}
-                  ticket={ticket!}
+                  ticket={ticket}
                   position={index + 1}
                   beforeCutoff={true}
                 />
@@ -148,10 +148,10 @@ const QueueList: FC<QueueListProps> = ({ queue, showCompletedTickets }) => {
             {ticketsAfterCutoff &&
               ticketsAfterCutoff.map((ticket, index) => (
                 <QueueListItem
-                  key={ticket!.id}
+                  key={ticket.id}
                   queue={queue}
-                  ticket={ticket!}
-                  position={index + 1}
+                  ticket={ticket}
+                  position={index + 1 + ticketsBeforeCutoff.length}
                   beforeCutoff={false}
                 />
               ))}
