@@ -1,21 +1,17 @@
-import React, {FC, useEffect, useState} from "react";
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    Stack,
-    Tooltip,
-    Button,
-    Typography,
-} from "@mui/material";
+import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
-import {useTickets} from "@util/queue/hooks";
-import {Queue, Ticket, TicketStatus} from "@util/queue/api";
-import {useAuth} from "@util/auth/hooks";
-import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
-import { ModelTrainingSharp } from "@mui/icons-material";
+import {
+    Box, Button, CircularProgress,
+    Grid,
+    Stack,
+    Tooltip, Typography
+} from "@mui/material";
+import { useAuth } from "@util/auth/hooks";
+import { Queue, Ticket, TicketStatus } from "@util/queue/api";
+import { useTickets } from "@util/queue/hooks";
 import { TICKET_COOLDOWN_MINUTES } from "@util/shared/constants";
+import React, { FC, useEffect, useState } from "react";
 
 export interface QueueListProps {
     queue: Queue
@@ -85,19 +81,13 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                 </Typography>
                 {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
                     <div>
-                        {disabled &&
-                        <Tooltip title="Hi! There is 15 minute cooldown after TA meetings">
+                        <Tooltip title={disabled ? `You must wait ${TICKET_COOLDOWN_MINUTES} minutes between tickets` : ""}>
                             <div>
                                 <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
                                     Join Queue
                                 </Button>
                             </div>
-                        </Tooltip>}
-                        {!disabled &&
-                        <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
-                            Join Queue
-                        </Button>
-                        }
+                        </Tooltip>
                     </div>}
             </Stack>
             <Box mt={1}>
