@@ -8,6 +8,7 @@ import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import QueueAPI, {Ticket, TicketStatus} from "@util/queue/api";
+import QueueList from "../QueueList/QueueList";
 import {toast} from "react-hot-toast";
 import errors from "@util/errors";
 
@@ -19,6 +20,7 @@ export interface QueueListItemMenuProps {
     ticket: Ticket;
     queueID: string;
     allowTicketEditing: boolean;
+
 }
 
 const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
@@ -69,7 +71,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         const confirmed = confirm("Are you sure you want to delete this ticket?");
 
         if (confirmed) {
-            QueueAPI.deleteTicket(ticket.id, queueID)
+            QueueAPI.deleteTicket(ticket.id, queueID, ticket.status, isTA)
                 .catch(() => {
                     toast.error(errors.UNKNOWN);
                 });
@@ -86,7 +88,8 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
             aria-controls={open ? menuID : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}>
+            onClick={handleClick}
+            disabled={isTicketOwner && isClaimed}>
             <MoreHorizIcon/>
         </IconButton>
         <Menu
@@ -121,7 +124,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                 </ListItemIcon>
                 <ListItemText>Return to queue</ListItemText>
             </MenuItem>}
-            {(isTicketOwner || isTA) && <MenuItem onClick={handleDeleteTicket}>
+            {(isTA || (isTicketOwner && !isClaimed)) && <MenuItem onClick={handleDeleteTicket}>
                 <ListItemIcon>
                     <CloseIcon fontSize="small"/>
                 </ListItemIcon>

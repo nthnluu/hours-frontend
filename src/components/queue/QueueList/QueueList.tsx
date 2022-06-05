@@ -4,15 +4,18 @@ import {
     CircularProgress,
     Grid,
     Stack,
+    Tooltip,
+    Button,
     Typography,
 } from "@mui/material";
-import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
-import {Queue, Ticket} from "@util/queue/api";
+import {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
+import { ModelTrainingSharp } from "@mui/icons-material";
+import { TICKET_COOLDOWN_MINUTES } from "@util/shared/constants";
 
 export interface QueueListProps {
     queue: Queue
@@ -24,13 +27,28 @@ export interface QueueListProps {
  */
 const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const {currentUser, isTA} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
+    const [tickets, ticketsLoading] = useTickets(queue.id, false);
+    const shownTickets = tickets?.filter(t => !showCompletedTickets || t.status !== TicketStatus.StatusComplete);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
-    const inQueue = tickets && tickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const id = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 5000);
+        return () => clearInterval(id);
+    });
+
+    const disabled = !tickets || tickets.some(t =>
+        (t.status === TicketStatus.StatusComplete) 
+        && (t.user.Email === currentUser!.email) 
+        && (currentTime.getTime() - t.completedAt!.toDate().getTime())/1000/60 <= (TICKET_COOLDOWN_MINUTES));
+
+    const inQueue = shownTickets && shownTickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
 
-    const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
+    const sortedTickets: (Ticket | undefined)[] = queue.tickets && shownTickets ? queue.tickets.map(ticketID => shownTickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
 
     const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
     useEffect(() => {
@@ -44,7 +62,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         }
 
         setPrevTicketsLength(queue.tickets.length);
-    }, [queue, prevTicketsLength]);
+    }, [queue, prevTicketsLength, isTA]);
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
@@ -55,6 +73,8 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         </Stack>
     );
 
+    
+
     return (<>
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
                             queueID={queue.id}/>
@@ -64,9 +84,21 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
                     Queue
                 </Typography>
                 {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
-                    <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
-                        Join Queue
-                    </Button>}
+                    <div>
+                        {disabled &&
+                        <Tooltip title="Hi! There is 15 minute cooldown after TA meetings">
+                            <div>
+                                <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
+                                    Join Queue
+                                </Button>
+                            </div>
+                        </Tooltip>}
+                        {!disabled &&
+                        <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
+                            Join Queue
+                        </Button>
+                        }
+                    </div>}
             </Stack>
             <Box mt={1}>
                 {ticketsLoading && <Stack height={200} width={"100%"} justifyContent="center" alignItems="center">
