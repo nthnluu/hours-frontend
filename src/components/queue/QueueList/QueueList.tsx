@@ -1,11 +1,17 @@
+
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
+import Button from "@components/shared/Button";
 import {
-    Box, Button, CircularProgress,
-    Grid,
-    Stack,
-    Tooltip, Typography
+  Box,
+  Chip,
+  CircularProgress,
+  Divider,
+  Grid,
+  Stack,
+  Tooltip,
+  Typography
 } from "@mui/material";
 import { useAuth } from "@util/auth/hooks";
 import { Queue, Ticket, TicketStatus } from "@util/queue/api";
@@ -14,8 +20,8 @@ import { TICKET_COOLDOWN_MINUTES } from "@util/shared/constants";
 import React, { FC, useEffect, useState } from "react";
 
 export interface QueueListProps {
-    queue: Queue
-    showCompletedTickets: boolean;
+  queue: Queue;
+  showCompletedTickets: boolean;
 }
 
 /**
@@ -46,66 +52,108 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
 
     const sortedTickets: (Ticket | undefined)[] = queue.tickets && shownTickets ? queue.tickets.map(ticketID => shownTickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
 
-    const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
-    useEffect(() => {
-        if ((queue.tickets.length > prevTicketsLength) && isTA(queue.course.id)) {
-            // const audio = new Audio("/doorbell.mp3");
-            // audio.play();
+  const [prevTicketsLength, setPrevTicketsLength] = useState(
+    queue.tickets.length
+  );
+  useEffect(() => {
+    if (queue.tickets.length > prevTicketsLength && isTA(queue.course.id)) {
+      // const audio = new Audio("/doorbell.mp3");
+      // audio.play();
 
-            if ("Notification" in window) {
-                new Notification("A student has joined your queue.");
-            }
+      if ("Notification" in window) {
+        new Notification("A student has joined your queue.");
+      }
+    }
+
+    setPrevTicketsLength(queue.tickets.length);
+  }, [queue, prevTicketsLength, isTA]);
+
+  const EmptyQueue = () => (
+    <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
+      {!queueEnded && <BouncingCubesAnimation />}
+      <Typography variant="body1">
+        {queueEnded
+          ? "This queue is no longer active."
+          : "Nobody is here... yet 😉."}
+      </Typography>
+    </Stack>
+  );
+
+  // Split sortedTickets into ticketsBeforeCutoff and ticketsAfterCutoff arrays
+  const ticketsBeforeCutoff: Ticket[] = [];
+  const ticketsAfterCutoff: Ticket[] = [];
+  let pastCutoff = !queue.cutoffTicketID && queue.isCutOff;
+  for (const ticket of sortedTickets) {
+    if (!ticket) continue;
+    if (pastCutoff) {
+      ticketsAfterCutoff.push(ticket);
+    } else {
+      ticketsBeforeCutoff.push(ticket);
+    }
+    if (ticket.id === queue.cutoffTicketID && queue.isCutOff) {
+      pastCutoff = true;
+    }
+  }
+  return (<>
+    <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
+                        queueID={queue.id}/>
+    <Grid item xs={12} md={9}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h6" fontWeight={600}>
+          Queue
+        </Typography>
+        {!queueEnded && !inQueue && !isTA(queue.course.id) &&
+            <Tooltip title={disabled ? `You must wait ${TICKET_COOLDOWN_MINUTES} minutes between tickets` : ""}>
+              <div>
+                <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
+                  Join Queue
+                </Button>
+              </div>
+            </Tooltip>
         }
+      </Stack>
+      <Box mt={1}>
+          {ticketsLoading && <Stack height={200} width={"100%"} justifyContent="center" alignItems="center">
+              <CircularProgress/>
+          </Stack>}
+          {ticketsBeforeCutoff &&
+              ticketsBeforeCutoff.map((ticket, index) => (
+              <QueueListItem
+                  key={ticket.id}
+                  queue={queue}
+                  ticket={ticket}
+                  position={index + 1}
+                  beforeCutoff={true}
+              />
+              ))}
 
-        setPrevTicketsLength(queue.tickets.length);
-    }, [queue, prevTicketsLength, isTA]);
+          {queue.isCutOff &&  
+              <>
+              <Divider style={{marginTop: "0.5rem"}}>
+                  <Chip label="Cutoff" color="warning"/>
+              </Divider>
+              <Typography variant="body2" color="textSecondary" align="center">
+                  You can still sign up, but you might not get seen.
+              </Typography>
+              <Divider style={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+              </>
+          }
 
-    const EmptyQueue = () => (
-        <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
-            {!queueEnded && <BouncingCubesAnimation/>}
-            <Typography variant="body1">
-                {queueEnded ? "This queue is no longer active." : "Nobody is here... yet 😉."}
-            </Typography>
-        </Stack>
-    );
+          {ticketsAfterCutoff &&
+              ticketsAfterCutoff.map((ticket, index) => (
+              <QueueListItem
+                  key={ticket.id}
+                  queue={queue}
+                  ticket={ticket}
+                  position={index + 1 + ticketsBeforeCutoff.length}
+                  beforeCutoff={false}
+              />
+              ))}
 
-    
-
-    return (<>
-        <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
-                            queueID={queue.id}/>
-        <Grid item xs={12} md={9}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6" fontWeight={600}>
-                    Queue
-                </Typography>
-                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
-                    <div>
-                        <Tooltip title={disabled ? `You must wait ${TICKET_COOLDOWN_MINUTES} minutes between tickets` : ""}>
-                            <div>
-                                <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
-                                    Join Queue
-                                </Button>
-                            </div>
-                        </Tooltip>
-                    </div>}
-            </Stack>
-            <Box mt={1}>
-                {ticketsLoading && <Stack height={200} width={"100%"} justifyContent="center" alignItems="center">
-                    <CircularProgress/>
-                </Stack>}
-                <Stack spacing={1}>
-                    {sortedTickets && sortedTickets.map((ticket, index) => <QueueListItem key={ticket!.id}
-                                                                                          queue={queue}
-                                                                                          ticket={ticket!}
-                                                                                          position={index + 1}/>)}
-                    {sortedTickets && sortedTickets.length == 0 && <EmptyQueue/>}
-                </Stack>
-            </Box>
-        </Grid>
-    </>);
+          {sortedTickets && sortedTickets.length == 0 && <EmptyQueue />}
+      </Box>
+    </Grid>
+  </>);
 };
 
 export default QueueList;
-
-
