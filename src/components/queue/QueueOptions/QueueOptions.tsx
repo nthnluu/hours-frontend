@@ -52,8 +52,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, tickets, ticketsLo
     const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
     // const isLongEnded = queue.endTime < new Date();
 
-    // TODO: When we re-enable showing completed tickets, this will need to me more complicated
-    const queueLength = tickets ? tickets.length : 0;
+    const lastTicketID = queue.tickets[queue.tickets.length - 1];
 
     return <>
         <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog}
@@ -147,7 +146,8 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, tickets, ticketsLo
 
                         <ListItem disablePadding>
                             <ListItemButton
-                                onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff).catch(() => toast.error("Error closing queue."))}>
+                                onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff, lastTicketID).catch(
+                                    () => toast.error("Error closing queue."))}>
                                 <ListItemIcon>
                                     {!queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
                                 </ListItemIcon>

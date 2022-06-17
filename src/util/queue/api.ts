@@ -11,6 +11,7 @@ export interface Queue {
     location: string;
     endTime: Date;
     isCutOff: boolean;
+    cutoffTicketID: string;
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     tickets: string[];
@@ -38,6 +39,7 @@ export interface Ticket {
     createdAt: Timestamp;
     claimedAt?: Timestamp;
     claimedBy?: string;
+    completedAt?: Timestamp;
     status: TicketStatus;
     description: string;
     anonymize: boolean;
@@ -94,10 +96,10 @@ async function editQueue(req: EditQueueRequest): Promise<void> {
 /**
  * Cutoff a queue, given a queueID.
  */
-async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
+async function cutOffQueue(queueID: string, isCutOff: boolean, cutoffTicketID: string): Promise<void> {
     try {
         await APIClient.patch(`/queues/${queueID}/cutoff`, {
-            isCutOff
+            isCutOff, cutoffTicketID
         });
         return;
     } catch (e) {
@@ -174,6 +176,8 @@ async function createTicket(queueID: string, description: string, anonymize: boo
     }
 }
 
+
+
 /**
  * Edits a ticket.
  */
@@ -194,9 +198,9 @@ async function editTicket(id: string, ownerID: string, queueID: string, status: 
 /**
  * Deletes a ticket with the given ID.
  */
-async function deleteTicket(id: string, queueID: string): Promise<void> {
+async function deleteTicket(id: string, queueID: string, status: TicketStatus, ta: boolean): Promise<void> {
     try {
-        await APIClient.post(`/queues/${queueID}/ticket/delete`, {id});
+        await APIClient.post(`/queues/${queueID}/ticket/delete`, {id, status, ta});
         return;
     } catch (e) {
         throw e;

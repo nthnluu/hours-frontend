@@ -134,7 +134,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
                     <FormControlLabel control={<Checkbox defaultChecked {...register("allowTicketEditing")}/>}
                                       label="Allow students to edit tickets once created"/>
                     <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
-                                      label="Show meeting links on claim"/>
+                                      label="Provide Zoom links to students when claimed"/>
                 </FormGroup>
             </DialogContent>
             <DialogActions>
