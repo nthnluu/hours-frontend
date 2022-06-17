@@ -9,17 +9,18 @@ import {
     Stack,
     Typography
 } from "@mui/material";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import ShuffleIcon from '@mui/icons-material/Shuffle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import QueueAPI, {Queue} from "@util/queue/api";
+import PersonIcon from '@mui/icons-material/Person';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import QueueAPI, {Queue, Ticket} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
 import ReopenQueueDialog from "@components/queue/ReopenQueueDialog";
 import MakeAnnouncementDialog from "@components/queue/MakeAnnouncementDialog";
@@ -33,13 +34,15 @@ export interface QueueOptionsProps {
     queueID: string;
     showCompletedTickets: boolean;
     setShowCompletedTickets: (arg: boolean) => void;
+    tickets: Ticket[] | undefined;
+    ticketsLoading: boolean;
 }
 
 
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
-const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTickets, setShowCompletedTickets}) => {
+const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, tickets, ticketsLoading}) => {
     const {isTA} = useAuth();
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openReopenDialog, setOpenReopenDialog] = useState(false);
@@ -69,6 +72,12 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                     </Typography>
 
                     <Stack spacing={1.5} mt={2}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <PersonIcon/>
+                            <Typography>
+                                {queueLength}
+                            </Typography>
+                        </Stack>
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <LocationOnIcon/>
                             <Typography style={{overflow: "hidden", textOverflow: "ellipsis", width: '10rem'}}>
@@ -109,7 +118,15 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => QueueAPI.shuffleQueue(queueID)}>
+                            <ListItemButton onClick={async () => {
+                                const confirmed = confirm("Are you sure you want to shuffle the queue?");
+
+                                if (confirmed) {
+                                    QueueAPI.shuffleQueue(queueID)
+                                    .then(() => toast.success("Queue shuffled."))
+                                    .catch(() => toast.error("Error shuffling queue."));
+                                }
+                            }}>
                                 <ListItemIcon>
                                     <ShuffleIcon/>
                                 </ListItemIcon>

@@ -27,7 +27,7 @@ export interface QueueListProps {
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
+const QueueList: FC<QueueListProps> = ({queue, tickets, ticketsLoading}) => {
     const {currentUser, isTA} = useAuth();
     const [tickets, ticketsLoading] = useTickets(queue.id, false);
     const shownTickets = tickets?.filter(t => !showCompletedTickets || t.status !== TicketStatus.StatusComplete);

@@ -46,6 +46,7 @@ export interface Notification {
     Body: string;
     Timestamp: Timestamp;
     Type: NotificationType;
+    Data: string;
 }
 
 /**
