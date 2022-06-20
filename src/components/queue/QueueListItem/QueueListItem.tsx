@@ -19,13 +19,14 @@ export interface QueueListItemProps {
     queue: Queue;
     ticket: Ticket;
     position: number;
+    beforeCutoff: boolean;
 }
 
 function formatElapsedTime(ticket: Ticket): string {
     return formatDistance(ticket.createdAt.toDate(), new Date(), {addSuffix: true});
 }
 
-const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
+const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position, beforeCutoff}) => {
     const {currentUser} = useAuth();
     const [claimedUser] = useUser(ticket.claimedBy);
     const [editTicketDialog, setEditTicketDialog] = useState(false);
@@ -140,6 +141,8 @@ const QueueListItem: FC<QueueListItemProps> = ({queue, ticket, position}) => {
                             <Chip label="Returned" size="small" color="warning" sx={{fontWeight: 500}}/>}
                         {isCompleted &&
                             <Chip label="Completed" size="small" color="info" sx={{fontWeight: 500}}/>}
+                        {!beforeCutoff &&
+                            <Chip label="After Cutoff" size="small" color="warning" sx={{fontWeight: 500}}/>}
                     </Box>
                 </Stack>
             </Box>
