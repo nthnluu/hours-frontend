@@ -1,4 +1,3 @@
-
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
@@ -45,7 +44,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const disabled = !tickets || tickets.some(t =>
         (t.status === TicketStatus.StatusComplete) 
         && (t.user.Email === currentUser!.email) 
-        && (currentTime.getTime() - t.completedAt!.toDate().getTime())/1000/60 <= (TICKET_COOLDOWN_MINUTES));
+        && (currentTime.getMinutes() - t.completedAt!.toDate().getMinutes()) <= (TICKET_COOLDOWN_MINUTES));
 
     const inQueue = shownTickets && shownTickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
