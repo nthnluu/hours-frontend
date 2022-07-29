@@ -69,7 +69,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         const confirmed = confirm("Are you sure you want to delete this ticket?");
 
         if (confirmed) {
-            QueueAPI.deleteTicket(ticket.id, queueID, ticket.status, isTA)
+            QueueAPI.deleteTicket(ticket.id, queueID, ticket.status)
                 .catch(() => {
                     toast.error(errors.UNKNOWN);
                 });
