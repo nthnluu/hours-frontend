@@ -32,19 +32,23 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
     const shownTickets = tickets?.filter(t => !showCompletedTickets || t.status !== TicketStatus.StatusComplete);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
-    const [currentTime, setCurrentTime] = useState(new Date());
+    const [isJoinDisabled, setIsJoinDisabled] = useState(false);
 
     useEffect(() => {
-        const id = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 5000);
+        const updateButton = () => {
+            const disabled = !tickets || tickets.some(t =>
+                (t.status === TicketStatus.StatusComplete) 
+                && (t.user.Email === currentUser!.email) 
+                && (new Date().getMinutes() - t.completedAt!.toDate().getMinutes()) <= (TICKET_COOLDOWN_MINUTES));
+                
+            if (disabled !== isJoinDisabled) {
+                setIsJoinDisabled(disabled);
+            }
+        };
+        updateButton();
+        const id = setInterval(updateButton, 5000);
         return () => clearInterval(id);
-    });
-
-    const disabled = !tickets || tickets.some(t =>
-        (t.status === TicketStatus.StatusComplete) 
-        && (t.user.Email === currentUser!.email) 
-        && (currentTime.getMinutes() - t.completedAt!.toDate().getMinutes()) <= (TICKET_COOLDOWN_MINUTES));
+    }, [tickets, currentUser]);
 
     const inQueue = shownTickets && shownTickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
@@ -102,9 +106,9 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
           Queue
         </Typography>
         {!queueEnded && !inQueue && !isTA(queue.course.id) &&
-            <Tooltip title={disabled ? `You must wait ${TICKET_COOLDOWN_MINUTES} minutes between tickets` : ""}>
+            <Tooltip title={isJoinDisabled ? `You must wait ${TICKET_COOLDOWN_MINUTES} minutes between tickets` : ""}>
               <div>
-                <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={disabled}>
+                <Button variant="contained" onClick={() => setCreateTicketDialog(true)} disabled={isJoinDisabled}>
                   Join Queue
                 </Button>
               </div>
