@@ -36,19 +36,25 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
 
     useEffect(() => {
         const updateButton = () => {
-            const disabled = !tickets || tickets.some(t =>
-                (t.status === TicketStatus.StatusComplete) 
-                && (t.user.Email === currentUser!.email) 
-                && (new Date().getMinutes() - t.completedAt!.toDate().getMinutes()) <= (TICKET_COOLDOWN_MINUTES));
+            let disabled = true;
+            if (tickets && currentUser) {
+                const lastTicket = tickets.find(t => t.user.UserID === currentUser.id);
+                if (lastTicket) {
+                    const minutesSinceLastTicket = new Date().getMinutes() - lastTicket.createdAt.toDate().getMinutes();
+                    disabled = minutesSinceLastTicket < TICKET_COOLDOWN_MINUTES;
+                } else {
+                    disabled = false;
+                }
+            }
                 
             if (disabled !== isJoinDisabled) {
                 setIsJoinDisabled(disabled);
             }
         };
         updateButton();
-        const id = setInterval(updateButton, 5000);
+        const id = setInterval(updateButton, 5000); // check to see if the button should be disabled every 5 seconds
         return () => clearInterval(id);
-    }, [tickets, currentUser]);
+    }, [tickets, currentUser, isJoinDisabled]);
 
     const inQueue = shownTickets && shownTickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
     const queueEnded = queue.endTime < new Date();
@@ -60,9 +66,6 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
   );
   useEffect(() => {
     if (queue.tickets.length > prevTicketsLength && isTA(queue.course.id)) {
-      // const audio = new Audio("/doorbell.mp3");
-      // audio.play();
-
       if ("Notification" in window) {
         new Notification("A student has joined your queue.");
       }
