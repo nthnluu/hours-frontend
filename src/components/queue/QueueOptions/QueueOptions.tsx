@@ -108,7 +108,13 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                         </ListItem>
 
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => QueueAPI.shuffleQueue(queueID)}>
+                            <ListItemButton onClick={() => {
+                                const confirmed = confirm("Are you sure you want to shuffle this queue?");
+
+                                if (confirmed) {
+                                    QueueAPI.shuffleQueue(queueID);
+                                }
+                            }}>
                                 <ListItemIcon>
                                     <ShuffleIcon/>
                                 </ListItemIcon>
