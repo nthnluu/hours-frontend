@@ -1,6 +1,6 @@
 import APIClient from "@util/APIClient";
-import {Course} from "@util/course/api";
-import {Timestamp} from "@firebase/firestore";
+import { Course } from "@util/course/api";
+import { Timestamp } from "@firebase/firestore";
 
 export interface Queue {
     id: string;
@@ -11,6 +11,7 @@ export interface Queue {
     location: string;
     endTime: Date;
     isCutOff: boolean;
+    cutoffTicketID: string;
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     tickets: string[];
@@ -38,6 +39,7 @@ export interface Ticket {
     createdAt: Timestamp;
     claimedAt?: Timestamp;
     claimedBy?: string;
+    completedAt?: Timestamp;
     status: TicketStatus;
     description: string;
     anonymize: boolean;
@@ -94,10 +96,15 @@ async function editQueue(req: EditQueueRequest): Promise<void> {
 /**
  * Cutoff a queue, given a queueID.
  */
-async function cutOffQueue(queueID: string, isCutOff: boolean): Promise<void> {
+async function cutOffQueue(
+    queueID: string,
+    isCutOff: boolean,
+    cutoffTicketID: string
+): Promise<void> {
     try {
         await APIClient.patch(`/queues/${queueID}/cutoff`, {
-            isCutOff
+            isCutOff,
+            cutoffTicketID,
         });
         return;
     } catch (e) {
@@ -130,7 +137,7 @@ async function endQueue(queue: Queue): Promise<void> {
             isCutOff: queue.isCutOff,
             allowTicketEditing: queue.allowTicketEditing,
             location: queue.location,
-            showMeetingLinks: queue.showMeetingLinks
+            showMeetingLinks: queue.showMeetingLinks,
         });
         return;
     } catch (e) {
@@ -165,9 +172,16 @@ async function shuffleQueue(queueID: string): Promise<void> {
 /**
  * Creates a ticket for the given user.
  */
-async function createTicket(queueID: string, description: string, anonymize: boolean): Promise<void> {
+async function createTicket(
+    queueID: string,
+    description: string,
+    anonymize: boolean
+): Promise<void> {
     try {
-        await APIClient.post(`/queues/${queueID}/ticket`, {description, anonymize});
+        await APIClient.post(`/queues/${queueID}/ticket`, {
+            description,
+            anonymize,
+        });
         return;
     } catch (e) {
         throw e;
@@ -177,13 +191,19 @@ async function createTicket(queueID: string, description: string, anonymize: boo
 /**
  * Edits a ticket.
  */
-async function editTicket(id: string, ownerID: string, queueID: string, status: TicketStatus, description: string): Promise<void> {
+async function editTicket(
+    id: string,
+    ownerID: string,
+    queueID: string,
+    status: TicketStatus,
+    description: string
+): Promise<void> {
     try {
         await APIClient.patch(`/queues/${queueID}/ticket`, {
             id,
             ownerID,
             status,
-            description
+            description,
         });
         return;
     } catch (e) {
@@ -194,9 +214,16 @@ async function editTicket(id: string, ownerID: string, queueID: string, status: 
 /**
  * Deletes a ticket with the given ID.
  */
-async function deleteTicket(id: string, queueID: string): Promise<void> {
+async function deleteTicket(
+    id: string,
+    queueID: string,
+    status: TicketStatus
+): Promise<void> {
     try {
-        await APIClient.post(`/queues/${queueID}/ticket/delete`, {id});
+        await APIClient.post(`/queues/${queueID}/ticket/delete`, {
+            id,
+            status,
+        });
         return;
     } catch (e) {
         throw e;
@@ -206,9 +233,12 @@ async function deleteTicket(id: string, queueID: string): Promise<void> {
 /**
  * Deletes a ticket with the given ID.
  */
-async function makeAnnouncement(queueID: string, announcement: string): Promise<void> {
+async function makeAnnouncement(
+    queueID: string,
+    announcement: string
+): Promise<void> {
     try {
-        await APIClient.post(`/queues/${queueID}/announce`, {announcement});
+        await APIClient.post(`/queues/${queueID}/announce`, { announcement });
         return;
     } catch (e) {
         throw e;
@@ -226,8 +256,7 @@ const QueueAPI = {
     createTicket,
     editTicket,
     deleteTicket,
-    makeAnnouncement
+    makeAnnouncement,
 };
-
 
 export default QueueAPI;

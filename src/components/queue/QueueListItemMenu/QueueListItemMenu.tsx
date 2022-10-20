@@ -69,7 +69,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
         const confirmed = confirm("Are you sure you want to delete this ticket?");
 
         if (confirmed) {
-            QueueAPI.deleteTicket(ticket.id, queueID)
+            QueueAPI.deleteTicket(ticket.id, queueID, ticket.status)
                 .catch(() => {
                     toast.error(errors.UNKNOWN);
                 });
@@ -86,7 +86,8 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
             aria-controls={open ? menuID : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}>
+            onClick={handleClick}
+            disabled={isTicketOwner && isClaimed}>
             <MoreHorizIcon/>
         </IconButton>
         <Menu
@@ -121,7 +122,7 @@ const QueueListItemMenu: FC<QueueListItemMenuProps> = ({
                 </ListItemIcon>
                 <ListItemText>Return to queue</ListItemText>
             </MenuItem>}
-            {(isTicketOwner || isTA) && <MenuItem onClick={handleDeleteTicket}>
+            {(isTA || (isTicketOwner && !isClaimed)) && <MenuItem onClick={handleDeleteTicket}>
                 <ListItemIcon>
                     <CloseIcon fontSize="small"/>
                 </ListItemIcon>

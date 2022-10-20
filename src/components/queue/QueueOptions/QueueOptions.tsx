@@ -12,7 +12,6 @@ import {
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -48,6 +47,8 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
     const isEnded = queue.endTime < new Date();
     const isLongEnded = add(queue.endTime, {minutes: 30}) < new Date();
     // const isLongEnded = queue.endTime < new Date();
+
+    const lastTicketID = queue.tickets[queue.tickets.length - 1];
 
     return <>
         <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog}
@@ -133,7 +134,8 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
 
                         <ListItem disablePadding>
                             <ListItemButton
-                                onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff).catch(() => toast.error("Error closing queue."))}>
+                                onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff, lastTicketID).catch(
+                                    () => toast.error("Error closing queue."))}>
                                 <ListItemIcon>
                                     {!queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
                                 </ListItemIcon>
