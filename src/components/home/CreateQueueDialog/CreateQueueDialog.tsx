@@ -82,7 +82,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
                             type="text"
                         >
                             {coursePerms.map(x => <MenuItem key={x.id}
-                                                            value={x.id}>{`${x.code}: ${x.title}`}</MenuItem>)}
+                                                            value={x.id}>{`(${x.term}) ${x.code}: ${x.title}`}</MenuItem>)}
                         </Select>
                     </FormControl>
                     <TextField
