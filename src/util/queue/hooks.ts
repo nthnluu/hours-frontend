@@ -55,7 +55,7 @@ export function useQueues(): [Queue[] | undefined, boolean] {
     return [queues, loading];
 }
 
-export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[] | undefined, boolean] {
+export function useTickets(queueID: string): [Ticket[] | undefined, boolean] {
     const [loading, setLoading] = useState(true);
     const [tickets, setTickets] = useState<Ticket[] | undefined>(undefined);
 
@@ -69,16 +69,12 @@ export function useTickets(queueID: string, filterCompleted: boolean): [Ticket[]
                 res.push({id: doc.id, ...data} as Ticket);
             });
 
-            if (filterCompleted) {
-                res = res.filter(x => x.status != TicketStatus.StatusComplete);
-            }
-
             setTickets(res);
             setLoading(false);
         });
 
         return () => unsubscribe();
-    }, [queueID, filterCompleted]);
+    }, [queueID]);
 
     return [tickets, loading];
 }

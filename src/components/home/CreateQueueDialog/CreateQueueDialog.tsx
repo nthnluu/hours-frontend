@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
-import QueueAPI, {CreateQueueRequest} from "@util/queue/api";
+import QueueAPI, {CreateQueueRequest, MaskPolicy} from "@util/queue/api";
 import CourseAPI, {Course} from "@util/course/api";
 import {useSession} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
@@ -35,13 +35,24 @@ type FormData = {
     endTimeIndex: number;
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
+    rejoinCooldown: number;
+    faceMaskPolicy: MaskPolicy;
 };
 
 const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
     const times = getNextHours();
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
+    const [isLoading, setIsLoading] = useState(false);
     const onSubmit = handleSubmit(data => {
-        const req: CreateQueueRequest = {...data, endTime: times[data.endTimeIndex].timestamp};
+        setIsLoading(true);
+        const req: CreateQueueRequest = {
+            ...data,
+            // @ts-ignore
+            faceMaskPolicy: parseInt(data.faceMaskPolicy),
+            // @ts-ignore
+            rejoinCooldown: parseInt(data.rejoinCooldown),
+            endTime: times[data.endTimeIndex].timestamp
+        };
         toast.promise(QueueAPI.createQueue(req), {
             loading: "Creating queue...",
             success: "Queue created",
@@ -50,7 +61,8 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
             .then(() => {
                 reset();
                 onClose();
-            });
+            })
+            .catch(() => setIsLoading(false));
     });
     const {currentUser, loading} = useSession();
     const [coursePerms, setCoursePerms] = useState<Course[]>([]);
@@ -64,7 +76,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
 
     if (loading) return <></>;
 
-    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>
             <DialogTitle>Create Queue</DialogTitle>
             <DialogContent>
@@ -82,7 +94,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
                             type="text"
                         >
                             {coursePerms.map(x => <MenuItem key={x.id}
-                                                            value={x.id}>{`${x.code}: ${x.title}`}</MenuItem>)}
+                                                            value={x.id}>{`${x.code}: ${x.title} (${x.term})`}</MenuItem>)}
                         </Select>
                     </FormControl>
                     <TextField
@@ -129,8 +141,47 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
                         size="small"
                         variant="standard"
                     />
+                    <Stack direction="row" spacing={1.5}>
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="cooldown-label">Students can rejoin the queue</InputLabel>
+                            <Select
+                                {...register("rejoinCooldown")}
+                                required
+                                defaultValue={0}
+                                fullWidth
+                                labelId="cooldown-label"
+                                id="cooldown"
+                                label="Students can rejoin the queue"
+                                type="number"
+                            >
+                                {[0, 5, 10, 15, 20, 25, 30, 45, 60, -1].map(value => <MenuItem key={value}
+                                                                                               value={value}>
+                                    {value === 0 && "Immediately"}
+                                    {value === -1 && "Never"}
+                                    {(value != -1 && value != 0) && `After ${value} minutes`}
+                                </MenuItem>)}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="mask-policy-label">Face mask policy</InputLabel>
+                            <Select
+                                {...register("faceMaskPolicy")}
+                                required
+                                defaultValue={MaskPolicy.NoMaskPolicy}
+                                fullWidth
+                                labelId="mask-policy-label"
+                                id="mask-policy"
+                                label="Mask policy"
+                                type="number"
+                            >
+                                <MenuItem value={MaskPolicy.NoMaskPolicy}>No mask policy</MenuItem>
+                                <MenuItem value={MaskPolicy.MasksRecommended}>Masks Recommended</MenuItem>
+                                <MenuItem value={MaskPolicy.MasksRequired}>Masks Required</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Stack>
                 </Stack>
-                <FormGroup>
+                <FormGroup sx={{my: 2}}>
                     <FormControlLabel control={<Checkbox defaultChecked {...register("allowTicketEditing")}/>}
                                       label="Allow students to edit tickets once created"/>
                     <FormControlLabel control={<Checkbox {...register("showMeetingLinks")}/>}
@@ -139,7 +190,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit" variant="contained">Add</Button>
+                <Button type="submit" variant="contained" disabled={isLoading}>Create</Button>
             </DialogActions>
         </form>
     </Dialog>;

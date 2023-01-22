@@ -16,11 +16,11 @@ export default function Home() {
     return (<Container maxWidth="sm" sx={{marginTop: [8, null, 12]}}>
         <Paper variant="outlined">
             <Box p={4} textAlign="center">
-                <Typography variant="h4" fontWeight={500}>
-                    Welcome to Hours!
+                <Typography component="h1" variant="h4" fontWeight={500}>
+                    Welcome to Hours
                 </Typography>
-                <Typography variant="h6">
-                    Use your Brown email to continue.
+                <Typography component="p" variant="h6">
+                    Continue with your Brown email.
                 </Typography>
 
                 <Box mt={2}>

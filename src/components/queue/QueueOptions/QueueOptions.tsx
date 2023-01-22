@@ -5,21 +5,25 @@ import {
     Grid,
     List,
     ListItem,
-    ListItemButton, ListItemIcon, ListItemText,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
     Stack,
     Typography
 } from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
+import MasksIcon from '@mui/icons-material/Masks';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import QueueAPI, {Queue} from "@util/queue/api";
+import QueueAPI, {MaskPolicy, Queue} from "@util/queue/api";
 import EditQueueDialog from "@components/queue/EditQueueDialog";
 import ReopenQueueDialog from "@components/queue/ReopenQueueDialog";
 import MakeAnnouncementDialog from "@components/queue/MakeAnnouncementDialog";
@@ -27,19 +31,29 @@ import {useAuth} from "@util/auth/hooks";
 import {toast} from "react-hot-toast";
 import formatEndTime from "@util/shared/formatEndTime";
 import {add} from "date-fns";
+import playDoorbell from "@util/shared/playDoorbell";
 
 export interface QueueOptionsProps {
     queue: Queue;
     queueID: string;
     showCompletedTickets: boolean;
     setShowCompletedTickets: (arg: boolean) => void;
+    playSound: boolean;
+    setPlaySound: (arg: boolean) => void;
 }
 
 
 /**
  * QueueOption contains the config necessary to modify a queue.
  */
-const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTickets, setShowCompletedTickets}) => {
+const QueueOptions: FC<QueueOptionsProps> = ({
+                                                 queue,
+                                                 queueID,
+                                                 playSound,
+                                                 setPlaySound,
+                                                 showCompletedTickets,
+                                                 setShowCompletedTickets
+                                             }) => {
     const {isTA} = useAuth();
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openReopenDialog, setOpenReopenDialog] = useState(false);
@@ -51,9 +65,9 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
 
     return <>
         <EditQueueDialog queueID={queueID} queue={queue} open={openEditDialog}
-                        onClose={() => setOpenEditDialog(false)}/>
+                         onClose={() => setOpenEditDialog(false)}/>
         <ReopenQueueDialog queueID={queueID} queue={queue} open={openReopenDialog}
-                        onClose={() => setOpenReopenDialog(false)}/>
+                           onClose={() => setOpenReopenDialog(false)}/>
         <MakeAnnouncementDialog queueID={queueID} open={openAnnounceDialog}
                                 onClose={() => setOpenAnnounceDialog(false)}/>
         <Grid item xs={12} md={3}>
@@ -79,6 +93,20 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                                 {formatEndTime(queue.endTime)}
                             </Typography>
                         </Stack>
+                        {queue.faceMaskPolicy === MaskPolicy.MasksRecommended &&
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                                <MasksIcon/>
+                                <Typography>
+                                    Face mask recommended
+                                </Typography>
+                            </Stack>}
+                        {queue.faceMaskPolicy === MaskPolicy.MasksRequired &&
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                                <MasksIcon/>
+                                <Typography>
+                                    Face mask required
+                                </Typography>
+                            </Stack>}
                     </Stack>
                 </Box>
 
@@ -94,6 +122,21 @@ const QueueOptions: FC<QueueOptionsProps> = ({queue, queueID, showCompletedTicke
                                     <EditIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary="Edit queue"/>
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => {
+                                setPlaySound(!playSound);
+                                if (playSound) {
+                                    playDoorbell();
+                                }
+                            }}>
+                                <ListItemIcon>
+                                    {playSound ? <VolumeOffIcon/> : <VolumeUpIcon/>}
+                                </ListItemIcon>
+                                {playSound ? <ListItemText primary="Mute join sound"/> :
+                                    <ListItemText primary="Enable join sound"/>}
                             </ListItemButton>
                         </ListItem>
 

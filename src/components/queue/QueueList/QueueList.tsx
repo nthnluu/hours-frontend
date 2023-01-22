@@ -1,42 +1,37 @@
 import React, {FC, useEffect, useState} from "react";
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    Stack,
-    Typography,
-} from "@mui/material";
+import {Box, CircularProgress, Grid, Stack, Typography,} from "@mui/material";
 import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
 import {useTickets} from "@util/queue/hooks";
-import {Queue, Ticket} from "@util/queue/api";
+import {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
+import playDoorbell from "@util/shared/playDoorbell";
 
 export interface QueueListProps {
-    queue: Queue
-    showCompletedTickets: boolean;
+    queue: Queue;
+    playSound: boolean;
 }
 
 /**
  * QueueList lists out the tickets in a queue.
  */
-const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
+const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
     const {currentUser, isTA} = useAuth();
-    const [tickets, ticketsLoading] = useTickets(queue.id, showCompletedTickets);
+    const [tickets, ticketsLoading] = useTickets(queue.id);
     const [createTicketDialog, setCreateTicketDialog] = useState(false);
 
-    const inQueue = tickets && tickets.filter(ticket => ticket.user.Email == currentUser?.email).length > 0;
+    const inQueue = tickets && tickets.filter(ticket => (ticket.user.Email == currentUser?.email) && (ticket.status != TicketStatus.StatusComplete)).length > 0;
     const queueEnded = queue.endTime < new Date();
 
-    const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => ticket !== undefined) : [];
-
+    const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => (ticket !== undefined) && (ticket.status != TicketStatus.StatusComplete)) : [];
     const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
     useEffect(() => {
         if ((queue.tickets.length > prevTicketsLength) && isTA(queue.course.id)) {
-            // const audio = new Audio("/doorbell.mp3");
-            // audio.play();
+            if (playSound) {
+                playDoorbell();
+            }
 
             if ("Notification" in window) {
                 new Notification("A student has joined your queue.");
@@ -44,7 +39,7 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         }
 
         setPrevTicketsLength(queue.tickets.length);
-    }, [queue, prevTicketsLength]);
+    }, [queue, prevTicketsLength, playSound]);
 
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
@@ -55,15 +50,32 @@ const QueueList: FC<QueueListProps> = ({queue, showCompletedTickets}) => {
         </Stack>
     );
 
+    // function canCreateTicket(): boolean {
+    //     if (!tickets) return false;
+    //
+    //     // Check for cooldown violations
+    //     const filtered = tickets.filter(ticket => (ticket.user.UserID == currentUser?.id) &&
+    //         (ticket.status == TicketStatus.StatusComplete));
+    //     if (filtered.length == 0) {
+    //         return true;
+    //     } else {
+    //         if (queue.rejoinCooldown == -1) return false;
+    //         const sorted = filtered.sort(function (a, b) {
+    //             return b.completedAt!.toMillis() - a.completedAt!.toMillis();
+    //         });
+    //         return (Date.now() - sorted[0].completedAt!.toMillis()) > (queue.rejoinCooldown * 60000);
+    //     }
+    // }
+
     return (<>
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
-                            queueID={queue.id}/>
+                            queueID={queue.id} faceMaskPolicy={queue.faceMaskPolicy}/>
         <Grid item xs={12} md={9}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
+                {!queue.isCutOff && !queueEnded && !inQueue && isTA(queue.course.id) &&
                     <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                         Join Queue
                     </Button>}

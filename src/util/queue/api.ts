@@ -14,6 +14,8 @@ export interface Queue {
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     tickets: string[];
+    faceMaskPolicy: MaskPolicy;
+    rejoinCooldown: number;
 }
 
 export const enum TicketStatus {
@@ -22,6 +24,13 @@ export const enum TicketStatus {
     StatusMissing = "MISSING",
     StatusComplete = "COMPLETE",
     StatusReturned = "RETURNED",
+}
+
+// Describes the possible mask policy options.
+export const enum MaskPolicy {
+    NoMaskPolicy,
+    MasksRecommended,
+    MasksRequired,
 }
 
 export interface TicketUserdata {
@@ -36,6 +45,7 @@ export interface Ticket {
     id: string;
     user: TicketUserdata;
     createdAt: Timestamp;
+    completedAt?: Timestamp;
     claimedAt?: Timestamp;
     claimedBy?: string;
     status: TicketStatus;
@@ -54,6 +64,8 @@ export interface CreateQueueRequest {
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     courseID: string;
+    faceMaskPolicy: MaskPolicy;
+    rejoinCooldown: number;
 }
 
 /**
@@ -61,6 +73,7 @@ export interface CreateQueueRequest {
  */
 async function createQueue(req: CreateQueueRequest): Promise<void> {
     try {
+        console.log(req);
         await APIClient.post(`/queues/create/${req.courseID}`, req);
         return;
     } catch (e) {
@@ -77,6 +90,8 @@ export interface EditQueueRequest {
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
     isCutOff: boolean;
+    faceMaskPolicy: MaskPolicy;
+    rejoinCooldown: number;
 }
 
 /**
@@ -84,6 +99,7 @@ export interface EditQueueRequest {
  */
 async function editQueue(req: EditQueueRequest): Promise<void> {
     try {
+        console.log(req);
         await APIClient.post(`/queues/${req.queueID}/edit`, req);
         return;
     } catch (e) {
@@ -130,7 +146,9 @@ async function endQueue(queue: Queue): Promise<void> {
             isCutOff: queue.isCutOff,
             allowTicketEditing: queue.allowTicketEditing,
             location: queue.location,
-            showMeetingLinks: queue.showMeetingLinks
+            showMeetingLinks: queue.showMeetingLinks,
+            faceMaskPolicy: queue.faceMaskPolicy,
+            rejoinCooldown: queue.rejoinCooldown,
         });
         return;
     } catch (e) {

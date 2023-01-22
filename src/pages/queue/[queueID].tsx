@@ -13,6 +13,7 @@ export default function Queue() {
     const {queueID} = router.query;
     const [queue, queueLoading] = useQueue(queueID as string);
     const [showCompletedTickets, setShowCompletedTickets] = useState(true);
+    const [playSound, setPlaySound] = useState(false);
 
     // Redirect user back to home page if no queue with given ID is found
     useEffect(() => {
@@ -29,9 +30,10 @@ export default function Queue() {
                 <Grid container spacing={4} marginTop={1}>
                     <QueueOptions queue={queue} queueID={queueID as string}
                                   showCompletedTickets={showCompletedTickets}
+                                  setPlaySound={setPlaySound}
+                                  playSound={playSound}
                                   setShowCompletedTickets={setShowCompletedTickets}/>
-                    <QueueList queue={queue}
-                               showCompletedTickets={showCompletedTickets}/>
+                    <QueueList queue={queue} playSound={playSound}/>
                 </Grid>
             </>}
         </AppLayout>

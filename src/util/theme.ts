@@ -13,7 +13,7 @@ const theme = (mode: "light" | "dark"): ThemeOptions => {
         palette: {
             mode: mode,
             primary: {
-                main: '#057FFE',
+                main: mode === "light" ? '#057FFE' : '#80bfff',
             },
             secondary: {
                 main: '#6d6d6d',

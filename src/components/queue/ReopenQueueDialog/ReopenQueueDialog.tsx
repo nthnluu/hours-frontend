@@ -41,7 +41,9 @@ const ReopenQueueDialog: FC<ReopenQueueDialogProps> = ({queueID, queue, open, on
             endTime: times[data.endTimeIndex].timestamp,
             isCutOff: queue.isCutOff,
             allowTicketEditing: queue.allowTicketEditing,
-            showMeetingLinks: queue.showMeetingLinks
+            showMeetingLinks: queue.showMeetingLinks,
+            faceMaskPolicy: queue.faceMaskPolicy,
+            rejoinCooldown: queue.rejoinCooldown,
         };
         toast.promise(QueueAPI.editQueue(req), {
             loading: "Reopening queue...",

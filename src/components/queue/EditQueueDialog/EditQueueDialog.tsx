@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import Button from "@components/shared/Button";
 import {useForm} from "react-hook-form";
-import QueueAPI, {EditQueueRequest, Queue} from "@util/queue/api";
+import QueueAPI, {EditQueueRequest, MaskPolicy, Queue} from "@util/queue/api";
 import {toast} from "react-hot-toast";
 import errors from "@util/errors";
 import {getNextHours} from "@util/shared/getNextHours";
@@ -32,6 +32,8 @@ type FormData = {
     location: string;
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
+    rejoinCooldown: number;
+    faceMaskPolicy: MaskPolicy;
 };
 
 const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClose}) => {
@@ -46,7 +48,11 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
             endTime: times[data.endTimeIndex].timestamp,
             isCutOff: queue.isCutOff,
             allowTicketEditing: data.allowTicketEditing,
-            showMeetingLinks: data.showMeetingLinks
+            showMeetingLinks: data.showMeetingLinks,
+            // @ts-ignore
+            faceMaskPolicy: parseInt(data.faceMaskPolicy),
+            // @ts-ignore
+            rejoinCooldown: parseInt(data.rejoinCooldown),
         };
         toast.promise(QueueAPI.editQueue(req), {
             loading: "Updating queue...",
@@ -68,7 +74,7 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
         reset();
     }, [reset, open]);
 
-    return <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    return <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>
             <DialogTitle>Edit Queue</DialogTitle>
             <DialogContent>
@@ -120,6 +126,46 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                         size="small"
                         variant="standard"
                     />
+
+                    <Stack direction="row" spacing={1.5}>
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="cooldown-label">Students can rejoin the queue</InputLabel>
+                            <Select
+                                {...register("rejoinCooldown")}
+                                required
+                                defaultValue={queue.rejoinCooldown}
+                                fullWidth
+                                labelId="cooldown-label"
+                                id="cooldown"
+                                label="Students can rejoin the queue"
+                                type="number"
+                            >
+                                {[0, 1, 5, 10, 15, 20, 25, 30, 45, 60, -1].map(value => <MenuItem key={value}
+                                                                                               value={value}>
+                                    {value === 0 && "Immediately"}
+                                    {value === -1 && "Never"}
+                                    {(value != -1 && value != 0) && `After ${value} minutes`}
+                                </MenuItem>)}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth size="small" variant="standard">
+                            <InputLabel id="mask-policy-label">Face mask policy</InputLabel>
+                            <Select
+                                {...register("faceMaskPolicy")}
+                                required
+                                defaultValue={queue.faceMaskPolicy}
+                                fullWidth
+                                labelId="mask-policy-label"
+                                id="mask-policy"
+                                label="Mask policy"
+                                type="number"
+                            >
+                                <MenuItem value={MaskPolicy.NoMaskPolicy}>No mask policy</MenuItem>
+                                <MenuItem value={MaskPolicy.MasksRecommended}>Masks Recommended</MenuItem>
+                                <MenuItem value={MaskPolicy.MasksRequired}>Masks Required</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Stack>
                 </Stack>
                 <FormGroup>
                     <FormControlLabel
