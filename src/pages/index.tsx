@@ -16,7 +16,8 @@ export default function Home() {
     const {currentUser, isAuthenticated} = useAuth();
     const [queues, loading] = useQueues();
     const [createQueueDialog, setCreateQueueDialog] = useState(false);
-    const [whatsNewDialog, setWhatsNewDialog] = useState(localStorage.getItem(WHATS_NEW_KEY) != WHATS_NEW_VER);
+    // const [whatsNewDialog, setWhatsNewDialog] = useState(localStorage.getItem(WHATS_NEW_KEY) != WHATS_NEW_VER);
+    const [whatsNewDialog, setWhatsNewDialog] = useState(false);
 
     const isTA = isAuthenticated && currentUser && currentUser.coursePermissions && (Object.keys(currentUser.coursePermissions).length > 0);
 
