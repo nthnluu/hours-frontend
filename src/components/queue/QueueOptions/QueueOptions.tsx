@@ -39,7 +39,7 @@ export interface QueueOptionsProps {
     showCompletedTickets: boolean;
     setShowCompletedTickets: (arg: boolean) => void;
     playSound: boolean;
-    setPlaySound: (arg: boolean) => void;
+    togglePlaySound: () => void;
 }
 
 
@@ -50,7 +50,7 @@ const QueueOptions: FC<QueueOptionsProps> = ({
                                                  queue,
                                                  queueID,
                                                  playSound,
-                                                 setPlaySound,
+                                                 togglePlaySound,
                                                  showCompletedTickets,
                                                  setShowCompletedTickets
                                              }) => {
@@ -127,8 +127,9 @@ const QueueOptions: FC<QueueOptionsProps> = ({
 
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => {
-                                setPlaySound(!playSound);
-                                if (playSound) {
+                                const currVal = playSound;
+                                togglePlaySound();
+                                if (!currVal) {
                                     playDoorbell();
                                 }
                             }}>

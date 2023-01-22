@@ -13,7 +13,8 @@ export interface Queue {
     isCutOff: boolean;
     allowTicketEditing: boolean;
     showMeetingLinks: boolean;
-    tickets: string[];
+    pendingTickets: string[];
+    completedTickets: string[];
     faceMaskPolicy: MaskPolicy;
     rejoinCooldown: number;
 }
