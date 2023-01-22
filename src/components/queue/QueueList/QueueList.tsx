@@ -25,10 +25,11 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
     const inQueue = tickets && tickets.filter(ticket => (ticket.user.Email == currentUser?.email) && (ticket.status != TicketStatus.StatusComplete)).length > 0;
     const queueEnded = queue.endTime < new Date();
 
-    const sortedTickets: (Ticket | undefined)[] = queue.tickets && tickets ? queue.tickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => (ticket !== undefined) && (ticket.status != TicketStatus.StatusComplete)) : [];
-    const [prevTicketsLength, setPrevTicketsLength] = useState(queue.tickets.length);
+    const sortedTickets: (Ticket | undefined)[] = queue.pendingTickets && tickets ? queue.pendingTickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => (ticket !== undefined) && (ticket.status != TicketStatus.StatusComplete)) : [];
+    const [prevTicketsLength, setPrevTicketsLength] = useState(queue.pendingTickets.length);
+
     useEffect(() => {
-        if ((queue.tickets.length > prevTicketsLength) && isTA(queue.course.id)) {
+        if ((queue.pendingTickets.length > prevTicketsLength) && isTA(queue.course.id)) {
             if (playSound) {
                 playDoorbell();
             }
@@ -38,7 +39,7 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
             }
         }
 
-        setPrevTicketsLength(queue.tickets.length);
+        setPrevTicketsLength(queue.pendingTickets.length);
     }, [queue, prevTicketsLength, playSound]);
 
     const EmptyQueue = () => (
@@ -75,7 +76,7 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!queue.isCutOff && !queueEnded && !inQueue && isTA(queue.course.id) &&
+                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
                     <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                         Join Queue
                     </Button>}
