@@ -81,11 +81,11 @@ const QueueOptions: FC<QueueOptionsProps> = ({
                         {queue.description}
                     </Typography>
 
-                    <Stack spacing={1.5} mt={2}>
+                    <Stack spacing={1.5} mt={2} sx={{opacity: 0.75}}>
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <PeopleIcon/>
                             <Typography style={{overflow: "hidden", textOverflow: "ellipsis", width: '10rem'}}>
-                                {queue.pendingTickets.length} people
+                                {queue.pendingTickets.length} {queue.pendingTickets.length === 1 ? "person" : "people"}
                             </Typography>
                         </Stack>
                         <Stack direction="row" alignItems="center" spacing={1}>
