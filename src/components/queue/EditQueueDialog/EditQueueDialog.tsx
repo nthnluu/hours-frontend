@@ -140,7 +140,7 @@ const EditQueueDialog: FC<EditQueueDialogProps> = ({queueID, queue, open, onClos
                                 label="Students can rejoin the queue"
                                 type="number"
                             >
-                                {[0, 1, 5, 10, 15, 20, 25, 30, 45, 60, -1].map(value => <MenuItem key={value}
+                                {[0, 5, 10, 15, 20, 25, 30, 45, 60, -1].map(value => <MenuItem key={value}
                                                                                                value={value}>
                                     {value === 0 && "Immediately"}
                                     {value === -1 && "Never"}
