@@ -9,6 +9,7 @@ import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 import playDoorbell from "@util/shared/playDoorbell";
 import getEmptyQueueString from "@util/shared/getEmptyQueueString";
+import {useRouter} from "next/router";
 
 export interface QueueListProps {
     queue: Queue;
@@ -28,6 +29,10 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
 
     const sortedTickets: (Ticket | undefined)[] = queue.pendingTickets && tickets ? queue.pendingTickets.map(ticketID => tickets.find(ticket => ticket.id === ticketID)).filter(ticket => (ticket !== undefined) && (ticket.status != TicketStatus.StatusComplete)) : [];
     const [prevTicketsLength, setPrevTicketsLength] = useState(queue.pendingTickets.length);
+    const router = useRouter();
+
+    // ?allowTATickets=true to allow TAs to create tickets
+    const {allowTATickets} = router.query;
 
     useEffect(() => {
         if ((queue.pendingTickets.length > prevTicketsLength) && isTA(queue.course.id)) {
@@ -79,7 +84,7 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
                 <Typography variant="h6" fontWeight={600}>
                     Queue
                 </Typography>
-                {!queue.isCutOff && !queueEnded && !inQueue && !isTA(queue.course.id) &&
+                {!queue.isCutOff && !queueEnded && !inQueue && (!isTA(queue.course.id) || allowTATickets) &&
                     <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
                         Join Queue
                     </Button>}
