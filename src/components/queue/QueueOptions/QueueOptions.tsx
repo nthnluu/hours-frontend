@@ -20,6 +20,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import PeopleIcon from '@mui/icons-material/People';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import MasksIcon from '@mui/icons-material/Masks';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -81,6 +82,12 @@ const QueueOptions: FC<QueueOptionsProps> = ({
                     </Typography>
 
                     <Stack spacing={1.5} mt={2}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <PeopleIcon/>
+                            <Typography style={{overflow: "hidden", textOverflow: "ellipsis", width: '10rem'}}>
+                                {queue.pendingTickets.length} people
+                            </Typography>
+                        </Stack>
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <LocationOnIcon/>
                             <Typography style={{overflow: "hidden", textOverflow: "ellipsis", width: '10rem'}}>
