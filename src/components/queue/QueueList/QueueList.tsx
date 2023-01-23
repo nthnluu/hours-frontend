@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, useEffect, useMemo, useState} from "react";
 import {Box, CircularProgress, Grid, Stack, Typography,} from "@mui/material";
 import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
@@ -8,6 +8,7 @@ import {Queue, Ticket, TicketStatus} from "@util/queue/api";
 import {useAuth} from "@util/auth/hooks";
 import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimation";
 import playDoorbell from "@util/shared/playDoorbell";
+import getEmptyQueueString from "@util/shared/getEmptyQueueString";
 
 export interface QueueListProps {
     queue: Queue;
@@ -42,11 +43,13 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
         setPrevTicketsLength(queue.pendingTickets.length);
     }, [queue, prevTicketsLength, playSound]);
 
+    const emptyQueueString = useMemo(() => getEmptyQueueString(), []);
+
     const EmptyQueue = () => (
         <Stack mt={4} spacing={2} justifyContent="center" alignItems="center">
             {!queueEnded && <BouncingCubesAnimation/>}
-            <Typography variant="body1">
-                {queueEnded ? "This queue is no longer active." : "Nobody is here... yet 😉."}
+            <Typography variant="h6" component="p">
+                {queueEnded ? "This queue is no longer active." : emptyQueueString}
             </Typography>
         </Stack>
     );

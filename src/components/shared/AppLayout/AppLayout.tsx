@@ -9,7 +9,7 @@ import {
     Stack, Toolbar,
     Typography
 } from "@mui/material";
-import {Router} from "next/router";
+import {Router, useRouter} from "next/router";
 import AccountMenu from "@components/shared/AccountMenu";
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -21,6 +21,7 @@ import NotificationItem from "../NotificationItem";
 import toast from "react-hot-toast";
 import BellAnimation from "@components/animations/BellAnimation";
 import Head from "next/head";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export interface AppLayoutProps {
     title?: string;
@@ -37,6 +38,7 @@ const AppLayout: FC<AppLayoutProps> = ({title, maxWidth, loading, actionButton, 
     const [pageLoading, setPageLoading] = useState(false);
     const {currentUser, isAuthenticated} = useAuth();
     const [notificationMenu, setNotificationMenu] = useState(false);
+    const router = useRouter();
 
     useNotifications(currentUser, (a: Notification) => {
         toast.success(a.Title, {duration: 5000});
@@ -58,8 +60,10 @@ const AppLayout: FC<AppLayoutProps> = ({title, maxWidth, loading, actionButton, 
     const badgedNotificationIcon: JSX.Element = currentUser?.notifications.length === 0 ? <NotificationsIcon/> :
         <Badge badgeContent={currentUser?.notifications.length} color="primary"><NotificationsIcon/></Badge>;
 
-    const endItems = [<IconButton key="notifications" label="Notifications"
-                                  onClick={() => setNotificationMenu(true)}>{badgedNotificationIcon}</IconButton>,
+    const endItems = [<IconButton key="settings" label="Settings"
+                                  onClick={() => router.push("/settings")}><SettingsIcon/></IconButton>,
+        <IconButton key="notifications" label="Notifications"
+                    onClick={() => setNotificationMenu(true)}>{badgedNotificationIcon}</IconButton>,
         <AccountMenu key="account" user={currentUser!}/>];
     if (actionButton) {
         endItems.push(<Button variant="contained" key="action-button"
