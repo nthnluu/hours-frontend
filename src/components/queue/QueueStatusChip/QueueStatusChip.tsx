@@ -13,7 +13,7 @@ const QueueStatusChip: FC<QueueStatusChipProps> = ({queue, size}) => {
     } else if (queue.isCutOff) {
         return <Chip label="Cutoff" size={size} color="warning" sx={{fontWeight: 600}}/>;
     } else {
-        return <Chip label="Active" size={size} color="success" sx={{fontWeight: 600}}/>;
+        return <Chip label="Open" size={size} color="success" sx={{fontWeight: 600}}/>;
     }
 };
 

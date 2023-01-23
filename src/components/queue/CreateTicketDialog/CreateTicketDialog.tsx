@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useState} from "react";
 import {
     Alert,
     Box,
@@ -32,7 +32,9 @@ type FormData = {
 
 const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID, faceMaskPolicy}) => {
     const {register, handleSubmit, reset, formState: {}} = useForm<FormData>();
+    const [isLoading, setIsLoading] = useState(false);
     const onSubmit = handleSubmit(async data => {
+        setIsLoading(true);
         if ("Notification" in window) {
             // check for desktop notification permission
             const currPermissionStatus = Notification.permission;
@@ -96,7 +98,7 @@ const CreateTicketDialog: FC<CreateTicketDialogProps> = ({open, onClose, queueID
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit" variant="contained">Join</Button>
+                <Button type="submit" variant="contained" loading={isLoading}>Join</Button>
             </DialogActions>
         </form>
     </Dialog>;
