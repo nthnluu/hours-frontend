@@ -15,6 +15,9 @@ const enum Endpoint {
     SIGN_OUT = '/users/signout',
     CLEAR_NOTIFICATION = '/users/clearNotification',
     CLEAR_ALL_NOTIFICATIONS = '/users/clearAllNotifications',
+
+    ADD_FAVORITE_COURSES = '/users/addFavoriteCourses',
+    REMOVE_FAVORITE_COURSES = '/users/removeFavoriteCourses',
 }
 
 export const enum CoursePermission {
@@ -33,6 +36,7 @@ export interface User {
     meetingLink?: string;
     coursePermissions: { [key: string]: CoursePermission };
     notifications: Notification[]
+    favoriteCourses: string[];
 }
 
 export const enum NotificationType {
@@ -158,6 +162,28 @@ async function clearAllNotifications(): Promise<void> {
     }
 }
 
+/**
+ * Adds the course ID to favorite courses.
+ */
+async function addFavoriteCourse(courseID: string): Promise<void> {
+    try {
+        return await APIClient.post(Endpoint.ADD_FAVORITE_COURSES, {courseID});
+    } catch (e) {
+        throw e;
+    }
+}
+
+/**
+ * Removes the course ID from favorite courses.
+ */
+async function removeFavoriteCourse(courseID: string): Promise<void> {
+    try {
+        return await APIClient.post(Endpoint.REMOVE_FAVORITE_COURSES, {courseID});
+    } catch (e) {
+        throw e;
+    }
+}
+
 const AuthAPI = {
     getCurrentUser,
     getUserById,
@@ -166,7 +192,9 @@ const AuthAPI = {
     signInWithGoogle,
     signOut,
     clearNotification,
-    clearAllNotifications
+    clearAllNotifications,
+    addFavoriteCourse,
+    removeFavoriteCourse
 };
 
 

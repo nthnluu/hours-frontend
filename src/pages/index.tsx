@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Box, Grid, Stack, Typography} from "@mui/material";
+import React, {useState} from "react";
+import {Box, Divider, Grid, Stack, Typography} from "@mui/material";
 import {useQueues} from "@util/queue/hooks";
 import AppLayout from "@components/shared/AppLayout";
 import QueueCard from "@components/home/QueueCard";
@@ -28,18 +28,34 @@ export default function Home() {
     }
 
     return <AppLayout maxWidth={false} loading={loading}>
-        <WhatsNewDialog open={whatsNewDialog} onClose={markAsRead}/>
+        {/*{currentUser?.coursePermissions && <WhatsNewDialog open={whatsNewDialog} onClose={markAsRead}/>}*/}
         <CreateQueueDialog open={createQueueDialog} onClose={() => setCreateQueueDialog(false)}/>
         {queues && queues.length > 0 && isTA && <Box mb={2}>
             <Button startIcon={<AddCircleIcon/>} onClick={() => setCreateQueueDialog(true)}>
-                Create Queue
+                Start Queue
             </Button>
         </Box>}
+        {queues && queues.length > 0 && currentUser?.favoriteCourses && currentUser?.favoriteCourses.length > 0 &&
+            <Box>
+                <Typography variant="h6" mb={2}>
+                    Your Favorites
+                </Typography>
+                <Grid spacing={3} container direction="row" alignItems="stretch">
+                    {queues.filter(queue => currentUser?.favoriteCourses ? currentUser?.favoriteCourses.includes(queue.course.id) : true).map(queue =>
+                        <Grid key={queue.id} item xs={12} md={6} lg={4} xl={3}>
+                            <QueueCard queue={queue}/>
+                        </Grid>)}
+                </Grid>
+                <Box my={5}>
+                    <Divider/>
+                </Box>
+            </Box>}
         {queues && queues.length > 0 &&
             <Grid spacing={3} container direction="row" alignItems="stretch">
-                {queues.map(queue => <Grid key={queue.id} item xs={12} md={6} lg={4} xl={3}>
-                    <QueueCard queue={queue}/>
-                </Grid>)}
+                {queues.filter(queue => currentUser?.favoriteCourses ? !currentUser?.favoriteCourses.includes(queue.course.id) : true).map(queue =>
+                    <Grid key={queue.id} item xs={12} md={6} lg={4} xl={3}>
+                        <QueueCard queue={queue}/>
+                    </Grid>)}
             </Grid>}
         {queues && queues.length === 0 && (
             <Stack mt={18} spacing={2} justifyContent="center" alignItems="center">

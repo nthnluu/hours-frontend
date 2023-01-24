@@ -74,7 +74,6 @@ export interface CreateQueueRequest {
  */
 async function createQueue(req: CreateQueueRequest): Promise<void> {
     try {
-        console.log(req);
         await APIClient.post(`/queues/create/${req.courseID}`, req);
         return;
     } catch (e) {
@@ -100,7 +99,6 @@ export interface EditQueueRequest {
  */
 async function editQueue(req: EditQueueRequest): Promise<void> {
     try {
-        console.log(req);
         await APIClient.post(`/queues/${req.queueID}/edit`, req);
         return;
     } catch (e) {
