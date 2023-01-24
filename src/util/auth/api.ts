@@ -36,7 +36,7 @@ export interface User {
     meetingLink?: string;
     coursePermissions: { [key: string]: CoursePermission };
     notifications: Notification[]
-    favoriteCourses: string;
+    favoriteCourses: string[];
 }
 
 export const enum NotificationType {
