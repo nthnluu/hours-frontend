@@ -74,7 +74,7 @@ const JoinButton = (props: JoinButtonContentProps) => {
 
     useEffect(() => {
         recalculateState();
-    }, [queueCooldownMinutes, lastTicket]);
+    }, [queueCooldownMinutes, lastTicket, loading]);
 
     useEffect(() => {
         let id: NodeJS.Timeout;
