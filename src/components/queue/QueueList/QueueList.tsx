@@ -15,10 +15,11 @@ interface JoinButtonContentProps {
     queueCooldownMinutes: number;
     lastTicket?: Ticket;
     onClick: ButtonProps["onClick"];
+    loading: boolean;
 }
 
 const JoinButton = (props: JoinButtonContentProps) => {
-    const {queueCooldownMinutes, lastTicket, onClick} = props;
+    const {queueCooldownMinutes, lastTicket, onClick, loading} = props;
     const [disabled, setDisabled] = useState(computeState().disabled);
     const [cooldown, setCooldown] = useState<string | null>(computeState().cooldown);
 
@@ -27,6 +28,9 @@ const JoinButton = (props: JoinButtonContentProps) => {
     // enabled && cooldown -> Impossible
     // enabled && (cooldown === null) -> "Join Queue"
     function computeState(): { disabled: boolean; cooldown: string | null } {
+        if (loading) {
+            return {disabled: true, cooldown: null};
+        }
         if (!lastTicket) {
             return {disabled: false, cooldown: null};
         }
@@ -164,6 +168,7 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
                         queueCooldownMinutes={queue.rejoinCooldown}
                         lastTicket={getMostRecentlyCompletedTicket(tickets)}
                         onClick={() => setCreateTicketDialog(true)}
+                        loading={ticketsLoading}
                     />}
             </Stack>
             <Box mt={1}>
