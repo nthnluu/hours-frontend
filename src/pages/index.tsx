@@ -35,7 +35,7 @@ export default function Home() {
                 Start Queue
             </Button>
         </Box>}
-        {queues && queues.length > 0 && currentUser?.favoriteCourses && currentUser?.favoriteCourses.length > 0 &&
+        {queues && queues.length > 0 && currentUser?.favoriteCourses && queues.filter(queue => currentUser?.favoriteCourses ? currentUser?.favoriteCourses.includes(queue.course.id) : false).length > 0 &&
             <Box>
                 <Typography variant="h6" mb={2}>
                     Your Favorites
