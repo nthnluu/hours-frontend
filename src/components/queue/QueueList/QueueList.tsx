@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useMemo, useState} from "react";
-import {Box, CircularProgress, Grid, Stack, Typography,} from "@mui/material";
+import {Box, ButtonProps, CircularProgress, Grid, Stack, Typography,} from "@mui/material";
 import Button from "@components/shared/Button";
 import CreateTicketDialog from "@components/queue/CreateTicketDialog";
 import QueueListItem from "@components/queue/QueueListItem";
@@ -10,6 +10,89 @@ import BouncingCubesAnimation from "@components/animations/BouncingCubesAnimatio
 import playDoorbell from "@util/shared/playDoorbell";
 import getEmptyQueueString from "@util/shared/getEmptyQueueString";
 import {useRouter} from "next/router";
+
+interface JoinButtonContentProps {
+    queueCooldownMinutes: number;
+    lastTicket?: Ticket;
+    onClick: ButtonProps["onClick"];
+}
+
+const JoinButton = (props: JoinButtonContentProps) => {
+    const {queueCooldownMinutes, lastTicket, onClick} = props;
+    const [disabled, setDisabled] = useState(computeState().disabled);
+    const [cooldown, setCooldown] = useState<string | null>(computeState().cooldown);
+
+    // disabled && cooldown -> "Join in 12:34"
+    // disabled && (cooldown === null) -> "Join Queue" (disabled, you're in line)
+    // enabled && cooldown -> Impossible
+    // enabled && (cooldown === null) -> "Join Queue"
+    function computeState(): { disabled: boolean; cooldown: string | null } {
+        if (!lastTicket) {
+            return {disabled: false, cooldown: null};
+        }
+        if (queueCooldownMinutes === 0) {
+            return {disabled: false, cooldown: null};
+        }
+        if (queueCooldownMinutes === -1) {
+            return {disabled: true, cooldown: null};
+        }
+
+        const completedAt = lastTicket.completedAt;
+        // In the queue
+        if (!completedAt) {
+            return {disabled: true, cooldown: null};
+        }
+
+        const eligibilityMillis =
+            completedAt.toMillis() + queueCooldownMinutes * 1000 * 60;
+        const now = Date.now();
+        const millisUntilEligible = eligibilityMillis - now;
+
+        // Need to wait for the cool-down
+        if (millisUntilEligible > 0) {
+            const minutes = Math.floor(millisUntilEligible / (1000 * 60));
+            const seconds = Math.floor((millisUntilEligible % (1000 * 60)) / 1000);
+
+            return {
+                disabled: true,
+                cooldown: `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`
+            };
+        } else {
+            return {disabled: false, cooldown: null};
+        }
+    }
+
+    function recalculateState() {
+        const state = computeState();
+        setDisabled(state.disabled);
+        setCooldown(state.cooldown);
+    }
+
+    useEffect(() => {
+        recalculateState();
+    }, [queueCooldownMinutes, lastTicket]);
+
+    useEffect(() => {
+        let id: NodeJS.Timeout;
+
+        if (cooldown !== null) {
+            id = setTimeout(recalculateState, 1000);
+        }
+
+        return () => {
+            clearTimeout(id);
+        };
+    }, [cooldown]);
+
+    return (
+        <Button variant="contained" onClick={onClick} disabled={disabled}>
+            <Box className="timer" sx={{width: `10ch`}}>
+                Join
+                {cooldown === null ? ` Queue` : ` in ${cooldown}`}
+            </Box>
+        </Button>
+    );
+};
 
 export interface QueueListProps {
     queue: Queue;
@@ -59,22 +142,14 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
         </Stack>
     );
 
-    // function canCreateTicket(): boolean {
-    //     if (!tickets) return false;
-    //
-    //     // Check for cooldown violations
-    //     const filtered = tickets.filter(ticket => (ticket.user.UserID == currentUser?.id) &&
-    //         (ticket.status == TicketStatus.StatusComplete));
-    //     if (filtered.length == 0) {
-    //         return true;
-    //     } else {
-    //         if (queue.rejoinCooldown == -1) return false;
-    //         const sorted = filtered.sort(function (a, b) {
-    //             return b.completedAt!.toMillis() - a.completedAt!.toMillis();
-    //         });
-    //         return (Date.now() - sorted[0].completedAt!.toMillis()) > (queue.rejoinCooldown * 60000);
-    //     }
-    // }
+    function getMostRecentlyCompletedTicket(tickets: Ticket[] | undefined): Ticket | undefined {
+        if (!tickets) return undefined;
+        const mapped = queue.completedTickets.map(ticketID => tickets.find((t => t.id === ticketID)));
+        if (mapped.length === 0) {
+            return undefined;
+        }
+        return mapped.length > 0 ? mapped[mapped.length - 1] : mapped[0];
+    }
 
     return (<>
         <CreateTicketDialog open={createTicketDialog} onClose={() => setCreateTicketDialog(false)}
@@ -85,9 +160,11 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
                     Queue
                 </Typography>
                 {!queue.isCutOff && !queueEnded && !inQueue && (!isTA(queue.course.id) || allowTATickets) &&
-                    <Button variant="contained" onClick={() => setCreateTicketDialog(true)}>
-                        Join Queue
-                    </Button>}
+                    <JoinButton
+                        queueCooldownMinutes={queue.rejoinCooldown}
+                        lastTicket={getMostRecentlyCompletedTicket(tickets)}
+                        onClick={() => setCreateTicketDialog(true)}
+                    />}
             </Stack>
             <Box mt={1}>
                 {ticketsLoading && <Stack height={200} width={"100%"} justifyContent="center" alignItems="center">
@@ -98,7 +175,7 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
                                                                                           queue={queue}
                                                                                           ticket={ticket!}
                                                                                           position={index + 1}/>)}
-                    {sortedTickets && sortedTickets.length == 0 && <EmptyQueue/>}
+                    {!ticketsLoading && sortedTickets && sortedTickets.length == 0 && <EmptyQueue/>}
                 </Stack>
             </Box>
         </Grid>
