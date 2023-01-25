@@ -123,55 +123,65 @@ const QueueOptions: FC<QueueOptionsProps> = ({
                     </Typography>
 
                     <List>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => setOpenEditDialog(true)}>
-                                <ListItemIcon>
-                                    <EditIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Edit queue"/>
-                            </ListItemButton>
-                        </ListItem>
+                        {!isEnded && <>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => setOpenEditDialog(true)}>
+                                    <ListItemIcon>
+                                        <EditIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Edit queue"/>
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => {
+                                    const currVal = playSound;
+                                    togglePlaySound();
+                                    if (!currVal) {
+                                        playDoorbell();
+                                    }
+                                }}>
+                                    <ListItemIcon>
+                                        {playSound ? <VolumeOffIcon/> : <VolumeUpIcon/>}
+                                    </ListItemIcon>
+                                    {playSound ? <ListItemText primary="Mute join sound"/> :
+                                        <ListItemText primary="Enable join sound"/>}
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => {
-                                const currVal = playSound;
-                                togglePlaySound();
-                                if (!currVal) {
-                                    playDoorbell();
-                                }
-                            }}>
-                                <ListItemIcon>
-                                    {playSound ? <VolumeOffIcon/> : <VolumeUpIcon/>}
-                                </ListItemIcon>
-                                {playSound ? <ListItemText primary="Mute join sound"/> :
-                                    <ListItemText primary="Enable join sound"/>}
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => setOpenAnnounceDialog(true)}>
+                                    <ListItemIcon>
+                                        <CampaignIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Make announcement"/>
+                                </ListItemButton>
+                            </ListItem>
 
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => setOpenAnnounceDialog(true)}>
-                                <ListItemIcon>
-                                    <CampaignIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Make announcement"/>
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => {
+                                    const confirmed = confirm("Are you sure you want to shuffle this queue?");
 
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => {
-                                const confirmed = confirm("Are you sure you want to shuffle this queue?");
+                                    if (confirmed) {
+                                        QueueAPI.shuffleQueue(queueID);
+                                    }
+                                }}>
+                                    <ListItemIcon>
+                                        <ShuffleIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Shuffle tickets"/>
+                                </ListItemButton>
+                            </ListItem>
 
-                                if (confirmed) {
-                                    QueueAPI.shuffleQueue(queueID);
-                                }
-                            }}>
-                                <ListItemIcon>
-                                    <ShuffleIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Shuffle tickets"/>
-                            </ListItemButton>
-                        </ListItem>
-
+                            <ListItem disablePadding>
+                                <ListItemButton
+                                    onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff).catch(() => toast.error("Error closing queue."))}>
+                                    <ListItemIcon>
+                                        {!queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
+                                    </ListItemIcon>
+                                    <ListItemText primary={queue.isCutOff ? "Reopen signups" : "Cutoff signups"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </>}
                         {/* <ListItem disablePadding>
                             <ListItemButton onClick={() => setShowCompletedTickets(!showCompletedTickets)}>
                                 <ListItemIcon>
@@ -181,17 +191,6 @@ const QueueOptions: FC<QueueOptionsProps> = ({
                                     primary={(showCompletedTickets ? "Show" : "Hide") + " completed tickets"}/>
                             </ListItemButton>
                         </ListItem> */}
-
-                        <ListItem disablePadding>
-                            <ListItemButton
-                                onClick={() => QueueAPI.cutOffQueue(queueID, !queue.isCutOff).catch(() => toast.error("Error closing queue."))}>
-                                <ListItemIcon>
-                                    {!queue.isCutOff ? <DoNotDisturbOnIcon/> : <AddCircleIcon/>}
-                                </ListItemIcon>
-                                <ListItemText primary={queue.isCutOff ? "Reopen signups" : "Cutoff signups"}/>
-                            </ListItemButton>
-                        </ListItem>
-
                         {isEnded ? <ListItem disablePadding>
                             <ListItemButton onClick={() => setOpenReopenDialog(true)}>
                                 <ListItemIcon>

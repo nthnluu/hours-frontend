@@ -78,7 +78,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
 
     return <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" keepMounted={false}>
         <form onSubmit={onSubmit}>
-            <DialogTitle>Create Queue</DialogTitle>
+            <DialogTitle>Start Queue</DialogTitle>
             <DialogContent>
                 <Stack spacing={2.5} my={1}>
                     <FormControl fullWidth size="small" variant="standard" required>
