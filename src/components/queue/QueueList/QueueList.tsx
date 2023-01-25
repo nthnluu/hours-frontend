@@ -148,7 +148,7 @@ const QueueList: FC<QueueListProps> = ({queue, playSound}) => {
 
     function getMostRecentlyCompletedTicket(tickets: Ticket[] | undefined): Ticket | undefined {
         if (!tickets) return undefined;
-        const mapped = queue.completedTickets.map(ticketID => tickets.find((t => t.id === ticketID)));
+        const mapped = queue.completedTickets.map(ticketID => tickets.find((t => t.id === ticketID))).filter(t => t ? t.user.UserID === currentUser?.id : false);
         if (mapped.length === 0) {
             return undefined;
         }

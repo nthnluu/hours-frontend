@@ -49,7 +49,7 @@ export default function Home() {
                     No courses are currently holding hours.
                 </Typography>
                 {isTA && <Button startIcon={<AddCircleIcon/>} onClick={() => setCreateQueueDialog(true)}>
-                    Create Queue
+                    Start Queue
                 </Button>}
             </Stack>
         )}
