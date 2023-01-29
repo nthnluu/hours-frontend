@@ -90,9 +90,12 @@ const JoinButton = (props: JoinButtonContentProps) => {
 
     return (
         <Button variant="contained" onClick={onClick} disabled={disabled}>
-            <Box className="timer" sx={{width: `10ch`}}>
+            <Box className="timer">
                 Join
-                {cooldown === null ? ` Queue` : ` in ${cooldown}`}
+                <Box component="span" sx={{width: `100ch`}}>
+                     {cooldown === null ? ` Queue` : ` in ${cooldown}`}
+                </Box>
+
             </Box>
         </Button>
     );
