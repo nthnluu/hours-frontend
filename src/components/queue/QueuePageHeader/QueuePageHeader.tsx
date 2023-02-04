@@ -43,10 +43,10 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
                         {queue.course.code}: {queue.course.title}
                     </Typography>
                     {isFavorite ?
-                        <IconButton label="Remove from favorites" size="small" onClick={onUnfavoriteCourse}>
+                        <IconButton color="inherit" label="Remove from favorites" size="small" onClick={onUnfavoriteCourse}>
                             <BookmarkIcon/>
                         </IconButton> :
-                        <IconButton label="Add to favorites" size="small" onClick={onFavoriteCourse}>
+                        <IconButton color="inherit" label="Add to favorites" size="small" onClick={onFavoriteCourse}>
                             <BookmarkBorderIcon/>
                         </IconButton>}
                 </Stack>
