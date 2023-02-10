@@ -15,10 +15,12 @@ export default function getQueueColor(queue: Queue): string {
         return "#1f1f1f";
     } else {
         const colors = [
-            "#f44336",
-            "#00a0b2",
-            "#9500ae",
-            "#e91e63",
+            "#be123c",
+            "#a21caf",
+            "#b45309",
+            "#0e7490",
+            "#7e22ce",
+            "#1d4ed8",
         ];
 
         const hash = hashCodeFromString((queue.course.id));
