@@ -59,6 +59,7 @@ const CreateQueueDialog: FC<CreateQueueDialogProps> = ({open, onClose}) => {
             error: errors.UNKNOWN,
         })
             .then(() => {
+                setIsLoading(false);
                 reset();
                 onClose();
             })
