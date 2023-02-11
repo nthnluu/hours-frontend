@@ -33,8 +33,9 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
 
     }
 
-    return <Paper sx={{overflow: "hidden"}}>
-        <Box width="100%" p={[2, null, 3]} color="#fff" position="relative" sx={{bgcolor: getQueueColor(queue)}}>
+    return <Paper sx={{overflow: "hidden"}} elevation={0}>
+        <Box width="100%" p={[2, null, 3]} color="#fff" position="relative"
+             sx={{bgcolor: getQueueColor(queue).bgColor, backgroundImage: getQueueColor(queue).gradient}}>
             <Box height={120}>
             </Box>
             <Box>
@@ -43,7 +44,8 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
                         {queue.course.code}: {queue.course.title}
                     </Typography>
                     {isFavorite ?
-                        <IconButton color="inherit" label="Remove from favorites" size="small" onClick={onUnfavoriteCourse}>
+                        <IconButton color="inherit" label="Remove from favorites" size="small"
+                                    onClick={onUnfavoriteCourse}>
                             <BookmarkIcon/>
                         </IconButton> :
                         <IconButton color="inherit" label="Add to favorites" size="small" onClick={onFavoriteCourse}>

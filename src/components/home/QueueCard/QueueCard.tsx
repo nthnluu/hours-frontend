@@ -7,6 +7,7 @@ import {Queue} from "@util/queue/api";
 import formatEndTime from "@util/shared/formatEndTime";
 import getQueueColor from "@util/shared/getQueueColor";
 import QueueStatusChip from "@components/queue/QueueStatusChip";
+import PeopleIcon from "@mui/icons-material/People";
 
 export interface QueueCardProps {
     queue: Queue;
@@ -22,7 +23,7 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
     return <Paper variant="outlined" sx={{overflow: 'hidden'}}>
         <ButtonBase onClick={() => router.push('/queue/' + queue.id)} sx={{width: "100%", textAlign: "left"}}
                     focusRipple>
-            <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: getQueueColor(queue)}}>
+            <Box width="100%" height={125} p={2} color="#fff" sx={{bgcolor: getQueueColor(queue).bgColor, backgroundImage: getQueueColor(queue).gradient}}>
                 <Typography variant="body1" noWrap>
                     {queue.course.code}: {queue.course.title}
                 </Typography>
@@ -34,6 +35,13 @@ const QueueCard: FC<QueueCardProps> = ({queue}) => {
         <Box width="100%" p={2} color={"#777777"}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                        <PeopleIcon fontSize="small"/>
+                        <Typography fontSize="smaller" noWrap
+                                    style={{overflow: "hidden", textOverflow: "ellipsis", maxWidth: '8rem'}}>
+                            {queue.pendingTickets.length}
+                        </Typography>
+                    </Stack>
                     <Stack direction="row" spacing={0.5} alignItems="center">
                         <LocationOnIcon fontSize="small"/>
                         <Typography fontSize="smaller" noWrap
