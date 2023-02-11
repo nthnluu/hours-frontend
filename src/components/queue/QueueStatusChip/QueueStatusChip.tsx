@@ -9,14 +9,15 @@ export interface QueueStatusChipProps {
 
 const QueueStatusChip: FC<QueueStatusChipProps> = ({queue, size}) => {
     if (queue.endTime < new Date()) {
-        return <Chip label="Ended" size={size} color="error" sx={{fontWeight: 600}}/>;
+        return <Chip label="Ended" size={size} sx={{backgroundColor: "#dc2626", fontWeight: 600, color: "white"}}/>;
     } else if (queue.isCutOff) {
-        return <Chip label="Cutoff" size={size} color="warning" sx={{fontWeight: 600}}/>;
+        return <Chip label="Cutoff" size={size} sx={{backgroundColor: "#d97706", fontWeight: 600, color: "white"}}/>;
     } else {
         if (size != "small") {
-            return <Chip label="Open" size={size} color="success" sx={{fontWeight: 600, color: "white"}}/>;
+            return <Chip label="Open" size={size}
+                         sx={{backgroundColor: "rgba(255,255,255,0.29)", fontWeight: 600, color: "white"}}/>;
         } else {
-            return <Chip label="Open" size={size} color="success" sx={{fontWeight: 600}}/>;
+            return <Chip label="Open" size={size} sx={{backgroundColor: "#16a34a", fontWeight: 600, color: "white"}}/>;
         }
     }
 };
