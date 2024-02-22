@@ -34,7 +34,7 @@ const QueuePageHeader: FC<QueuePageHeaderProps> = ({queue}) => {
     }
 
     return <Paper sx={{overflow: "hidden"}}>
-        <Box width="100%" p={[2, null, 3]} color="#fff" position="relative" sx={{bgcolor: getQueueColor(queue)}}>
+        <Box width="100%" p={[2, null, 3]} color="#fff" position="relative" sx={{background: getQueueColor(queue)}}>
             <Box height={120}>
             </Box>
             <Box>
